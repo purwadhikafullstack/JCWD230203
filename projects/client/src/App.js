@@ -16,9 +16,8 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {message}
+      <header className="App-header my-bg-main text-xs">
+       tester tailwind
       </header>
     </div>
   );
