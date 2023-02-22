@@ -3,7 +3,7 @@ import person from './../../supports/stylesheets/image/stressed-person-using-com
 import toast, { Toaster } from 'react-hot-toast';
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 
 function Register(props){
@@ -16,6 +16,8 @@ function Register(props){
     const email = useRef();
     const password = useRef();
     const phoneNumber = useRef();
+
+
 
 
     let onSubmit = async() => {
@@ -61,14 +63,12 @@ function Register(props){
             setIsRegister(true)
 
 
+
         } catch (error) {
             toast.error(error.message)
         }
     }
 
-    if(isRegister){
-     return <Navigate to='/activation' />
-    }
 
     return(
         <>

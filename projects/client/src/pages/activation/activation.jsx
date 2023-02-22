@@ -1,15 +1,40 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 
 function Activation() {
     const [otp, setOtp] = useState('')
     
 
-    let handleChange = (event) => {
-        let inputValue = event.target.value
+
+    let handleChange = async(event) => {
+        let inputValue = event.target.value;
         if(inputValue.length <= 5)
         setOtp(inputValue)
     }
+
+    let {id} = useParams()
+    console.log(id)
+
+
+    let onSend = async() => {
+      event.preventDefault();
+      try {
+        let data = {
+          id: id,
+          otp: otp
+        }
+
+        let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, data)
+        console.log(confirmation)
+        
+      } catch (error) {
+        console.log(error.message)
+      }
+    }
+  
+  
 
   return (
     <>
@@ -38,9 +63,10 @@ function Activation() {
               
               <button
                 type="submit"
-                class="w-full rounded my-bg-button-dark px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
+                class="w-full rounded my-bg-button-dark px-6 py-2.5 text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
                 data-te-ripple-init
                 data-te-ripple-color="light"
+                onClick={(event) => onSend(event)}
               >
                 Activate
               </button>
