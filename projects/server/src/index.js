@@ -4,7 +4,19 @@ const cors = require("cors");
 const { join } = require("path");
 
 const PORT = process.env.PORT || 8000;
+const Models = require('./sequelize/models')
 const app = express();
+
+Models.sequelize.sync({
+  force: false,
+  alter: true,
+  logging: console.log
+}).then(function () {
+  console.log('Database Sync!')
+}).catch(function (err) {
+  console.log(err, 'Database Cannot update, Please Check Again!')
+});
+
 app.use(
   cors({
     origin: [
@@ -17,8 +29,8 @@ app.use(
 app.use(express.json());
 
 //#region API ROUTES
-
-// ===========================
+const {userRouter} = require('./router')
+app.use('/users', userRouter)
 // NOTE : Add your routes here
 
 app.get("/api", (req, res) => {
