@@ -18,6 +18,7 @@ function App() {
     <div className="App">
       <header className="App-header my-bg-main text-xs">
        tester tailwind
+       tes baru
       </header>
     </div>
   );
