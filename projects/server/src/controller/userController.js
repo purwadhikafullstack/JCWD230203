@@ -72,7 +72,7 @@ module.exports = {
                 const newTemplate = templateCompile({first_name, url:`http://localhost:5000/activation/${createUsers.dataValues.id}`, otp})
 
                 await transporter.sendMail({
-                    from: 'LOYO',
+                    from: 'Vcation',
                     to: email,
                     subject: 'Account Activation',
                     html: newTemplate

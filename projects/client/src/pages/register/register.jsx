@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import person from './../../supports/./stressed-person-using-computer-at-desk.png'
+import { useRef, useState } from "react";
+import person from './../../supports/stylesheets/image/stressed-person-using-computer-at-desk.png'
+import toast, { Toaster } from 'react-hot-toast';
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
@@ -55,13 +56,13 @@ function Register(props){
             email.current.value = ''
             password.current.value = ''
             phoneNumber.current.value = ''
-            setMessage('Register Success')
+            toast.success('Register Success')
             }, 2000)
             setIsRegister(true)
 
 
         } catch (error) {
-            setMessage(error.message)
+            toast.error(error.message)
         }
     }
 
@@ -130,7 +131,6 @@ function Register(props){
                 </div>
 
                 <div class="text-center flex flex-col lg:text-left">
-                  <div className="pb-2">{message}</div>
                   <button
                     type="button"
                     class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
@@ -161,6 +161,7 @@ function Register(props){
             </div>
           </div>
         </div>
+        <Toaster />
       </section>
         </>
     )
