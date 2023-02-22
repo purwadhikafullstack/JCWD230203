@@ -2,6 +2,7 @@ import axios from "axios";
 import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
+import Register from "./pages/register/register";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -15,11 +16,7 @@ function App() {
     })();
   }, []);
   return (
-    <div className="App">
-      <header className="App-header my-bg-main text-xs">
-       tester tailwind
-      </header>
-    </div>
+    <Register />
   );
 }
 
