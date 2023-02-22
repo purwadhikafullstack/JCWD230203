@@ -97,5 +97,32 @@ module.exports = {
             }
         },
 
+        activation: async(req, res) => {
+            try {
+                const {otp, email} = req.body;
+                const user = await users.findOne({email})
+
+                if(!user){
+                    res.status(400).send({
+                        isError: true,
+                        message: 'User Not Found',
+                        data: null
+                    })
+                }
+
+                if(user.otp !== otp){
+                    res.status(400).send({
+                        isError: true,
+                        message: 'Invalid OTP',
+                        data: null
+                    })
+                }
+
+                
+            } catch (error) {
+                
+            }
+        }
+
        
 }

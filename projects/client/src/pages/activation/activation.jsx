@@ -42,7 +42,7 @@ function Activation() {
                 data-te-ripple-init
                 data-te-ripple-color="light"
               >
-                Sign up
+                Activate
               </button>
             </div>
           </form>
