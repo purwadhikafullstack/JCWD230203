@@ -69,7 +69,7 @@ module.exports = {
             // make validation using email
             const template = await fs.readFile('./template/confirmation.html', 'utf-8');
             const templateCompile = await handlebars.compile(template);
-            const newTemplate = templateCompile({first_name, url:encodeURIComponent(`http://localhost:3000/activation/${createUsers.dataValues.id}`), otp:encodeURIComponent(otp)});
+            const newTemplate = templateCompile({first_name, url:`http://localhost:3000/activation/${createUsers.dataValues.id}`, otp});
 
             await transporter.sendMail({
                 from: 'Vcation',
@@ -178,24 +178,53 @@ module.exports = {
         }
       },
       
-    //   resendOtp: async() => {
-    //     try {
-    //         const user = await users.findOne({where: {id: req.params.id}})
-    //         if(!user){
-    //            return res.status(404).send({
-    //                isError: true,
-    //                message: "User Not Found",
-    //                data: null
-    //            })
-    //         }
+      resendOtp: async(req, res) => {
+          const t = await sequelize.transaction();
+        try {
+            const user = await users.findOne({where: {id: req.params.id}})
+            if(!user){
+               return res.status(404).send({
+                   isError: true,
+                   message: "User Not Found",
+                   data: null
+               })
+            }
       
-    //         const otp = Math.floor(10000 + Math.random() * 9000);   
-    //         users.otp_code = newOtp;
-    //         users.otp_created_at = newDat();
+            const otp = Math.floor(10000 + Math.random() * 9000);
+            user.otp_code = otp;
+            user.otp_created_at = new Date();
+            console.log(user)
+            await user.save();
+            const first_name = user.dataValues.first_name
+            const email = user.dataValues.email
+
+            const template = await fs.readFile('./template/confirmation.html', 'utf-8');
+            const templateCompile = await handlebars.compile(template);
+            const newTemplate = templateCompile({first_name, url:`http://localhost:3000/activation/${user.dataValues.id}`, otp});
+
+            await transporter.sendMail({
+                from: 'Vcation',
+                to: email,
+                subject: 'Account Activation',
+                html: newTemplate
+            })
+
+            t.commit();
+
+            return res.status(200).send({
+                isError: false,
+                message: "OTP code sent successfully",
+                data: null
+            })
             
-    //     } catch (error) {
-            
-    //     }
-    //   }
+        } catch (error) {
+            t.rollback();
+            return res.status(400).send({
+                isError: false,
+                message: error.message,
+                data: null
+            })
+        }
+      }
        
 }

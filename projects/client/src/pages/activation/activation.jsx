@@ -5,14 +5,16 @@ import toast, { Toaster } from "react-hot-toast";
 
 
 function Activation() {
+    const [loading, setLoading] = useState(false)
     const [otp, setOtp] = useState('')
     const [isActive, setActive] = useState(false)
+    const [clickCount, setClickCount] = useState(0)
 
-    let handleChange = async(event) => {
-        let inputValue = event.target.value;
-        if(inputValue.length <= 5)
-        setOtp(inputValue)
-    }
+    // let handleChange = async(event) => {
+    //     let inputValue = event.target.value;
+    //     if(inputValue.length <= 5)
+    //     setOtp(inputValue)
+    // }
 
     let {id} = useParams()
     console.log(id)
@@ -39,9 +41,27 @@ function Activation() {
         toast.error(error.response.data.message)
       }
     }
+
+    let onResend = async(event) => {
+      event.preventDefault();
+      try {
+        if (clickCount >= 5) {
+          return;
+        }
+        setLoading(true)
+        let resend = await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
+        toast.success("Check your Email")
+        setClickCount(clickCount + 1)
+        setLoading(false)
+      } catch (error) {
+        console.log(error)
+        toast.error(error.response.data.message)
+      }
+    }
+
   
   if(isActive){
-    <Navigate to="/login" replace={true} />
+    <Navigate to="/login" />
   }
 
   return (
@@ -50,8 +70,7 @@ function Activation() {
         <div class="block max-w-md rounded-lg bg-white p-6 shadow-lg ">
             <div className="p text-4xl flex justify-center mb-5">Activation Form</div>
           <form>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="relative mb-6" data-te-input-wrapper-init>
+              {/* <div class="relative mb-6" data-te-input-wrapper-init>
                 <input
                   type="number"
                   class="peer block min-h-[auto] text-black w-full rounded border-0 mt-5 bg-transparent py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-black dark:placeholder:text-black [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
@@ -67,7 +86,7 @@ function Activation() {
                 >
                   Input OTP
                 </label>
-              </div>
+              </div> */}
               
               <button
                 type="submit"
@@ -78,7 +97,14 @@ function Activation() {
               >
                 Activate
               </button>
-            </div>
+              <div className="flex justify-center items-center mt-3">
+                <span className="pr-3">
+                  OTP expired ?
+                </span>
+                {clickCount < 5 ? <span className="my-main pointer">
+                  {loading ? 'Loading..' : <button  onClick={(event) => onResend(event)}>Click here!</button>}
+                </span> : <p>Maximum request OTP is 5 Times</p>}
+              </div>
           </form>
         </div>
         <Toaster />

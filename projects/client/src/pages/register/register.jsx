@@ -53,12 +53,15 @@ function Register(props){
             console.log(register)
             // when its finish clear all input field
             setTimeout(() => {
+              toast.promise({
+                loading: 'Saving data..'
+              })
             firstName.current.value = ''
             lastName.current.value = ''
             email.current.value = ''
             password.current.value = ''
             phoneNumber.current.value = ''
-            toast.success('Register Success')
+            toast.promise('Register Success')
             }, 2000)
             setIsRegister(true)
 
