@@ -66,18 +66,10 @@ module.exports = {
                 otp_created_at: new Date()
                 }, { transaction: t })
 
-            const queryParams = new URLSearchParams({
-                email: email,
-                otp: otp,
-                user_id: createUsers.dataValues.id, // Add the user ID to the query parameters
-            });
-          
-            const redirectUrl = `http://localhost:3000/activation?${queryParams.toString()}`;
-
             // make validation using email
             const template = await fs.readFile('./template/confirmation.html', 'utf-8');
             const templateCompile = await handlebars.compile(template);
-            const newTemplate = templateCompile({first_name, url:`http://localhost:3000/activation/${createUsers.dataValues.id}`, otp});
+            const newTemplate = templateCompile({first_name, url:encodeURIComponent(`http://localhost:3000/activation/${createUsers.dataValues.id}`), otp:encodeURIComponent(otp)});
 
             await transporter.sendMail({
                 from: 'Vcation',
@@ -87,96 +79,26 @@ module.exports = {
             })
             
 
-            res.status(200).send({
+            await t.commit()
+
+            return res.status(200).send({
                 isError: false,
                 message: 'Register Success',
-                data: redirectUrl
+                data: null
             })
 
-            await t.commit()
+            
 
         } catch (error) {
             await t.rollback()
-            res.status(404).send({
+            return res.status(404).send({
                 isError: true,
-                message: error.message,
+                message: error,
                 data: null
             },)
         }
     },
 
-        activation: async(req, res) => {
-            try {
-
-                const {otp} = req.body;
-                console.log(users)
-
-                const findUser = await users.findOne({
-                    where: {
-                        id: req.params.id
-                    }
-                })
-
-
-                if(!findUser){
-                    res.status(400).send({
-                        isError: true,
-                        message: 'User Not Found',
-                        data: null
-                    })
-                }
-
-                if(findUser.status !== "unconfirmed"){
-                    res.status(400).send({
-                        isError: true,
-                        message: 'User has already been confirmed',
-                        data: null
-                    })
-                }
-                
-            
-                if(findUser.otp_code !== otp){
-                    res.status(400).send({
-                        isError: true,
-                        message: 'Invalid OTP',
-                        data: null
-                    })
-                }
-
-                const otp_created_at = new Date(findUser.otp_created_at);
-                const now = new Date();
-                const diffInMs = now - otp_created_at;
-                const diffInDays = diffInMs / (24 * 60 * 60 * 1000);
-            
-
-                if(diffInDays > 1){
-                    res.status(400).send({
-                        isError: true,
-                        message: 'OTP has expired',
-                        data: null
-                    })
-                }
-                
-                findUser.status = "confirmed";
-                await findUser.save();
-                if(findUser.status = "confirmed"){
-                    res.status(200).send({
-                        isError: false,
-                        message: 'User Validate Success',
-                        data: null
-                    })
-                }
-                
-                return findUser;
-                
-            } catch (error) {
-                res.status(404).send({
-                    isError: true,
-                    message: error.message,
-                    data: null
-                })
-            }
-        }
 
        
 }

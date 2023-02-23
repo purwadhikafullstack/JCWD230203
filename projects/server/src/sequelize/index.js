@@ -1,4 +1,4 @@
-const Models = require('./sequelize/models')
+const Models = require('./models')
 
 Models.sequelize.sync({
     force: false,
