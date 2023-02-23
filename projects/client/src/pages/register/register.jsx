@@ -1,15 +1,26 @@
-import { useRef, useState } from "react";
-import person from './../../supports/stylesheets/image/stressed-person-using-computer-at-desk.png'
+import { useRef, useState, useReducer } from "react";
+import person from './../../supports/assets/stressed-person-using-computer-at-desk.png'
 import toast, { Toaster } from 'react-hot-toast';
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { Navigate, useParams } from "react-router-dom";
 
+const InitialState = {
+  disabledButton:false
+}
+
+const reducer = (state = InitialState, action) => { //action type&payload
+  switch(action.type){
+    case "setDisabledButton":
+      state = {...state, disabledButton:action.payload}
+    break;
+    default: return state;
+  }
+}
 
 function Register(props){
     const [disabledButton, setDisabledButton] = useState(false)
-    const [message, setMessage] = useState('')
-    const [isRegister, setIsRegister ] = useState(false)
+
+    const [state, dispatch] = useReducer(reducer, InitialState);
 
     const firstName = useRef();
     const lastName = useRef();
@@ -43,8 +54,9 @@ function Register(props){
             // Regex Validation
             let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
             if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
-            setDisabledButton(true)
 
+            setDisabledButton(true)
+            
 
             // send All valid data
             let dataToSend = {first_name: inputFirstName, last_name: inputLastName, email: inputEmail, password: inputPassword, phone_number: inputPhoneNumber}
@@ -53,22 +65,20 @@ function Register(props){
             console.log(register)
             // when its finish clear all input field
             setTimeout(() => {
-              toast.promise({
-                loading: 'Saving data..'
-              })
             firstName.current.value = ''
             lastName.current.value = ''
             email.current.value = ''
             password.current.value = ''
             phoneNumber.current.value = ''
-            toast.promise('Register Success')
+            toast.success('Register Success')
+            toast.success('Check your email')
             }, 2000)
-            setIsRegister(true)
-
-
+            
 
         } catch (error) {
-            toast.error(error.message)
+            dispatch({type: "setDisabledButton", payload: true})
+            console.log(error.response)
+            // toast.error(error.response.data.message)
         }
     }
 
@@ -138,7 +148,8 @@ function Register(props){
                     type="button"
                     class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={onSubmit}
-                    disabled={disabledButton}
+                    // disabled={disabledButton}
+                    disabled={state.disabledButton}
                   >
                     Sign Up
                   </button>

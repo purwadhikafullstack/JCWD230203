@@ -16,6 +16,9 @@ const {webToken, createToken} = require('./../lib/webToken');
 const transporter  = require('../helpers/transporter');
 const handlebars = require('handlebars')
 
+// import HttpResponse
+const HttpResponse = require('../helpers/httpResponse')
+
 const fs = require('fs').promises;
 
 module.exports = {
@@ -27,12 +30,13 @@ module.exports = {
             console.log(req.body)
 
             // input validation if its not have a length
-            if(!first_name.length || !email.length || !password.length || !phone_number.length)
-            return res.status(400).send({
-                    isError: true,
-                    message: 'Data Not Found!',
-                    data: null
-            })
+            if(!first_name.length || !email.length || !password.length || !phone_number.length){
+                const httpResponse = new HttpResponse(res).error("Field cannot blank!", 400);
+                console.log(httpResponse)
+
+                return httpResponse.send();
+            }
+            
 
             // Checking the input into DB based on email and phone number
             let findEmailAndPhoneNumber = await users.findOne({
@@ -226,6 +230,60 @@ module.exports = {
                 data: null
             })
         }
+      },
+
+      Login: async(req, res) => {
+          let {inputEmailOrPhone , password} = req.body
+
+         try {
+            console.log("tes")
+            if(inputEmailOrPhone.length === 0 || password.length === 0){
+                return res.status(400).send({
+                    isError: true,
+                    message: "Field Cannot Blank",
+                    data: null
+                })
+            }
+            console.log("tes1")
+
+
+            const findEmailAndPhoneNumber = await users.findAll({
+                where:{
+                    [Op.or]: [
+                        {email: inputEmailOrPhone},
+                        {phone_number: inputEmailOrPhone}
+                    ]
+                }})
+                console.log(findEmailAndPhoneNumber)
+
+                if(!findEmailAndPhoneNumber){
+                    return res.statu(400).send({
+                        isError: true,
+                        message: "Data not found",
+                        data: null
+                    })
+                }
+            
+                if(findEmailAndPhoneNumber.dataValue.status === "unconfirmed"){
+                    return res.status(400).send({
+                        isError: true,
+                        message: "Your email not Active",
+                        data: null
+                    })
+                }
+                console.log(findEmailAndPhoneNumber)
+
+                let matchPassword = await hashMatch(password, findEmailAndPhoneNumber.password)
+                if(!matchPassword){
+                    return res.status(404).send({
+                        isError: true,
+                        message: 'Password not Found',
+                        data: null
+                    })
+                }
+         } catch (error) {
+             
+         }
       }
        
 }
