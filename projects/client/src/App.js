@@ -21,9 +21,10 @@ function App() {
     <>
     <Routes>
       <Route path='/register' element={<Register />} />
-      <Route path='/activation/:id' element={<Activation />} />
+      {/* <Route path='/activation/:id' element={<Activation />} /> */}
     </Routes>
     </>
+
   );
 }
 

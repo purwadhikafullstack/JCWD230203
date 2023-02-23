@@ -7,4 +7,5 @@ Router.post('/register', userController.register)
 Router.post('/activation/:id', userController.activation)
 Router.post('/resend-otp/:id',userController.resendOtp)
 
+
 module.exports = Router;
