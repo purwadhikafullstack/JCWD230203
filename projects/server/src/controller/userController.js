@@ -99,7 +99,133 @@ module.exports = {
         }
     },
 
-    
 
+    activation: async(req, res) => {
+        try {
+      
+            const {id, otp} = req.body;
+            console.log(otp)
+            console.log(id)
+      
+            const findUser = await users.findOne({
+                where: {
+                    id: id
+                }
+            })
+      
+            
+            if(!findUser){
+               return res.status(400).send({
+                    isError: true,
+                    message: 'User Not Found',
+                    data: null
+                })
+            }
+      
+      
+            if(findUser.status !== "unconfirmed"){
+               return res.status(400).send({
+                    isError: true,
+                    message: 'User has already been confirmed',
+                    data: null
+                })
+            }
+            
+            
+            
+            if(!findUser.dataValues.otp_code === otp){
+               return res.status(400).send({
+                    isError: true,
+                    message: 'Invalid OTP',
+                    data: null
+                })
+            }
+            console.log(findUser.dataValues.otp_code )
+            console.log(otp)
+      
+            const otp_created_at = new Date(findUser.otp_created_at);
+            const now = new Date();
+            const diffInMs = now - otp_created_at;
+            const diffInDays = diffInMs / (24 * 60 * 60 * 1000);
+        
+            console.log('tes')
+            if(diffInDays > 1){
+               return res.status(400).send({
+                    isError: true,
+                    message: 'OTP has expired',
+                    data: null
+                })
+            }
+            
+            findUser.status = "confirmed";
+            console.log(findUser)
+            await findUser.save();
+            if(findUser.status = "confirmed"){
+               return res.status(200).send({
+                    isError: false,
+                    message: 'User Validate Success',
+                    data: null
+                })
+            }
+            
+            return findUser;
+            
+        } catch (error) {
+           return res.status(404).send({
+                isError: true,
+                message: error.message,
+                data: null
+            })
+        }
+      },
+      
+      resendOtp: async(req, res) => {
+          const t = await sequelize.transaction();
+        try {
+            const user = await users.findOne({where: {id: req.params.id}})
+            if(!user){
+               return res.status(404).send({
+                   isError: true,
+                   message: "User Not Found",
+                   data: null
+               })
+            }
+      
+            const otp = Math.floor(10000 + Math.random() * 9000);
+            user.otp_code = otp;
+            user.otp_created_at = new Date();
+            console.log(user)
+            await user.save();
+            const first_name = user.dataValues.first_name
+            const email = user.dataValues.email
+
+            const template = await fs.readFile('./template/confirmation.html', 'utf-8');
+            const templateCompile = await handlebars.compile(template);
+            const newTemplate = templateCompile({first_name, url:`http://localhost:3000/activation/${user.dataValues.id}`, otp});
+
+            await transporter.sendMail({
+                from: 'Vcation',
+                to: email,
+                subject: 'Account Activation',
+                html: newTemplate
+            })
+
+            t.commit();
+
+            return res.status(200).send({
+                isError: false,
+                message: "OTP code sent successfully",
+                data: null
+            })
+            
+        } catch (error) {
+            t.rollback();
+            return res.status(400).send({
+                isError: false,
+                message: error.message,
+                data: null
+            })
+        }
+      }
        
 }
