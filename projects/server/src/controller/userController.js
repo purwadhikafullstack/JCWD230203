@@ -69,7 +69,7 @@ module.exports = {
             // make validation using email
             const template = await fs.readFile('./template/confirmation.html', 'utf-8');
             const templateCompile = await handlebars.compile(template);
-            const newTemplate = templateCompile({first_name, url:encodeURIComponent(`http://localhost:3000/activation/${createUsers.dataValues.id}`), otp:encodeURIComponent(otp)});
+            const newTemplate = templateCompile({first_name, url:`http://localhost:3000/activation/${createUsers.dataValues.id}`, otp});
 
             await transporter.sendMail({
                 from: 'Vcation',
@@ -99,6 +99,7 @@ module.exports = {
         }
     },
 
+    
 
        
 }
