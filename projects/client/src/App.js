@@ -24,6 +24,7 @@ function App() {
       {/* <Route path='/activation/:id' element={<Activation />} /> */}
     </Routes>
     </>
+
   );
 }
 
