@@ -70,6 +70,10 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: false,
         defaultValue: "tenant"
+      },
+      users_id: {
+        type: Sequelize.UUID,
+        allowNull: false
       }
     });
   },

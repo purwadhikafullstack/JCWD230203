@@ -6,7 +6,7 @@ import {
   MdOutlineHolidayVillage,
 } from "react-icons/md";
 import { FaHotel } from "react-icons/fa";
-import Filter from "./Filter";
+import Filter from "../filter/Filter";
 
 const Type = () => {
   const sorting = [
