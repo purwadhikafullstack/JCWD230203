@@ -1,15 +1,26 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import person from "./../../supports/assets/administrator-working-at-desk.png";
 import { FcGoogle } from "react-icons/fc";
 import { Toaster } from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 
 function Login(props) {
+
+  const [rememberMe, setRememberMe] = useState(false)
+
   const emailOrPhone = useRef();
   const password = useRef();
 
+
+
+  const onCheckbox = (event) => {
+    setRememberMe(event.target.checked)
+
+  }
+
+
   if(props.isRedirect.redirect){
-    <Navigate to='/' />
+    return <Navigate to='/' />
   }
 
   console.log(emailOrPhone)
@@ -35,6 +46,7 @@ function Login(props) {
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="light"
                     className="inline-block p-3 my-bg-light text-white font-medium text-xl text-white leading-tight uppercase rounded-full shadow-md hover:bg-white hover:shadow-lg focus:bg-white focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg transition duration-150 ease-in-out mx-1"
+                    onClick={() => props.myGoogle.onLoginWithGoogle()} 
                   >
                     <FcGoogle />
                   </button>
@@ -72,6 +84,7 @@ function Login(props) {
                       type="checkbox"
                       className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                       id="exampleCheck2"
+                      onChange={onCheckbox}
                     />
                     <label
                       className="form-check-label inline-block text-gray-800"
@@ -89,7 +102,7 @@ function Login(props) {
                   <button
                     type="button"
                     className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => props.myFunc.onLogin(emailOrPhone.current.value, password.current.value)}
+                    onClick={() => props.myFunc.onLogin(emailOrPhone.current.value, password.current.value, rememberMe)}
                   >
                     Login
                   </button>

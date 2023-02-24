@@ -6,22 +6,47 @@ import Register from "./pages/register/register";
 import Activation from "./pages/activation/activation";
 import Login from "./pages/login/login";
 import toast, { Toaster } from 'react-hot-toast';
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+import Home from "./pages/home/home";
+
+import {GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut} from 'firebase/auth'
+  import {auth} from './firebase'
+
+const provider = new GoogleAuthProvider();
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
   const [redirect, setRedirect] = useState(false)
 
-  // useEffect(() => {
-  //   // (async () => {
-  //   //   const { data } = await axios.get(
-  //   //     `${process.env.REACT_APP_API_BASE_URL}/greetings`
-  //   //   );
-  //   //   setMessage(data?.message || "");
-  //   // })();
-  // }, []);
+  useEffect(() => {
+   checkIsLogin();
+  }, []);
 
-  let onLogin = async(inputEmailOrPhoneNumber, inputPassword) => {
+  let checkIsLogin = async() => {
+    try {
+      let getTokenId = localStorage.getItem('token')
+        if(getTokenId){
+      let response = await axios.post(`http://localhost:5000/users/keep-login`, {},
+      {headers: {
+        'auth': getTokenId,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }})
+
+      if(response.status === 201){
+        setRedirect(true)
+      }
+    }
+    } catch (error) {
+      toast(error.message)
+    }
+  }
+
+  let onLogin = async(inputEmailOrPhoneNumber, inputPassword, checkbox) => {
     try {
         
 
@@ -32,31 +57,63 @@ function App() {
         let response = await axios.post('http://localhost:5000/users/login/', dataToSend)
         console.log(response)
         
-      
-        localStorage.setItem('token', `${response.data.data.token}` ) // JSON.stringify(dataToSave) stringify untuk merubha object menjadi string 
+        if(checkbox){
+          localStorage.setItem('token', `${response.data.data.token}` )
+        }
+        setUsername(response.data.data.findEmailAndPhoneNumber.first_name)
+    
         toast.success("Login Success!")
         setTimeout(() => {
           setRedirect(true)
         }, 2000)
 
     } catch (error) {
-        console.log(error.response.data.message)
         toast.error(error.response.data.message)
     }
 }
 
+let onLoginWithGoogle = async() => {
+  try {
+    let response = await signInWithPopup(auth, provider)
+    setUsername(response.user.displayName)
+    setRedirect(true)
+   
+    localStorage.setItem('tokenUid', `${response.user.uid}` )
+  } catch (error) {
+    console.log(error.message)
+  }
+}
 
+onAuthStateChanged(auth, (userFromFireBase) => {
+  if(userFromFireBase){
+    setUsername(userFromFireBase.displayName)
+  }
+})
+
+let onLogout = async() => {
+  try {
+      localStorage.removeItem('token')
+      setUsername('') // dan merubah username menjadi string kosong
+      setRedirect(false)
+      await signOut(auth)
+      localStorage.removeItem('tokenUid')
+      setUsername('')
+      setRedirect(false) // jadi ketika ke trigger clik button logout maka redirect akan false
+  } catch (error) {
+      toast.error(error.message)
+  }}
 
   return (
     <>
-    <Navbar />
+    <Navbar data={{username}} myFunc={{onLogout}} />
     <Routes>
-      <Route path='/register' element={<Register />} />
+      <Route path='/' element={<Home />} />
+      <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
       <Route path='/activation/:id' element={<Activation />} />
-      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}}/>} />
+      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
     </Routes>
+    <Footer/>
     </>
-
   );
 }
 

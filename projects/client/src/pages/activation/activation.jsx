@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 
@@ -9,6 +9,8 @@ function Activation() {
     const [otp, setOtp] = useState('')
     const [isActive, setActive] = useState(false)
     const [clickCount, setClickCount] = useState(0)
+
+    const navigate = useNavigate();
 
     let handleChange = async(event) => {
         let inputValue = event.target.value;
@@ -22,17 +24,22 @@ function Activation() {
     let onSend = async(event) => {
       event.preventDefault();
       try {
+        
 
         let dataSend = {
           id : id,
           otp: otp
         }
-
+        setLoading(true)
         let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
         console.log(confirmation)
 
         toast.success("User Validate Success")
-        setActive(true)
+        
+        setTimeout(() => {
+          setLoading(false)
+          setActive(true)
+        }, 2000)
         
         
       } catch (error) {
@@ -50,7 +57,7 @@ function Activation() {
         }
 
         setLoading(true)
-        let resend = await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
+        await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
         toast.success("Check your Email")
         setClickCount(clickCount + 1)
         setLoading(false)
@@ -62,7 +69,7 @@ function Activation() {
 
   
   if(isActive){
-    <Navigate to="/login" />
+    navigate('/login')
   }
 
   return (
@@ -88,16 +95,17 @@ function Activation() {
                   Input OTP
                 </label>
               </div>
+               
               
-              {isActive ? <button
+              {loading ?  
+              <button
               type="submit"
               className="w-full rounded my-bg-button-dark px-6 py-2.5  text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
               data-te-ripple-init
-              data-te-ripple-color="light" 
-              disabled>
-                Go to Login Page
-              </button>
-                : 
+              data-te-ripple-color="light" >
+                Loading ..
+              </button> 
+              : 
               <button
               type="submit"
               className="w-full rounded my-bg-button-dark px-6 py-2.5  text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
@@ -105,12 +113,13 @@ function Activation() {
               data-te-ripple-color="light"
               onClick={(event) => onSend(event)}
               
-            >
-              Activate
-            </button >}
+            > 
+            Activate
+            </button >
+            }
+            
 
               <div class="flex items-center my-4 before:flex-1 before:border-t before:border-black before:mt-0.5 after:flex-1 after:border-t after:border-black after:mt-0.5">
-                Or <a href="" className="pl-1 text-blue-700" onClick={(event) => onSend(event)} > Click here to activate by link</a>
               </div>
               
               <div className="flex justify-center items-center mt-3">

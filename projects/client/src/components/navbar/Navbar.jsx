@@ -1,20 +1,25 @@
-import React from "react";
-import logo from "../supports/assets/logo.png";
+import React, { useState } from "react";
+import logo from "../../supports/assets/logo.png";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineHomeWork } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+
+
+
+const Navbar = (props) => {
+  
+
   return (
     <div className="flex justify-between items-center ml-2 mr-2 border-b">
       {/* Left */}
-      <Link to='/'>
-      <div className="my-5 h-10 flex pl-3">
-        <img src={logo} className="object-cover my-1" /> 
-      </div>
+      <Link to="/">
+        <div className="my-5 h-10 flex pl-3">
+          <img src={logo} className="object-cover my-1" alt="" />
+        </div>
       </Link>
-      
+
       {/* Middle */}
       <div className="flex justify-center items-center relative shadow-sm shadow-gray-300 border rounded-full ">
         <input
@@ -24,7 +29,9 @@ const Navbar = () => {
         />
         <div className="flex justify-between absolute w-full pr-16 pl-6 font-semibold text-gray-600">
           <button className="w-full">Place</button>
-          <button className="border-x px-6">Time</button>
+          <button className="border-x px-6">
+              Time  
+          </button>
           <button className="w-full text-gray-400/80 pl-2">Group Size</button>
         </div>
         <div className="flex bg-[#c9403e] p-2 rounded-full mr-2 hover:bg-[#e58786] duration-100 ease-out">
@@ -34,8 +41,10 @@ const Navbar = () => {
 
       {/* Right */}
       <div className="flex items-center pr-3 font-semibold text-gray-600">
-        <div className="">
-          <p className="text-[14px] pr-3">Vcation your</p>
+        <div className="flex rounded-full px-4 py-2 hover:bg-[#c7c7c743] duration-100 ease-out">
+          <p className="flex items-center mx-1 gap-1 text-[14px] font-semibold">
+            Vcation your
+          </p>
           <MdOutlineHomeWork className="text-[22px]" />
         </div>
 
@@ -50,9 +59,13 @@ const Navbar = () => {
           data-te-ripple-color="light"
         >
           <div className="flex items-center border px-4 py-2 rounded-full gap-3 bg-[#c9403e] text-white font-bold shadow-sm shadow-gray-300 hover:bg-[#e58786] duration-100 ease-out">
-          <AiOutlineUser className="text-[22px]" />
-          <FiMenu className="text-[22px]" />
-        </div>
+            {props.data.username ? (
+              <div className="font-bold">{props.data.username}</div>
+            ) : (
+              <AiOutlineUser className="text-[22px]" />
+            )}
+            <FiMenu className="text-[22px]" />
+          </div>
         </button>
 
         <div
@@ -67,7 +80,7 @@ const Navbar = () => {
               class="mb-0 font-semibold leading-normal"
               id="offcanvasRightLabel"
             >
-              Menu 
+              Menu
             </h5>
             <button
               type="button"
@@ -93,16 +106,31 @@ const Navbar = () => {
             </button>
           </div>
           <div class="offcanvas-body flex-grow overflow-y-auto p-4">
-              <div className="login mb-3 hover:shadow-lg pointer">
-                  <Link to='/login'> Login </Link>
-              </div>
+            <div className="login mb-5 hover:shadow-lg pointer">
+              <Link to="/login"> Login </Link>
+            </div>
             <div className="signup hover:shadow-lg">
               <div className="login mb-3 hover:shadow-lg pointer">
-                  <Link to='/register'> Sign Up </Link>
+                <Link to="/register"> Sign Up </Link>
               </div>
             </div>
-          </div> 
 
+            {/* bottom */}
+            <div
+              className="signout"
+              style={{ position: "absolute", bottom: 0 }}
+            >
+              <button
+                className="hover:shadow-lg pointer"
+                onClick={props.myFunc.onLogout}
+              >
+                {localStorage.getItem("token") ||
+                localStorage.getItem("tokenUid")
+                  ? "Sign Out"
+                  : null}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

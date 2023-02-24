@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid')
 const {hashPassword,hashMatch} = require('./../lib/hashPassword')
 
 // import webToken
-const {webToken, createToken} = require('./../lib/webToken');
+const {createToken} = require('./../lib/webToken');
 
 // import transporter
 const transporter  = require('../helpers/transporter');
@@ -137,7 +137,13 @@ module.exports = {
                 })
             }
             
-            
+            if(!otp){
+                return res.status(400).send({
+                    isError: true,
+                    message: 'Field Cannot Blank',
+                    data: null
+                })
+            }
             
             if(parseInt(findUser.dataValues.otp_code) !== parseInt(otp)){
                return res.status(400).send({
@@ -236,7 +242,6 @@ module.exports = {
       Login: async(req, res) => {
           let {emailOrPhone , password} = req.body
 
-          console.log(emailOrPhone)
          try {
             
             let findEmailAndPhoneNumber = await users.findOne({
@@ -257,7 +262,6 @@ module.exports = {
                 })
             }
 
-            console.log("tes")
             
 
                 if(!findEmailAndPhoneNumber){
@@ -268,7 +272,6 @@ module.exports = {
                     })
                 }
 
-                console.log(findEmailAndPhoneNumber.dataValues)
                 if(findEmailAndPhoneNumber.dataValues.status === "unconfirmed"){
                     return res.status(400).send({
                         isError: true,
@@ -303,6 +306,14 @@ module.exports = {
                 data: null
             })
          }
+      },
+
+      keepLogin: (req,res) => {
+          res.status(201).send({
+              isError: false,
+              message: "Token Valid",
+              data: req.headers.auth
+          })
       }
        
 }
