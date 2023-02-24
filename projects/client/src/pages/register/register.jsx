@@ -4,23 +4,23 @@ import toast, { Toaster } from 'react-hot-toast';
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 
-const InitialState = {
-  disabledButton:false
-}
+// const InitialState = {
+//   disabledButton:false
+// }
 
-const reducer = (state = InitialState, action) => { //action type&payload
-  switch(action.type){
-    case "setDisabledButton":
-      state = {...state, disabledButton:action.payload}
-    break;
-    default: return state;
-  }
-}
+// const reducer = (state = InitialState, action) => { //action type&payload
+//   switch(action.type){
+//     case "setDisabledButton":
+//       state = {...state, disabledButton:action.payload}
+//     break;
+//     default: return state;
+//   }
+// }
 
 function Register(props){
     const [disabledButton, setDisabledButton] = useState(false)
 
-    const [state, dispatch] = useReducer(reducer, InitialState);
+    // const [state, dispatch] = useReducer(reducer, InitialState);
 
     const firstName = useRef();
     const lastName = useRef();
@@ -47,6 +47,7 @@ function Register(props){
 
             // Validation
             if(inputFirstName.length === 0 || inputPassword.length === 0 || inputEmail.length === 0 || inputPhoneNumber.length === 0) throw {message: 'Field cannot blank'}
+            
             if(!inputEmail.includes("@") || inputEmail.length < 10 ) throw {message: 'email must contain @ and contain at least 10 char'}
             if(inputPassword.length < 8 ) throw {message: 'Password at least 8 character'}
             if(inputPhoneNumber.length < 9) throw {message: 'Phone Number not Valid'}
@@ -55,12 +56,10 @@ function Register(props){
             let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
             if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
 
-            setDisabledButton(true)
-            
-
+            console.log("tes")
             // send All valid data
             let dataToSend = {first_name: inputFirstName, last_name: inputLastName, email: inputEmail, password: inputPassword, phone_number: inputPhoneNumber}
-            console.log(dataToSend)
+
             let register = await axios.post(`http://localhost:5000/users/register`, dataToSend)
             console.log(register)
             // when its finish clear all input field
@@ -72,13 +71,14 @@ function Register(props){
             phoneNumber.current.value = ''
             toast.success('Register Success')
             toast.success('Check your email')
-            }, 2000)
             
+            }, 2000)
+            setDisabledButton(true)
 
         } catch (error) {
-            dispatch({type: "setDisabledButton", payload: true})
-            console.log(error.response)
-            // toast.error(error.response.data.message)
+            // dispatch({type: "setDisabledButton", payload: true})
+            console.log(error.response.data.message)
+            toast.error(error.response.data.message)
         }
     }
 
@@ -147,9 +147,9 @@ function Register(props){
                   <button
                     type="button"
                     class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={onSubmit}
-                    // disabled={disabledButton}
-                    disabled={state.disabledButton}
+                    onClick={() => onSubmit()}
+                    disabled={disabledButton}
+                    // disabled={state.disabledButton}
                   >
                     Sign Up
                   </button>

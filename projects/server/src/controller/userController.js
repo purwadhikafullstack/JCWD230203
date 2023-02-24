@@ -37,16 +37,17 @@ module.exports = {
                 return httpResponse.send();
             }
             
-
+            
             // Checking the input into DB based on email and phone number
             let findEmailAndPhoneNumber = await users.findOne({
                 where: {
-                    [Op.and]: [
+                    [Op.or]: [
                         {email: email},
                         {phone_number: phone_number}
                     ]
                 }
             }, {transaction: t})
+            
 
             if(findEmailAndPhoneNumber){
                 return res.status(404).send({
@@ -55,6 +56,7 @@ module.exports = {
                     data: null
                 })
             }
+            
 
             // make OTP generator
             const otp = Math.floor(10000 + Math.random() * 9000);
@@ -137,15 +139,14 @@ module.exports = {
             
             
             
-            if(!findUser.dataValues.otp_code === otp){
+            if(parseInt(findUser.dataValues.otp_code) !== parseInt(otp)){
                return res.status(400).send({
                     isError: true,
                     message: 'Invalid OTP',
                     data: null
                 })
             }
-            console.log(findUser.dataValues.otp_code )
-            console.log(otp)
+        
       
             const otp_created_at = new Date(findUser.otp_created_at);
             const now = new Date();
@@ -233,56 +234,74 @@ module.exports = {
       },
 
       Login: async(req, res) => {
-          let {inputEmailOrPhone , password} = req.body
+          let {emailOrPhone , password} = req.body
 
+          console.log(emailOrPhone)
          try {
-            console.log("tes")
-            if(inputEmailOrPhone.length === 0 || password.length === 0){
+            
+            let findEmailAndPhoneNumber = await users.findOne({
+                where:{
+                    [Op.or]: [
+                        {email: emailOrPhone},
+                        {phone_number: emailOrPhone}
+                    ]
+                }})
+
+
+
+            if(!emailOrPhone || !password.length){
                 return res.status(400).send({
                     isError: true,
                     message: "Field Cannot Blank",
                     data: null
                 })
             }
-            console.log("tes1")
 
-
-            const findEmailAndPhoneNumber = await users.findAll({
-                where:{
-                    [Op.or]: [
-                        {email: inputEmailOrPhone},
-                        {phone_number: inputEmailOrPhone}
-                    ]
-                }})
-                console.log(findEmailAndPhoneNumber)
+            console.log("tes")
+            
 
                 if(!findEmailAndPhoneNumber){
                     return res.statu(400).send({
                         isError: true,
-                        message: "Data not found",
+                        message: "Account not found",
                         data: null
                     })
                 }
-            
-                if(findEmailAndPhoneNumber.dataValue.status === "unconfirmed"){
+
+                console.log(findEmailAndPhoneNumber.dataValues)
+                if(findEmailAndPhoneNumber.dataValues.status === "unconfirmed"){
                     return res.status(400).send({
                         isError: true,
                         message: "Your email not Active",
                         data: null
                     })
                 }
-                console.log(findEmailAndPhoneNumber)
 
-                let matchPassword = await hashMatch(password, findEmailAndPhoneNumber.password)
+
+
+                let matchPassword = await hashMatch(password, findEmailAndPhoneNumber.dataValues.password)
+
                 if(!matchPassword){
                     return res.status(404).send({
                         isError: true,
-                        message: 'Password not Found',
+                        message: 'Password is Wrong',
                         data: null
                     })
                 }
+
+                res.status(201).send({
+                    isError: false,
+                    message: 'Login Success',
+                    data: {findEmailAndPhoneNumber, token: createToken({id: findEmailAndPhoneNumber.dataValues.id})}
+                })
+
+
          } catch (error) {
-             
+            res.status(404).send({
+                isError: true,
+                message: error.message,
+                data: null
+            })
          }
       }
        

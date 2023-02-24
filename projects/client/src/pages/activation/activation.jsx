@@ -17,17 +17,16 @@ function Activation() {
     }
 
     let {id} = useParams()
-    console.log(id)
 
 
     let onSend = async(event) => {
       event.preventDefault();
       try {
+
         let dataSend = {
           id : id,
           otp: otp
         }
-        console.log(dataSend)
 
         let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
         console.log(confirmation)
@@ -42,12 +41,14 @@ function Activation() {
       }
     }
 
+    
     let onResend = async(event) => {
       event.preventDefault();
       try {
         if (clickCount >= 5) {
           return;
         }
+
         setLoading(true)
         let resend = await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
         toast.success("Check your Email")
@@ -88,15 +89,25 @@ function Activation() {
                 </label>
               </div>
               
+              {isActive ? <button
+              type="submit"
+              className="w-full rounded my-bg-button-dark px-6 py-2.5  text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
+              data-te-ripple-init
+              data-te-ripple-color="light" 
+              disabled>
+                Go to Login Page
+              </button>
+                : 
               <button
-                type="submit"
-                className="w-full rounded my-bg-button-dark px-6 py-2.5  text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
-                data-te-ripple-init
-                data-te-ripple-color="light"
-                
-              >
-                Activate
-              </button >
+              type="submit"
+              className="w-full rounded my-bg-button-dark px-6 py-2.5  text-lg font-semibold uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg"
+              data-te-ripple-init
+              data-te-ripple-color="light"
+              onClick={(event) => onSend(event)}
+              
+            >
+              Activate
+            </button >}
 
               <div class="flex items-center my-4 before:flex-1 before:border-t before:border-black before:mt-0.5 after:flex-1 after:border-t after:border-black after:mt-0.5">
                 Or <a href="" className="pl-1 text-blue-700" onClick={(event) => onSend(event)} > Click here to activate by link</a>

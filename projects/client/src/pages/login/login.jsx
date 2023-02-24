@@ -1,10 +1,16 @@
 import { useRef } from "react";
 import person from "./../../supports/assets/administrator-working-at-desk.png";
 import { FcGoogle } from "react-icons/fc";
+import { Toaster } from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 
 function Login(props) {
   const emailOrPhone = useRef();
   const password = useRef();
+
+  if(props.isRedirect.redirect){
+    <Navigate to='/' />
+  }
 
   console.log(emailOrPhone)
   console.log(password)
@@ -101,6 +107,7 @@ function Login(props) {
             </div>
           </div>
         </div>
+        <Toaster />
       </section>
     </>
   );
