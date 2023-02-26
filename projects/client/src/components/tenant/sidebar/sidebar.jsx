@@ -116,27 +116,16 @@ export default function Sidebar() {
               </li>
 
               <li className="items-center">
-              <Link
+                <Link
                   className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
                   to="/tenant-register"
                 >
                   <i className="fas fa-fingerprint text-blueGray-400 mr-2 text-sm"></i> Register
                 </Link>
               </li>
-
-              {/* <li className="items-center">
-                <a
-                  className="text-blueGray-300 text-xs uppercase py-3 font-bold block"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <i className="fas fa-tools text-blueGray-300 mr-2 text-sm"></i> Settings (soon)
-                </a>
-              </li> */}
             </ul>
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
-
           </div>
         </div>
       </nav>

@@ -4,7 +4,6 @@ import { FcGoogle } from "react-icons/fc";
 import { Toaster } from "react-hot-toast";
 import { Navigate, useLocation } from "react-router-dom";
 
-
 function Login(props) {
 
   const [rememberMe, setRememberMe] = useState(false)
@@ -20,7 +19,6 @@ function Login(props) {
     setRememberMe(event.target.checked)
 
   }
-
 
 
   if(props.isRedirect.redirect || props.isRedirect.tenantRedirect){
@@ -142,7 +140,6 @@ function Login(props) {
               <div className="title flex justify-center text-bold text-4xl pb-5">
                 <p>Tenant Login Form</p>
               </div>
-
 
                 <div className="mb-6">
                   <input
