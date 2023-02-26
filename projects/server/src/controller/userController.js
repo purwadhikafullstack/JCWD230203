@@ -10,11 +10,14 @@ const { v4: uuidv4 } = require('uuid')
 const {hashPassword,hashMatch} = require('./../lib/hashPassword')
 
 // import webToken
-const {webToken, createToken} = require('./../lib/webToken');
+const {createToken} = require('./../lib/webToken');
 
 // import transporter
 const transporter  = require('../helpers/transporter');
 const handlebars = require('handlebars')
+
+// import HttpResponse
+const HttpResponse = require('../helpers/httpResponse')
 
 const fs = require('fs').promises;
 
@@ -27,22 +30,24 @@ module.exports = {
             console.log(req.body)
 
             // input validation if its not have a length
-            if(!first_name.length || !email.length || !password.length || !phone_number.length)
-            return res.status(400).send({
-                    isError: true,
-                    message: 'Data Not Found!',
-                    data: null
-            })
+            if(!first_name.length || !email.length || !password.length || !phone_number.length){
+                const httpResponse = new HttpResponse(res).error("Field cannot blank!", 400);
+                console.log(httpResponse)
 
+                return httpResponse.send();
+            }
+            
+            
             // Checking the input into DB based on email and phone number
             let findEmailAndPhoneNumber = await users.findOne({
                 where: {
-                    [Op.and]: [
+                    [Op.or]: [
                         {email: email},
                         {phone_number: phone_number}
                     ]
                 }
             }, {transaction: t})
+            
 
             if(findEmailAndPhoneNumber){
                 return res.status(404).send({
@@ -51,6 +56,7 @@ module.exports = {
                     data: null
                 })
             }
+            
 
             // make OTP generator
             const otp = Math.floor(10000 + Math.random() * 9000);
@@ -131,17 +137,22 @@ module.exports = {
                 })
             }
             
+            if(!otp){
+                return res.status(400).send({
+                    isError: true,
+                    message: 'Field Cannot Blank',
+                    data: null
+                })
+            }
             
-            
-            if(!findUser.dataValues.otp_code === otp){
+            if(parseInt(findUser.dataValues.otp_code) !== parseInt(otp)){
                return res.status(400).send({
                     isError: true,
                     message: 'Invalid OTP',
                     data: null
                 })
             }
-            console.log(findUser.dataValues.otp_code )
-            console.log(otp)
+        
       
             const otp_created_at = new Date(findUser.otp_created_at);
             const now = new Date();
@@ -226,6 +237,83 @@ module.exports = {
                 data: null
             })
         }
+      },
+
+      Login: async(req, res) => {
+          let {emailOrPhone , password} = req.body
+
+         try {
+            
+            let findEmailAndPhoneNumber = await users.findOne({
+                where:{
+                    [Op.or]: [
+                        {email: emailOrPhone},
+                        {phone_number: emailOrPhone}
+                    ]
+                }})
+
+
+
+            if(!emailOrPhone || !password.length){
+                return res.status(400).send({
+                    isError: true,
+                    message: "Field Cannot Blank",
+                    data: null
+                })
+            }
+
+            
+
+                if(!findEmailAndPhoneNumber){
+                    return res.statu(400).send({
+                        isError: true,
+                        message: "Account not found",
+                        data: null
+                    })
+                }
+
+                if(findEmailAndPhoneNumber.dataValues.status === "unconfirmed"){
+                    return res.status(400).send({
+                        isError: true,
+                        message: "Your email not Active",
+                        data: null
+                    })
+                }
+
+
+
+                let matchPassword = await hashMatch(password, findEmailAndPhoneNumber.dataValues.password)
+
+                if(!matchPassword){
+                    return res.status(404).send({
+                        isError: true,
+                        message: 'Password is Wrong',
+                        data: null
+                    })
+                }
+
+                res.status(201).send({
+                    isError: false,
+                    message: 'Login Success',
+                    data: {findEmailAndPhoneNumber, token: createToken({id: findEmailAndPhoneNumber.dataValues.id})}
+                })
+
+
+         } catch (error) {
+            res.status(404).send({
+                isError: true,
+                message: error.message,
+                data: null
+            })
+         }
+      },
+
+      keepLogin: (req,res) => {
+          res.status(201).send({
+              isError: false,
+              message: "Token Valid",
+              data: req.headers.auth
+          })
       }
        
 }

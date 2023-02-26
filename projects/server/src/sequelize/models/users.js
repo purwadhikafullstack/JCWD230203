@@ -9,9 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({transactions, review}) {
+    static associate({transactions, review, tenant, users_details}) {
       this.hasMany(transactions, {foreignKey: 'users_id'})
       this.hasMany(review, {foreignKey: 'users_id'})
+      this.hasOne(tenant, {foreignKey: 'users_id'})
+      this.hasOne(users_details, {foreignKey: 'users_id'})
     }
   }
   users.init({
@@ -28,26 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(250),
       allowNull: true,
     },
-    gender: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    address:{
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    birth_date: {
-      type: DataTypes.STRING(50),
-      allowNull: true
-    },
     status: {
       type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: "unconfirmed"
-    },
-    picture_path: {
-      type: DataTypes.TEXT,
-      allowNull: true
     },
     email: {
       type: DataTypes.STRING(250),
@@ -71,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     otp_code: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     otp_created_at: {
       type: DataTypes.DATE,

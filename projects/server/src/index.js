@@ -6,21 +6,23 @@ const { join } = require("path");
 const PORT = process.env.PORT || 8000;
 const app = express();
 
-
-app.use(
-  cors({
-    origin: [
-      process.env.WHITELISTED_DOMAIN &&
-        process.env.WHITELISTED_DOMAIN.split(","),
-    ],
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: [
+//       process.env.WHITELISTED_DOMAIN &&
+//         process.env.WHITELISTED_DOMAIN.split(","),
+//     ],
+//   })
+// );
 
 app.use(express.json());
 
 //#region API ROUTES
-const {userRouter} = require('./router')
+const {userRouter, tenantRouter} = require('./router')
 app.use('/users', userRouter)
+app.use('/tenant', tenantRouter)
+
 // NOTE : Add your routes here
 
 app.get("/api", (req, res) => {

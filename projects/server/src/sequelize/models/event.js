@@ -28,23 +28,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     start_date: {
       type: DataTypes.DATE,
-      allowNullL: false
+      allowNullL: true
     },
     end_date: {
       type: DataTypes.DATE,
-      allowNullL: false
+      allowNullL: true
     },
     status_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     event_rates_id:  {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     room_id:  {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

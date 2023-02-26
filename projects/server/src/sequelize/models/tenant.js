@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, UUIDV4
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class tenant extends Model {
@@ -9,16 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({property}) {
+    static associate({property, users, tenant_details}) {
       this.hasMany(property, {foreignKey: 'tenant_id'})
+      this.belongsTo(users, {foreignKey: 'users_id'})
+      this.hasOne(tenant_details, {foreignKey: 'tenant_id'})
     }
   }
   tenant.init({
     id: {
       primaryKey: true,
-      allowNull: false,
       type: DataTypes.UUID,
-      defaultValue: sequelize.UUIDV4
+      defaultValue: UUIDV4
     },
     first_name: {
       type: DataTypes.STRING(250),
@@ -44,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     address: {
       type: DataTypes.STRING(250),
-      allowNull: false,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING(250),
@@ -61,26 +62,26 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: "unconfirmed"
     },
-    picture_path: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    ktp_path: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
     otp_code: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
     otp_created_at: {
       type: DataTypes.DATE,
+      allowNull: false
+    },
+    ktp_path: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     role: {
       type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: "tenant"
+    },
+    users_id: {
+      type: DataTypes.UUID,
+      allowNull: true
     }
   }, {
     sequelize,
