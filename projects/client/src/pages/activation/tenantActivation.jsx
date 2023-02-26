@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 
-function Activation() {
+function TenantActivation() {
     const [loading, setLoading] = useState(false)
     const [otp, setOtp] = useState('')
     const [isActive, setActive] = useState(false)
@@ -31,10 +31,10 @@ function Activation() {
           otp: otp
         }
         setLoading(true)
-        let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
+        let confirmation = await axios.post(`http://localhost:5000/tenant/activation/${id}`, dataSend)
         console.log(confirmation)
 
-        toast.success("User Validate Success")
+        toast.success("Tenant Validate Success")
         
         setTimeout(() => {
           setLoading(false)
@@ -57,7 +57,7 @@ function Activation() {
         }
 
         setLoading(true)
-        await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
+        await axios.post(`http://localhost:5000/tenant/resend-otp/${id}`)
         toast.success("Check your Email")
         setClickCount(clickCount + 1)
         setLoading(false)
@@ -69,7 +69,7 @@ function Activation() {
 
   
   if(isActive){
-    navigate('/login')
+    navigate('/tenant-login')
   }
 
   return (
@@ -138,4 +138,4 @@ function Activation() {
   );
 }
 
-export default Activation;
+export default TenantActivation;
