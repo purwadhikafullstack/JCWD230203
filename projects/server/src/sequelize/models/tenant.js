@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, UUIDV4
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class tenant extends Model {
@@ -18,9 +18,8 @@ module.exports = (sequelize, DataTypes) => {
   tenant.init({
     id: {
       primaryKey: true,
-      allowNull: false,
       type: DataTypes.UUID,
-      defaultValue: sequelize.UUIDV4
+      defaultValue: UUIDV4
     },
     first_name: {
       type: DataTypes.STRING(250),
@@ -46,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     address: {
       type: DataTypes.STRING(250),
-      allowNull: false,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING(250),
@@ -69,6 +68,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     otp_created_at: {
       type: DataTypes.DATE,
+      allowNull: false
+    },
+    ktp_path: {
+      type: DataTypes.TEXT,
       allowNull: true
     },
     role: {
@@ -78,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     users_id: {
       type: DataTypes.UUID,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

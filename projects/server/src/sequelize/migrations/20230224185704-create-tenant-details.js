@@ -12,10 +12,6 @@ module.exports = {
       picture_path: {
         type: Sequelize.TEXT,
         allowNull: true
-      },
-      ktp_path: {
-        type: Sequelize.TEXT,
-        allowNull: true
       }
     });
   },
