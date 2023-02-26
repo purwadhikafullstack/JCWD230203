@@ -6,6 +6,7 @@ import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { FiTarget } from "react-icons/fi";
 
+
 // const InitialState = {
 //   disabledButton:false
 // }
@@ -18,6 +19,7 @@ import { FiTarget } from "react-icons/fi";
 //     default: return state;
 //   }
 // }
+
 
 function Register(props) {
   const [disabledButton, setDisabledButton] = useState(false);
@@ -59,6 +61,7 @@ function Register(props) {
       // // Regex Validation
       // let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
       // if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
+
 
       // send All valid data
       let dataToSend = {
@@ -118,6 +121,7 @@ let onImagesValidation = (e) => {
       let inputPassword = tenantPassword.current.value;
       let inputPhoneNumber = tenantPhoneNumber.current.value;
 
+
       let fd = new FormData();
       if(!selectedImages) throw {message: "please upload your KTP"}
       selectedImages.forEach(value => {
@@ -141,12 +145,11 @@ let onImagesValidation = (e) => {
       //  toast.error(error.response)
      }
   }
+
   
   if((localStorage.getItem("token") && localStorage.getItem("tokenUid")) && location.pathname !== '/tenant-register') {
     return <Navigate to="/" />;
   }
-  
-  
 
   return (
     <>

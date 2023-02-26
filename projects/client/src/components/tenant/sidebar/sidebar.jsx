@@ -126,7 +126,6 @@ export default function Sidebar() {
             </ul>
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
-
           </div>
         </div>
       </nav>
