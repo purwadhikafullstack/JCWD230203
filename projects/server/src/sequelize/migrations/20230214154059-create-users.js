@@ -17,26 +17,10 @@ module.exports = {
         type: Sequelize.STRING(250),
         allowNull: true,
       },
-      gender: {
-        type: Sequelize.STRING(50),
-        allowNull: true,
-      },
-      address:{
-        type: Sequelize.STRING(50),
-        allowNull: true,
-      },
-      birth_date: {
-        type: Sequelize.STRING(50),
-        allowNull: true
-      },
       status: {
         type: Sequelize.STRING(50),
         allowNull: false,
         defaultValue: "unconfirmed"
-      },
-      picture_path: {
-        type: Sequelize.TEXT,
-        allowNull: true
       },
       email: {
         type: Sequelize.STRING(250),
@@ -61,6 +45,10 @@ module.exports = {
       otp_code: {
         type: Sequelize.INTEGER,
         allowNull: true,
+      },
+      otp_created_at: {
+        type: Sequelize.DATE,
+        allowNull: false
       },
       role: {
         type: Sequelize.STRING(50),

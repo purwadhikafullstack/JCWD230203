@@ -50,14 +50,6 @@ module.exports = {
         allowNull: false,
         defaultValue: "unconfirmed"
       },
-      picture_path: {
-        type: Sequelize.TEXT,
-        allowNull: true
-      },
-      ktp_path: {
-        type: Sequelize.TEXT,
-        allowNull: true
-      },
       otp_code: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -70,6 +62,18 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: false,
         defaultValue: "tenant"
+      },
+      users_id: {
+        type: Sequelize.UUID,
+        allowNull: false
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },

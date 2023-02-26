@@ -4,11 +4,13 @@ import { FiMenu, FiSearch } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineHomeWork } from "react-icons/md";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 
 const Navbar = (props) => {
   
+
 const location = useLocation();
 const {id} = useParams();
 
@@ -16,6 +18,7 @@ const {id} = useParams();
     <>
     {location.pathname === '/dashboard' || location.pathname === '/dashboard-register' || location.pathname === `/tenant-activation/${id}` ? null :
     
+
     <div className="flex justify-between items-center ml-2 mr-2 border-b">
       {/* Left */}
       <Link to="/">
@@ -139,7 +142,6 @@ const {id} = useParams();
       </div>
     </div>}
     </>
-    
   );
 };
 

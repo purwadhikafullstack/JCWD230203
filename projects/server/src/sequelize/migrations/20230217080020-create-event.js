@@ -15,31 +15,23 @@ module.exports = {
       },
       start_date: {
         type: Sequelize.DATE,
-        allowNullL: false
+        allowNullL: true
       },
       end_date: {
         type: Sequelize.DATE,
-        allowNullL: false
+        allowNullL: true
       },
       status_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
       },
       event_rates_id:  {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
       },
       room_id:  {
         type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        allowNull: true
       }
     });
   },

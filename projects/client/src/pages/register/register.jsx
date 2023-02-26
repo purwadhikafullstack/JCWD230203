@@ -1,10 +1,12 @@
 import { useRef, useState, useReducer } from "react";
+
 import person from "./../../supports/assets/stressed-person-using-computer-at-desk.png";
 import toast, { Toaster } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { FiTarget } from "react-icons/fi";
+
 
 // const InitialState = {
 //   disabledButton:false
@@ -18,6 +20,7 @@ import { FiTarget } from "react-icons/fi";
 //     default: return state;
 //   }
 // }
+
 
 function Register(props) {
   const [disabledButton, setDisabledButton] = useState(false);
@@ -89,6 +92,7 @@ function Register(props) {
       // dispatch({type: "setDisabledButton", payload: true})
       console.log(error.response.data.message);
       toast.error(error.response.data.message);
+
     }
   };
 
@@ -110,6 +114,7 @@ let onImagesValidation = (e) => {
   }
 }
 
+
   let onSubmitTenant = async() => {
      try {
       let inputFirstName = tenantFirstName.current.value;
@@ -117,6 +122,7 @@ let onImagesValidation = (e) => {
       let inputEmail = tenantEmail.current.value;
       let inputPassword = tenantPassword.current.value;
       let inputPhoneNumber = tenantPhoneNumber.current.value;
+
 
       let fd = new FormData();
       if(!selectedImages) throw {message: "please upload your KTP"}
@@ -151,6 +157,7 @@ let onImagesValidation = (e) => {
       {location.pathname !== "/tenant-register" ? (
         // register user
         <section class="h-screen">
+
           <div class="px-6 h-full text-gray-800">
             <div class="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
               <div class="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
@@ -159,6 +166,7 @@ let onImagesValidation = (e) => {
               <div class="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
                 <div className="title flex justify-center text-bold text-3xl pb-5">
                   <p>Registration Form</p>
+
                 </div>
                 <form>
                   <div class="mb-6 flex">
@@ -208,6 +216,7 @@ let onImagesValidation = (e) => {
                     />
                   </div>
 
+
                   <div class="text-center flex flex-col lg:text-left">
                     <button
                       type="button"
@@ -220,11 +229,13 @@ let onImagesValidation = (e) => {
                     </button>
                   </div>
 
+
                   <div class="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                     <p class="text-center font-semibold mx-4 mb-0 flex ">
                       Or Register Here
                     </p>
                   </div>
+
 
                   <div class="flex flex-row items-center justify-center lg:justify-start">
                     <p class="text-lg mb-0 mr-4">Register with</p>
@@ -255,6 +266,7 @@ let onImagesValidation = (e) => {
               <div class="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
                 <div className="title flex justify-center text-bold text-3xl pb-5">
                   <p>Tenant Registration Form</p>
+
                 </div>
                 <form>
                   <div class="mb-6 flex">
