@@ -1,10 +1,10 @@
 import React from "react";
-import house1 from "../assets/apartment-jakarta-gandaria-gandariaheights-1-1.webp";
-import house2 from "../assets/apartment-jakarta-kbybaru-botanica-1-2.webp";
-import house3 from "../assets/guesthouse-jakarta-rempoa-rumahbumi-1-2.jpg";
-import house4 from "../assets/hotel-bali-nusadua-theapurva-1-1.webp";
-import house5 from "../assets/villa-bandung-dago-bumiandung-1-1.webp";
-import Rental from "../components/Rental";
+import house1 from "../../supports/assets/apartment-jakarta-gandaria-gandariaheights-1-1.webp";
+import house2 from "../../supports/assets/apartment-jakarta-kbybaru-botanica-1-2.webp";
+import house3 from "../../supports/assets/guesthouse-jakarta-rempoa-rumahbumi-1-2.jpg";
+import house4 from "../../supports/assets/hotel-bali-nusadua-theapurva-1-1.webp";
+import house5 from "../../supports/assets/villa-bandung-dago-bumiandung-1-1.webp";
+import Rental from "../rental_details/Rental";
 
 const Rentals = () => {
   const rentals = [
