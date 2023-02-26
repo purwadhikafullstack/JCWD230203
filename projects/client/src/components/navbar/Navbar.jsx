@@ -63,7 +63,10 @@ const {id} = useParams();
         >
           <div className="flex items-center border px-4 py-2 rounded-full gap-3 bg-[#c9403e] text-white font-bold shadow-sm shadow-gray-300 hover:bg-[#e58786] duration-100 ease-out">
             {props.data.username ? (
-              <div className="font-bold">{props.data.username}</div>
+              <div className="font-bold">
+                {localStorage.getItem("token") ||
+                localStorage.getItem("tokenUid") ? props.data.username : null} 
+               </div>
             ) : (
               <AiOutlineUser className="text-[22px]" />
             )}
