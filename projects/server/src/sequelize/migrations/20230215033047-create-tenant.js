@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('tenants', {
       id: {
         primaryKey: true,
-        allowNull: false,
         type: Sequelize.UUID,
-        defaultValue: sequelize.UUIDV4
+        allowNull: false,
+        defaultValue: Sequelize.UUIDV4
       },
       first_name: {
         type: Sequelize.STRING(250),
@@ -33,7 +33,7 @@ module.exports = {
       },
       address: {
         type: Sequelize.STRING(250),
-        allowNull: false,
+        allowNull: true,
       },
       password: {
         type: Sequelize.STRING(250),
@@ -63,9 +63,13 @@ module.exports = {
         allowNull: false,
         defaultValue: "tenant"
       },
+      ktp_path: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
       users_id: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

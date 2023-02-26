@@ -18,10 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    ktp_path: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
     tenant_id: {
       type: DataTypes.UUID,
       allowNull: true

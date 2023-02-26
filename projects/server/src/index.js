@@ -19,8 +19,10 @@ app.use(cors());
 app.use(express.json());
 
 //#region API ROUTES
-const {userRouter} = require('./router')
+const {userRouter, tenantRouter} = require('./router')
 app.use('/users', userRouter)
+app.use('/tenant', tenantRouter)
+
 // NOTE : Add your routes here
 
 app.get("/api", (req, res) => {
