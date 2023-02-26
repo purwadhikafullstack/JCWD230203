@@ -23,7 +23,8 @@ import { FiTarget } from "react-icons/fi";
 
 function Register(props) {
   const [disabledButton, setDisabledButton] = useState(false);
-  const[message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const[selectedImages, setSelectedImages] = useState([]);
 
   // const [state, dispatch] = useReducer(reducer, InitialState);
@@ -51,18 +52,21 @@ function Register(props) {
       let inputPassword = password.current.value;
       let inputPhoneNumber = phoneNumber.current.value;
 
+      
       // Validation
-      // if(inputFirstName.length === 0 || inputPassword.length === 0 || inputEmail.length === 0 || inputPhoneNumber.length === 0) throw {message: 'Field cannot blank'}
+      if(inputFirstName.length === 0 || inputPassword.length === 0 || inputEmail.length === 0 || inputPhoneNumber.length === 0) throw {message: 'Field cannot blank'}
 
-      // if(!inputEmail.includes("@") || inputEmail.length < 10 ) throw {message: 'email must contain @ and contain at least 10 char'}
-      // if(inputPassword.length < 8 ) throw {message: 'Password at least 8 character'}
-      // if(inputPhoneNumber.length < 9) throw {message: 'Phone Number not Valid'}
+      if(!inputEmail.includes("@") || inputEmail.length < 10 ) throw {message: 'email must contain @ and contain at least 10 char'}
+      if(inputPassword.length < 8 ) throw {message: 'Password at least 8 character'}
+      if(inputPhoneNumber.length < 9) throw {message: 'Phone Number not Valid'}
 
-      // // Regex Validation
-      // let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
-      // if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
+      // Regex Validation
+      let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
+      if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
 
-
+     
+      
+      
       // send All valid data
       let dataToSend = {
         first_name: inputFirstName,
@@ -71,12 +75,13 @@ function Register(props) {
         password: inputPassword,
         phone_number: inputPhoneNumber,
       };
-
       let register = await axios.post(
         `http://localhost:5000/users/register`,
         dataToSend
       );
-
+      setDisabledButton(true)
+      setLoading(true)
+      
       // when its finish clear all input field
       setTimeout(() => {
         firstName.current.value = "";
@@ -87,11 +92,19 @@ function Register(props) {
         toast.success("Register Success");
         toast.success("Check your email");
       }, 2000);
-      setDisabledButton(true);
+
+      setLoading(false)
+      setDisabledButton(false)
+      
     } catch (error) {
       // dispatch({type: "setDisabledButton", payload: true})
-      console.log(error.response.data.message);
-      toast.error(error.response.data.message);
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+        console.log("tes1")
+        toast.error(error.response.data.message)
+      }else{
+        console.log("tes")
+        toast.error(error.message)
+      }
     }
   };
 
@@ -109,7 +122,13 @@ let onImagesValidation = (e) => {
     setSelectedImages(files)
     toast.success("Upload success!")
   } catch (error) {
-    toast.error(error.message)
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+      console.log("tes1")
+      toast.error(error.response.data.message)
+    }else{
+      console.log("tes")
+      toast.error(error.message)
+    }
   }
 }
 
@@ -121,28 +140,42 @@ let onImagesValidation = (e) => {
       let inputPassword = tenantPassword.current.value;
       let inputPhoneNumber = tenantPhoneNumber.current.value;
 
-
+      setDisabledButton(true)
+      setLoading(true)
       let fd = new FormData();
       if(!selectedImages) throw {message: "please upload your KTP"}
       selectedImages.forEach(value => {
           fd.append('ktp_path', value)
       })
 
+      
+      
+
       fd.append('first_name', inputFirstName)
       fd.append('last_name', inputLastName)
       fd.append('email', inputEmail)
       fd.append('password', inputPassword)
       fd.append('phone_number', inputPhoneNumber)
+        
+      setDisabledButton(false)
+      setLoading(false)
 
       let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
-
-      console.log(tenantRegister)
-
+      
+     
       toast.success('Register Success')
       toast.success('Check your email')
+      
+
+
      } catch (error) {
-       toast.error(error.response.data.message)
-      //  toast.error(error.response)
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+        console.log("tes1")
+        toast.error(error.response.data.message)
+      }else{
+        console.log("tes")
+        toast.error(error.message)
+      }
      }
   }
 
@@ -221,7 +254,7 @@ let onImagesValidation = (e) => {
                       disabled={disabledButton}
                       // disabled={state.disabledButton}
                     >
-                      Sign Up
+                      {loading ? "Loading.." : "SignUp"}
                     </button>
                   </div>
 
@@ -332,7 +365,7 @@ let onImagesValidation = (e) => {
                       disabled={disabledButton}
                       // disabled={state.disabledButton}
                     >
-                      Sign Up
+                      {loading ? "Loading.." : "SignUp"}
                     </button>
                   </div>
                 </form>

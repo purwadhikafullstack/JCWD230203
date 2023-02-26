@@ -31,12 +31,11 @@ module.exports = {
         !password.length ||
         !phone_number.length
       ) {
-        const httpResponse = new HttpResponse(res).error(
-          "Field cannot blank!",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Field cannot blank!",
+          data: null
+        })
       }
 
       let findEmail = await tenant.findOne(
@@ -45,18 +44,18 @@ module.exports = {
       );
 
       if (findEmail) {
-        const httpResponse = new HttpResponse(res).error(
-          "Email already exist",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Email already exist!",
+          data: null
+        })
       }
 
       // OTP GENERATOR
       const otp = Math.floor(10000 + Math.random() * 9000);
 
       // saving data to DB
+      console.log(req.files)
       let createTenant = await tenant.create(
         {
           first_name,
@@ -96,6 +95,7 @@ module.exports = {
         message: "Register Success",
         data: null,
       });
+      
     } catch (error) {
       await t.rollback();
       return res.status(404).send({
@@ -117,36 +117,35 @@ module.exports = {
       });
 
       if (!findTenant) {
-        const httpResponse = new HttpResponse(res).error(
-          "Tenant Not Found",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Tenant Not Found",
+          data: null
+        })
       }
 
       if (findTenant.status !== "unconfirmed") {
-        const httpResponse = new HttpResponse(res).error(
-          "Tenant has already been confirmed",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Tenant has already been Confirmed!",
+          data: null
+        })
       }
 
       if (!otp) {
-        const httpResponse = new HttpResponse(res).error(
-          "Field Cannot Blank",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Field cannot blank!",
+          data: null
+        })
       }
 
       if (parseInt(findTenant.dataValues.otp_code) !== parseInt(otp)) {
-        const httpResponse = new HttpResponse(res).error("Invalid OTP", 400);
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Invalid OTP!",
+          data: null
+        })
       }
 
       const otp_created_at = new Date(findTenant.otp_created_at);
@@ -156,17 +155,17 @@ module.exports = {
 
       console.log("tes");
       if (diffInDays > 1) {
-        const httpResponse = new HttpResponse(res).error(
-          "OTP has expired",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "OTP has expired",
+          data: null
+        })
       }
 
       findTenant.status = "confirmed";
-      console.log(findTenant);
+
       await findTenant.save();
+
       if ((findTenant.status = "confirmed")) {
         return res.status(200).send({
           isError: false,
@@ -176,6 +175,7 @@ module.exports = {
       }
 
       return findTenant;
+
     } catch (error) {
       return res.status(404).send({
         isError: true,
@@ -231,6 +231,7 @@ module.exports = {
         message: "OTP code sent successfully",
         data: null,
       });
+
     } catch (error) {
       t.rollback();
       return res.status(400).send({
@@ -252,30 +253,27 @@ module.exports = {
       });
 
       if (!emailOrPhone || !password.length) {
-        const httpResponse = new HttpResponse(res).error(
-          "Field Cannot Blank",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Field cannot blank!",
+          data: null
+        })
       }
 
       if (!findEmailAndPhoneNumber) {
-        const httpResponse = new HttpResponse(res).error(
-          "Account not found",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Account Not Found!",
+          data: null
+        })
       }
 
       if (findEmailAndPhoneNumber.dataValues.status === "unconfirmed") {
-        const httpResponse = new HttpResponse(res).error(
-          "Your email not Active",
-          400
-        );
-
-        return httpResponse.send();
+        return res.status(400).send({
+          isError: true,
+          message: "Your email not active!",
+          data: null
+        })
       }
 
       let matchPassword = await hashMatch(

@@ -30,10 +30,10 @@ function Activation() {
           id : id,
           otp: otp
         }
-        setLoading(true)
+        
         let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
         console.log(confirmation)
-
+        setLoading(true)
         toast.success("User Validate Success")
         
         setTimeout(() => {
