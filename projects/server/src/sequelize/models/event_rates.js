@@ -31,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'event_rates',
-    freezeTableName: true
+    freezeTableName: true,
+    createdAt: false,
+    updatedAt: false,
+    timestamps: false
   });
   return event_rates;
 };

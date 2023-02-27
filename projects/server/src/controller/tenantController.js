@@ -213,7 +213,7 @@ module.exports = {
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/activation/${tenants.dataValues.id}`,
+        url: `http://localhost:3000/tenant-activation/${tenants.dataValues.id}`,
         otp,
       });
 
