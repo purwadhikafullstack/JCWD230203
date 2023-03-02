@@ -295,6 +295,14 @@ module.exports = {
                 limit
             })
 
+            if(rooms.length === 0){
+                return res.status(200).send({
+                    isError: false,
+                    message: "Cannot search the Room",
+                    data: rooms
+                })
+            }
+
             const total_count = await db.room.count();
             const total_pages = Math.ceil(total_count / page_size) 
     

@@ -13,14 +13,14 @@ import {GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   signOut} from 'firebase/auth'
-  import {auth} from './firebase'
+import {auth} from './firebase'
 import Dashboard from "./pages/dashboard/dashboard";
 import Profiling from "./pages/profiling/userProfiling";
+
 import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from './pages/rental_details/RentalDetails'
 import RoomDetails from "pages/room_details/roomDetails";
-
 
 const provider = new GoogleAuthProvider();
 
@@ -185,4 +185,5 @@ let onLogout = async() => {
   );
 }
 
+}
 export default App;

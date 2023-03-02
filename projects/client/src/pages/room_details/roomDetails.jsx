@@ -38,7 +38,7 @@ function RoomDetails() {
                   </h3>
                   <u className="text-slate-700"> 
                   {/* disini ada bug, untuk nanti di mentoring */}
-                  {details ? details[0].name : "Loading.."}
+                  {details?.[0]?.name || "Loading.."}
                   </u>
                 </div>
               </div>
