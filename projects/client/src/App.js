@@ -46,13 +46,7 @@ function App() {
       }
     }
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
-        toast.error(error.response.data.message)
-      }else{
-        console.log("tes")
-        toast.error(error.message)
-      }
+      toast(error.message)
     }
   }
 
@@ -78,13 +72,7 @@ function App() {
         }, 2000)
 
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
         toast.error(error.response.data.message)
-      }else{
-        console.log("tes")
-        toast.error(error.message)
-      }
     }
 }
 
@@ -110,13 +98,7 @@ let tenantLogin = async(inputEmailOrPhoneNumber, inputPassword, checkbox) => {
       }, 2000)
 
   } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      console.log("tes1")
       toast.error(error.response.data.message)
-    }else{
-      console.log("tes")
-      toast.error(error.message)
-    }
   }
 }
 
@@ -151,13 +133,7 @@ let onLogout = async() => {
       setUsername('')
       setRedirect(false) // jadi ketika ke trigger clik button logout maka redirect akan false
   } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      console.log("tes1")
-      toast.error(error.response.data.message)
-    }else{
-      console.log("tes")
       toast.error(error.message)
-    }
   }}
 
 
