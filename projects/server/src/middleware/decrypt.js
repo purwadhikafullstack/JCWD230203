@@ -6,6 +6,7 @@ require('dotenv').config()
 
 const jwtVerify = (req,res,next) => {
     const token = req.headers.auth
+    
 
     if(!token) return res.status(406).send({
         error: true,
