@@ -13,12 +13,15 @@ import {GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   signOut} from 'firebase/auth'
-  import {auth} from './firebase'
+import {auth} from './firebase'
 import Dashboard from "./pages/dashboard/dashboard";
+// import Profiling from "./pages/profiling/userProfiling";
 import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from './pages/rental_details/RentalDetails'
 import RoomDetails from "pages/room_details/roomDetails";
+
+
 
 const provider = new GoogleAuthProvider();
 
@@ -57,13 +60,7 @@ function App() {
       }
     }
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
-        toast.error(error.response.data.message)
-      }else{
-        console.log("tes")
-        toast.error(error.message)
-      }
+      toast(error.message)
     }
   }
 
@@ -89,13 +86,7 @@ function App() {
         }, 2000)
 
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
         toast.error(error.response.data.message)
-      }else{
-        console.log("tes")
-        toast.error(error.message)
-      }
     }
 }
 
@@ -121,13 +112,7 @@ let tenantLogin = async(inputEmailOrPhoneNumber, inputPassword, checkbox) => {
       }, 2000)
 
   } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      console.log("tes1")
       toast.error(error.response.data.message)
-    }else{
-      console.log("tes")
-      toast.error(error.message)
-    }
   }
 }
 
@@ -167,7 +152,6 @@ let onLogout = async() => {
       toast.error(error.response.data.message)
     }else{
       toast.error(error.message)
-    }
   }}
 
 
@@ -192,6 +176,7 @@ let onLogout = async() => {
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
+      {/* <Route path='/user-profile' element={<Profiling />}/> */}
       <Route path='/details/:id' element={<Details />} />
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
@@ -201,4 +186,5 @@ let onLogout = async() => {
   );
 }
 
+}
 export default App;
