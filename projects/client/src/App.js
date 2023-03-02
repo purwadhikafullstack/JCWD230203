@@ -16,6 +16,7 @@ import {GoogleAuthProvider,
   signOut} from 'firebase/auth'
   import {auth} from './firebase'
 import Dashboard from "./pages/dashboard/dashboard";
+import Profiling from "./pages/profiling/userProfiling";
 
 const provider = new GoogleAuthProvider();
 
@@ -149,6 +150,7 @@ let onLogout = async() => {
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
+      <Route path='/user-profile' element={<Profiling />}/>
     </Routes>
     <Footer/>
     </>
