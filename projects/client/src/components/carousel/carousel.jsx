@@ -1,98 +1,124 @@
+import React, {useRef} from "react";
+import Date from "components/navbar/date";
+import Location from "components/navbar/location";
 
 
 function Carousel() {
+  const startDate = useRef();
+  const endDate = useRef();
+  const location = useRef();
+
+
+let handleSubmit = async(event) => {
+  event.preventDefault();
+  const startDateValue = startDate.current.getValue();
+  const endDateValue = endDate.current.getValue();
+  const locationValue = location.current.getValue();
+
+  console.log(startDateValue, endDateValue, locationValue)
+}
   return (
-    <>
+    <div className="container my-10 px-6 mx-auto">
+      <section className="mb-10 text-gray-800">
         <div
-          id="carouselDarkVariant"
-          className="carousel slide carousel-fade carousel-dark relative"
-          data-bs-ride="carousel"
-        >
-          <div className="carousel-indicators absolute right-0 bottom-0 left-0 flex justify-center p-0 mb-4">
-            <button
-              data-bs-target="#carouselDarkVariant"
-              data-bs-slide-to="0"
-              className="active"
-              aria-current="true"
-              aria-label="Slide 1"
-            ></button>
-            <button
-              data-bs-target="#carouselDarkVariant"
-              data-bs-slide-to="1"
-              aria-label="Slide 1"
-            ></button>
-            <button
-              data-bs-target="#carouselDarkVariant"
-              data-bs-slide-to="2"
-              aria-label="Slide 1"
-            ></button>
-          </div>
-
-          <div className="carousel-inner relative w-full overflow-hidden ">
-            <div className="carousel-item active relative float-left w-full h-[300px]">
-              <img
-                src="https://ik.imagekit.io/tvlk/image/imageResource/2023/01/06/1672974738416-97ed02b5e06e2edc3e473e5bc85eccf9.jpeg?tr=dpr-2,h-230,q-75,w-472"
-                className="block w-full h-[300px]"
-                alt="Discount1"
-              />
-              {/* <div className="carousel-caption hidden md:block absolute text-center">
-                <h5 className="text-xl">Relax at Nice Props</h5>
-                <p>HOLIYAAAAAAY</p>
-              </div> */}
-            </div>
-
-            <div className="carousel-item relative float-left w-full h-[300px]">
-              <img
-                src="https://ik.imagekit.io/tvlk/image/imageResource/2023/01/20/1674199986418-ac8ec2d25b707573f92d107fec4e7eba.jpeg?tr=dpr-2,h-230,q-75,w-472"
-                className="block w-full h-[300px]"
-                alt="Discount2"
-              />
-              {/* <div className="carousel-caption hidden md:block absolute text-center">
-                <h5 className="text-xl">Earn more!</h5>
-                <p>Earn more money from renting your property !</p>
-              </div> */}
-            </div>
-
-            <div className="carousel-item relative float-left w-full h-[300px]">
-              <img
-                src="https://ik.imagekit.io/tvlk/image/imageResource/2023/02/17/1676631181553-55c13aee5ad0d66d015756690aa3e891.png?tr=dpr-2,h-230,q-75,w-472"
-                className="block w-full h-[300px]"
-                alt="Discount3"
-              />
-              {/* <div className="carousel-caption hidden md:block absolute text-center">
-                <h5 className="text-xl">Discount Voucher</h5>
-                <p>apply this discount VOUCHER to get 50% OFF *WAKWAW*</p>
-              </div> */}
-            </div>
-          </div>
-
-          <button
-            className="carousel-control-prev absolute top-0 bottom-0 flex items-center justify-center p-0 text-center border-0 hover:outline-none hover:no-underline focus:outline-none focus:no-underline left-0"
-            type="button"
-            data-bs-target="#carouselDarkVariant"
-            data-bs-slide="prev"
+          className="relative overflow-hidden bg-no-repeat bg-cover"
+          style={{
+            backgroundPosition: "50%",
+            backgroundImage:
+              "url('http://localhost:5000/PROPERTY/logo.png')",
+            height: "300px"
+          }}
+        ></div>
+        <div className="container text-gray-800 px-4 md:px-12">
+          <div
+            className="block rounded-lg shadow-lg py-10 md:py-12 px-4 md:px-6"
+            style={{
+              marginTop: "-100px",
+              background: "hsla(0, 0%, 100%, 0.8)",
+              backdropFilter: "blur(30px)"
+            }}
           >
-            <span
-              className="carousel-control-prev-icon inline-block bg-no-repeat"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Previous</span>
-          </button>
-          <button
-            className="carousel-control-next absolute top-0 bottom-0 flex items-center justify-center p-0 text-center border-0 hover:outline-none hover:no-underline focus:outline-none focus:no-underline right-0"
-            type="button"
-            data-bs-target="#carouselDarkVariant"
-            data-bs-slide="next"
-          >
-            <span
-              className="carousel-control-next-icon inline-block bg-no-repeat"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Next</span>
-          </button>
+
+            <div className="flex flex-wrap justify-center text-center lg:text-left">
+              <div className="grow-0 shrink-0 basis-auto w-full xl:w-10/12 px-6">
+                <div className="grid lg:grid-cols-2 gap-x-6 items-center">
+                  <div className="mb-10 lg:mb-0">
+                    <h2 className="text-3xl font-bold">
+                      Start Date
+                      <br />
+                      <span className="text-blue-600">
+                        <Date 
+                        ref={startDate}/>
+                      </span>
+                    </h2>
+                  </div>
+                  <div className="mb-10 lg:mb-0">
+                    <h2 className="text-3xl font-bold">
+                      End Date
+                      <br />
+                      <span className="text-blue-600">
+                      <Date 
+                      ref={endDate}/>
+                      </span>
+                    </h2>
+                  </div>
+                  <div className="mb-10 lg:mb-0">
+                    <h2 className="text-3xl font-bold">
+                      Select Location
+                      <br />
+                      <span className="my-main">
+                      <Location 
+                      ref={location}/>
+                      </span>
+                    </h2>
+                  </div>
+
+                  <div className="mb-6 md:mb-0">
+                    <div className="md:flex flex-row">
+                      <input
+                        type="text"
+                        className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                        placeholder="Enter your email"
+                      />
+                      <button
+                        type="submit"
+                        className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                        data-mdb-ripple="true"
+                        data-mdb-ripple-color="light"
+                        onClick={handleSubmit}
+                      >
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-    </>
+      </section>
+    </div>
   );
 }
 
 export default Carousel;
+
+
+{/* <div className="wrapp flex justify-center border-b">
+            <div className="flex ml-2 mr-2 p-4 ">
+              <div className="wrapper flex flex-col">
+                <span>From</span>
+                <input
+                  type="date"
+                  id="birthday"
+                  name="birthday"
+                  className="md:w-24 rounded-lg"
+                />
+            </div>
+              <div className="wrapper flex flex-col ml-3 rounded-lg">
+                <span className="pb-1">Location</span>
+                <span className="h-auto rounded-lg"><Location /></span>
+              </div>
+            </div>
+          </div> */}

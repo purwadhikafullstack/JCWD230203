@@ -15,13 +15,16 @@ const transporter = require("../helpers/transporter");
 const handlebars = require("handlebars");
 
 const HttpResponse = require("../helpers/httpResponse");
+const deleteFiles = require("../helpers/deleteFiles");
 
 const fs = require("fs").promises;
 
 module.exports = {
   register: async (req, res) => {
+
     const t = await sequelize.transaction();
     try {
+      
       let { first_name, last_name, email, password, phone_number } = req.body;
 
       // input Validation if its not have a length
@@ -34,7 +37,7 @@ module.exports = {
         return res.status(400).send({
           isError: true,
           message: "Field cannot blank!",
-          data: null
+          data: error
         })
       }
 
@@ -43,7 +46,10 @@ module.exports = {
         { transaction: t }
       );
 
+      // console.log(req.files.ktp_path)
+        
       if (findEmail) {
+        deleteFiles(req.files)
         return res.status(400).send({
           isError: true,
           message: "Email already exist!",
@@ -55,7 +61,7 @@ module.exports = {
       const otp = Math.floor(10000 + Math.random() * 9000);
 
       // saving data to DB
-      console.log(req.files)
+      
       let createTenant = await tenant.create(
         {
           first_name,
@@ -65,7 +71,7 @@ module.exports = {
           phone_number,
           otp_code: otp,
           otp_created_at: new Date(),
-          ktp_path: req.files.ktp_path[0].path, // get file data from req.file object
+          ktp_path: req.files.images[0].path, // get file data from req.file object
         },
         { transaction: t }
       );
@@ -77,7 +83,7 @@ module.exports = {
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/activation/${createTenant.dataValues.id}`,
+        url: `http://localhost:3000/tenant-activation/${createTenant.dataValues.id}`,
         otp,
       });
 
@@ -97,11 +103,12 @@ module.exports = {
       });
       
     } catch (error) {
+
       await t.rollback();
       return res.status(404).send({
         isError: true,
         message: error.message,
-        data: null,
+        data: error,
       });
     }
   },
@@ -109,6 +116,7 @@ module.exports = {
   activation: async (req, res) => {
     try {
       const { id, otp } = req.body;
+      console.log(otp)
 
       const findTenant = await tenant.findOne({
         where: {

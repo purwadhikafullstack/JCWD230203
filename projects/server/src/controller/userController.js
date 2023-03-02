@@ -50,6 +50,7 @@ module.exports = {
         })
       }
 
+
       if(phone_number.length < 9){
         return res.status(400).send({
           isError: true, 
@@ -66,7 +67,6 @@ module.exports = {
           data: null
         })
       }
-
 
 
       // Checking the input into DB based on email and phone number
@@ -342,11 +342,27 @@ module.exports = {
     }
   },
 
-  keepLogin: (req, res) => {
+  keepLogin: async(req, res) => {
+    console.log(req.dataToken)
+
+    let getName = await users.findOne({
+      where: {
+        id: req.dataToken.id
+      }
+    })
+
+    console.log(getName.dataValues.first_name)
+
     res.status(201).send({
       isError: false,
       message: "Token Valid",
-      data: req.headers.auth,
+      data: 
+      {
+        first_name: getName.dataValues.first_name,
+        last_name: getName.dataValues.last_name,
+        role: getName.dataValues.role,
+      }
+      
     });
   },
 };

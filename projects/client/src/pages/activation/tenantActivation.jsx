@@ -30,8 +30,9 @@ function TenantActivation() {
           id : id,
           otp: otp
         }
+
         setLoading(true)
-        let confirmation = await axios.post(`http://localhost:5000/tenant/activation/${id}`, dataSend)
+        let confirmation = await axios.post(`http://localhost:5000/tenant/tenant-activation/${id}`, dataSend)
         console.log(confirmation)
 
         toast.success("Tenant Validate Success")
@@ -43,6 +44,7 @@ function TenantActivation() {
         
         
       } catch (error) {
+        console.log(error)
         console.log(error.response.data.message)
         toast.error(error.response.data.message)
       }
