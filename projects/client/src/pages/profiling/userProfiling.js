@@ -1,6 +1,34 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const userProfiling = () => {
+const Profiling = () => {
+  const getProfile = async () => {
+    try {
+      let getTokenId = localStorage.getItem("token");
+      if (getTokenId) {
+        let response = await axios.post(
+          `http://localhost:5000/users/user-profile`,
+          {},
+          {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(response);
+      }
+      console.log(getTokenId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
   return (
     <>
       <div class="container mx-auto my-5 p-5">
@@ -8,6 +36,7 @@ const userProfiling = () => {
           {/* <!-- Left Side --> */}
           <div class="w-full md:w-3/12 md:mx-2">
             {/* <!-- Profile Card --> */}
+
             <div class="bg-white p-3 border-t-4 border-[#c9403e]">
               <div class="image overflow-hidden">
                 <img
@@ -333,4 +362,4 @@ const userProfiling = () => {
   );
 };
 
-export default userProfiling;
+export default Profiling;

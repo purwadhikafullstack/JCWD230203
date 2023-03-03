@@ -343,7 +343,7 @@ module.exports = {
   },
 
   keepLogin: async(req, res) => {
-    console.log(req.dataToken)
+
 
     let getName = await users.findOne({
       where: {
@@ -351,7 +351,7 @@ module.exports = {
       }
     })
 
-    console.log(getName.dataValues.first_name)
+
 
     res.status(201).send({
       isError: false,
@@ -364,5 +364,31 @@ module.exports = {
       }
       
     });
+  },
+
+  getUser: async(req,res) => {
+    console.log(req.dataToken.id)
+    console.log("masuk sini")
+
+    try {
+      let user = await users.findOne({
+				where: { id: req.dataToken.id },
+				include: { model: db.users_details },
+			});
+
+      res.status(201).send({
+        isError: false,
+        message: "Get user Success",
+        data: user
+        
+      })
+      
+    } catch (error) {
+      res.status(404).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
   },
 };

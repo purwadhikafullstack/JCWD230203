@@ -152,7 +152,7 @@ let onLogout = async() => {
     }else{
       toast.error(error.message)
   }}
-
+}
 
 
   return (
@@ -185,5 +185,5 @@ let onLogout = async() => {
   );
 }
 
-}
+
 export default App;
