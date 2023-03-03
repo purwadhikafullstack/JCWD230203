@@ -1,3 +1,4 @@
+import Calendars from "components/calendar/calendar";
 import React from "react";
 
 const userProfiling = () => {
@@ -329,6 +330,7 @@ const userProfiling = () => {
           </div>
         </div>
       </div>
+      <Calendars />
     </>
   );
 };

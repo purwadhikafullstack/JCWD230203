@@ -9,7 +9,7 @@ import { FaHotel } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import Filter from "../filter/Filter";
 import { Link } from "react-router-dom";
-import Location from "components/navbar/location";
+import Location from "components/location/location";
 import axios from "axios";
 
 const Type = (props) => {

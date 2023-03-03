@@ -1,11 +1,11 @@
 import React, {useRef, useState} from "react";
 import Date from "./../date/date";
-import Location from "components/navbar/location";
+import Location from "./../location/location";
 import { useLocation } from "react-router-dom";
 
 
 function Carousel() {
-  // const startDate = useRef();
+  // const startDate = useRef();  
   // const endDate = useRef();
   // const locationValue = useRef();
   const location = useLocation();
