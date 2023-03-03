@@ -285,10 +285,15 @@ module.exports = {
                 },
                 include: [
                     {
-                    model: property,
-                    as: 'property',
-                    attributes: ['name']
-                    }
+                    model: db.room_image,
+                    as: 'room_images',
+                    attributes: ['image_path']
+                    },
+                    {
+                        model: property,
+                        as: 'property',
+                        attributes: ['name']
+                        },
             ],
                 order: order,
                 offset,

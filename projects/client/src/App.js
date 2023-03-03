@@ -1,6 +1,6 @@
 import axios from "axios";
 import "./App.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes,Route, useLocation } from 'react-router-dom';
 import Register from "./pages/register/register";
 import Activation from "./pages/activation/activation";
@@ -47,6 +47,7 @@ function App() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }})
+      console.log(response)
 
       if(response){
         setUsername(response.data.data.first_name)
@@ -152,12 +153,13 @@ let onLogout = async() => {
     }else{
       toast.error(error.message)
   }}
-
+}
 
 
   return (
     <>
-    <Navbar data={{username}} myFunc={{onLogout}} />
+    {/* myFunc={{onLogout}} */}
+    <Navbar data={{username}} myFunc={{onLogout}}/>
     <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
             <Carousel />
             {location.pathname !== '/' ? null :
@@ -168,8 +170,10 @@ let onLogout = async() => {
             }
     </div>
     <Routes>
+    {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
       <Route path='/activation/:id' element={<Activation />} />
+      {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
       <Route path='/tenant-register' element={<Register />} />
@@ -185,5 +189,5 @@ let onLogout = async() => {
   );
 }
 
-}
 export default App;
+

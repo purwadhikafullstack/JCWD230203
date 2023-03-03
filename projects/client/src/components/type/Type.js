@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { RiFilterOffLine } from "react-icons/ri";
 import {
   MdOutlineApartment,
@@ -13,10 +13,32 @@ import Location from "components/navbar/location";
 import axios from "axios";
 
 const Type = (props) => {
-  const handleClick = (index) => {
-    console.log(index);
+
+  const [form, setForm] = useState({
+    propertyName: '',
+    lowerPrice: '',
+    higherPrice: '',
+    ascending: false,
+    descending: false
+  })
+
+  const handleChange = (event) => {
+    const {name, value, type, checked} = event.target
+    const _form = {
+      ...form,
+      [name]: type === 'checkbox' ? checked : value
+    }
+    setForm(_form)
+  }
+
+
+  const handleClick = async(index, event) => {
+
+    let res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=surabaya&price_min=100&price_max=700000&sort_order=asc&page=2`)
     props.handleType(index);
+
   };
+  
 
   const sorting = [
     // { title: "All Property", icon: <GiBrickWall /> },
@@ -96,7 +118,7 @@ const Type = (props) => {
             </button>
           </div>
 
-          {/* Sorting */}
+          {/* FIlter By: */}
           <div className="flex flex-wrap justify-center lg:text-left md:mt-10">
             <div className="mb-6 md:mb-0">
               <div className="md:flex flex-row items-center">
@@ -114,18 +136,47 @@ const Type = (props) => {
                       type="text"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Where You want to stay ?"
+                      onChange={handleChange}
+                      value={form.propertyName}
+                      name='propertyName'
+                    />
+                  </div>
+                </div>
+                <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
+                    <div className="text-3xl font-bold">
+                      Price :
+                      <br />
+                    </div>
+                  </div>
+                <div className="mb-6 md:mb-0">
+                  <div className="md:flex flex-row">
+                    {/* property Name */}
+                    <input
+                      type="text"
+                      className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      placeholder="Lowest price"
+                      onChange={handleChange}
+                      value={form.lowerPrice}
+                      name='lowerPrice'
+                    />
+                  </div>
+                </div>
+                <div className="mb-6 md:mb-0">
+                  <div className="md:flex flex-row">
+                    {/* property Name */}
+                    <input
+                      type="text"
+                      className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      placeholder="Higher Price"
+                      onChange={handleChange}
+                      value={form.higherPrice}
+                      name='higherPrice'
                     />
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="asc-desc flex flex-row justify-center items-center">
-                  <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
-                    <h2 className="text-3xl font-bold">
-                      Price
-                      <br />
-                    </h2>
-                  </div>
                   {/* ascending */}
                   <div className="mb-6 md:mb-0">
                     <div className="md:flex flex-row">
@@ -133,12 +184,16 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="ascending"
+                        onChange={handleChange}
+                        checked={form.ascending}
+                        value={'true'}
+                        name='ascending'
                       />
                       <label
                         className="form-check-label inline-block text-white"
                         for="ascending"
                       >
-                        Highest
+                        Asc
                       </label>
 
                       {/* descending */}
@@ -146,12 +201,16 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 ml-2 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="descending"
+                        onChange={handleChange}
+                        checked={form.descending}
+                        value={'true'}
+                        name='descending'
                       />
                       <label
                         className="form-check-label inline-block text-white"
                         for="descending"
                       >
-                        Lowest
+                        Desc
                       </label>
                     </div>
                   </div>
@@ -165,6 +224,7 @@ const Type = (props) => {
                   className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
+                  onClick={handleClick}
                 >
                   Search
                 </button>

@@ -343,6 +343,7 @@ module.exports = {
   },
 
   keepLogin: async(req, res) => {
+    console.log("masuk")
     console.log(req.dataToken)
 
     let getName = await users.findOne({
