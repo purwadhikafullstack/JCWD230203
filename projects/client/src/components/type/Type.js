@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef} from "react";
 import { RiFilterOffLine } from "react-icons/ri";
 import {
   MdOutlineApartment,
@@ -14,30 +14,58 @@ import axios from "axios";
 
 const Type = (props) => {
 
-  const [form, setForm] = useState({
-    propertyName: '',
-    lowerPrice: '',
-    higherPrice: '',
-    ascending: false,
-    descending: false
-  })
+  // const [form, setForm] = useState({
+  //   propertyName: '',
+  //   lowerPrice: 0,
+  //   higherPrice: 0,
+  //   ascending: false,
+  //   descending: false,
+  // })
 
-  const handleChange = (event) => {
-    const {name, value, type, checked} = event.target
-    const _form = {
-      ...form,
-      [name]: type === 'checkbox' ? checked : value
+  const formRef = useRef(null);
+
+  const onGetData = async() => {
+    
+    const { property_name, price_min, price_max, sort_order } = formRef.current;
+    console.log(formRef.current)
+    try {
+
+      const res = await axios.get(`http://localhost:5000/properties/search-rooms`, {
+        params: {
+          property_name: property_name.value,
+          price_min: price_min.value,
+          price_max: price_max.value,
+          sort_order: sort_order.value
+        }
+      });
+      console.log(res)
+    } catch (error) {
+      console.log(error)
     }
-    setForm(_form)
-  }
-
-
-  const handleClick = async(index, event) => {
-
-    let res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=surabaya&price_min=100&price_max=700000&sort_order=asc&page=2`)
-    props.handleType(index);
 
   };
+
+  // const handleChange = (event) => {
+  //   const {name, value} = event.target
+  //   const _form = {
+  //     ...form,
+  //     [name]: value
+  //   }
+  //   setForm(_form)
+  // }
+
+  
+
+  const handleClick = async(index) => {
+    props.handleType(index);
+  };
+
+
+
+  useEffect(() => {
+    handleClick();
+    onGetData()
+  }, [])
   
 
   const sorting = [
@@ -136,9 +164,8 @@ const Type = (props) => {
                       type="text"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Where You want to stay ?"
-                      onChange={handleChange}
-                      value={form.propertyName}
-                      name='propertyName'
+                      name="property_name"
+                      ref={formRef}
                     />
                   </div>
                 </div>
@@ -150,27 +177,25 @@ const Type = (props) => {
                   </div>
                 <div className="mb-6 md:mb-0">
                   <div className="md:flex flex-row">
-                    {/* property Name */}
+
                     <input
-                      type="text"
+                      type="number"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Lowest price"
-                      onChange={handleChange}
-                      value={form.lowerPrice}
-                      name='lowerPrice'
+                      name="price_min"
+                      ref={formRef}
                     />
                   </div>
                 </div>
                 <div className="mb-6 md:mb-0">
                   <div className="md:flex flex-row">
-                    {/* property Name */}
+
                     <input
-                      type="text"
+                      type="number"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Higher Price"
-                      onChange={handleChange}
-                      value={form.higherPrice}
-                      name='higherPrice'
+                      name="price_max"
+                      ref={formRef}
                     />
                   </div>
                 </div>
@@ -184,10 +209,7 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="ascending"
-                        onChange={handleChange}
-                        checked={form.ascending}
-                        value={'true'}
-                        name='ascending'
+                        ref={formRef}
                       />
                       <label
                         className="form-check-label inline-block text-white"
@@ -201,10 +223,7 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 ml-2 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="descending"
-                        onChange={handleChange}
-                        checked={form.descending}
-                        value={'true'}
-                        name='descending'
+                        ref={formRef}
                       />
                       <label
                         className="form-check-label inline-block text-white"
@@ -224,7 +243,7 @@ const Type = (props) => {
                   className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
-                  onClick={handleClick}
+                  onClick={onGetData}
                 >
                   Search
                 </button>

@@ -170,10 +170,8 @@ let onLogout = async() => {
             }
     </div>
     <Routes>
-    {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
       <Route path='/activation/:id' element={<Activation />} />
-      {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
       <Route path='/tenant-register' element={<Register />} />

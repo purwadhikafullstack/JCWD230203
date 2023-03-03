@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../supports/assets/logo.png";
-import Location from "./location";
-import Date from "./date";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineHomeWork } from "react-icons/md";

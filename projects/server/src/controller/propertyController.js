@@ -258,7 +258,9 @@ module.exports = {
     },
 
     getRoomByQuery: async(req, res) => {
-        const {property_name, price_min, price_max, sort_order, page = 1} = req.query;
+        const {property_name, price_min, price_max, sort_order, page = 1} = req.body;
+
+        console.log(req.body)
 
         const page_size = 10
         const offset = (page - 1) * page_size;
@@ -287,17 +289,16 @@ module.exports = {
                     {
                     model: db.room_image,
                     as: 'room_images',
-                    attributes: ['image_path']
                     },
                     {
                         model: property,
                         as: 'property',
-                        attributes: ['name']
-                        },
+                    },
             ],
                 order: order,
                 offset,
-                limit
+                limit,
+                subQuery: false
             })
 
             if(rooms.length === 0){
@@ -326,6 +327,75 @@ module.exports = {
             });
         }
     },
-    
+
+    getRoomByDateAndLocation: async(req, res) =>{
+        const {check_in, check_out, city} = req.query;
+        console.log(req.query)
+        try {
+            const properties = await property.findAll({
+                include: [
+                    {
+                        model: db.property_image,
+                        as: 'property_images'
+                    },
+                    {
+                        model: db.room,
+                        as: 'rooms',
+                        include:[
+                            {
+                                model: db.room_image,
+                                as: 'room_images'
+                            },
+                            {
+                                model: db.transactions,
+                                as: 'transactions',
+                                required: false,
+                                where: {
+                                    [Op.or]: [
+                                        { check_in: { [Op.between]: [check_in, check_out] } },
+                                        { check_out: { [Op.between]: [check_in, check_out] } },
+                                        {
+                                          [Op.and]: [
+                                            { check_in: { [Op.lte]: check_in } },
+                                            { check_out: { [Op.gte]: check_out } },
+                                          ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        model: db.location,
+                        as: 'locations',
+                        include: [
+                            {
+                                model: db.city,
+                                as: 'city'
+                            }
+                        ],
+                        where: {
+                            name: { [Op.like]: `%${city}%` }
+                        }
+                    }
+                ]                
+            });
+          
+            return res.status(200).json({
+              isError: false,
+              message: 'Get room by query success',
+              data: properties,
+            });
+      
+        } catch (error) {
+            return res.status(400).json({
+                isError: true,
+                message: error.message,
+                data: null
+            });
+        }
+      }
+      
+      
       
 }

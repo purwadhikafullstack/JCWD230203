@@ -3,7 +3,7 @@ function Location(props) {
   return (
     <>
       <div className="flex justify-center rounded-lg">
-        <div className="mb-3 xl:w-full ">
+        <div className="pt-3 mb-4 xl:w-full ">
           <select name={name} value={value} onChange={onChange}>
             <option value="1">One</option>
             <option value="2">Two</option>
