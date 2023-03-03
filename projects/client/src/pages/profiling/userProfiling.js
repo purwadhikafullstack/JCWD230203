@@ -2,6 +2,17 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Profiling = () => {
+  const [profile, setProfile] = ({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_number: '',
+    status: '',
+    address: '',
+    birth_date: '',
+    
+  })
+
   const getProfile = async () => {
     try {
       let getTokenId = localStorage.getItem("token");
