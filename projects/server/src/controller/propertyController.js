@@ -258,7 +258,7 @@ module.exports = {
     },
 
     getRoomByQuery: async(req, res) => {
-        const {property_name, price_min, price_max, sort_order, page = 1} = req.body;
+        const {property_name, price_min, price_max, sort_order, page = 1} = req.query;
 
         console.log(req.body)
 
@@ -332,59 +332,76 @@ module.exports = {
         const {check_in, check_out, city} = req.query;
         console.log(req.query)
         try {
-            const properties = await property.findAll({
+            // const properties = await property.findAll({
+            //     include: [
+            //         {
+            //             model: db.property_image,
+            //             as: 'property_images'
+            //         },
+            //         {
+            //             model: db.room,
+            //             as: 'rooms',
+            //             include:[
+            //                 {
+            //                     model: db.room_image,
+            //                     as: 'room_images'
+            //                 },
+            //                 {
+                                // model: db.transactions,
+                                // as: 'transactions',
+                                // required: false,
+                                // where: {
+                                //     [Op.or]: [
+                                //         { check_in: { [Op.between]: [check_in, check_out] } },
+                                //         { check_out: { [Op.between]: [check_in, check_out] } },
+                                //         {
+                                //           [Op.and]: [
+                                //             { check_in: { [Op.lte]: check_in } },
+                                //             { check_out: { [Op.gte]: check_out } },
+                                //           ]
+                                //         }
+                                //     ]
+                                // }
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             model: db.location,
+            //             as: 'locations',
+            //             include: [
+            //                 {
+            //                     model: db.city,
+            //                     as: 'city'
+            //                 }
+            //             ],
+            //             where: {
+            //                 name: { [Op.like]: `%${city}%` }
+            //             }
+            //         }
+            //     ]                
+            // });
+
+            const transaction = await db.location.findAll({
+                where: {city_id: 1},
                 include: [
                     {
-                        model: db.property_image,
-                        as: 'property_images'
-                    },
-                    {
-                        model: db.room,
-                        as: 'rooms',
-                        include:[
-                            {
-                                model: db.room_image,
-                                as: 'room_images'
-                            },
-                            {
+                        model: db.property,
+                        include: {
+                            model: db.room,
+                            include: {
                                 model: db.transactions,
-                                as: 'transactions',
-                                required: false,
-                                where: {
-                                    [Op.or]: [
-                                        { check_in: { [Op.between]: [check_in, check_out] } },
-                                        { check_out: { [Op.between]: [check_in, check_out] } },
-                                        {
-                                          [Op.and]: [
-                                            { check_in: { [Op.lte]: check_in } },
-                                            { check_out: { [Op.gte]: check_out } },
-                                          ]
-                                        }
-                                    ]
-                                }
+                                require: true,
                             }
-                        ]
-                    },
-                    {
-                        model: db.location,
-                        as: 'locations',
-                        include: [
-                            {
-                                model: db.city,
-                                as: 'city'
-                            }
-                        ],
-                        where: {
-                            name: { [Op.like]: `%${city}%` }
                         }
+
                     }
-                ]                
-            });
+                ]
+            })
           
             return res.status(200).json({
               isError: false,
               message: 'Get room by query success',
-              data: properties,
+              data: transaction,
             });
       
         } catch (error) {

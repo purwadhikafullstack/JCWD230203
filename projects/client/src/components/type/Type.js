@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import { RiFilterOffLine } from "react-icons/ri";
 import {
   MdOutlineApartment,
@@ -14,31 +14,22 @@ import axios from "axios";
 
 const Type = (props) => {
 
-  // const [form, setForm] = useState({
-  //   propertyName: '',
-  //   lowerPrice: 0,
-  //   higherPrice: 0,
-  //   ascending: false,
-  //   descending: false,
-  // })
+  const [form, setForm] = useState({
+    property_name: '',
+    price_min: 0,
+    price_max: 0,
+    ascending: false,
+    descending: false,
+  })
 
-  const formRef = useRef(null);
 
   const onGetData = async() => {
-    
-    const { property_name, price_min, price_max, sort_order } = formRef.current;
-    console.log(formRef.current)
+    console.log(form)
     try {
-
-      const res = await axios.get(`http://localhost:5000/properties/search-rooms`, {
-        params: {
-          property_name: property_name.value,
-          price_min: price_min.value,
-          price_max: price_max.value,
-          sort_order: sort_order.value
-        }
-      });
+      
+      const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
       console.log(res)
+
     } catch (error) {
       console.log(error)
     }
@@ -133,7 +124,7 @@ const Type = (props) => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
-                  stroke="currentColor"
+                  stroke="targetColor"
                   class="h-6 w-6"
                 >
                   <path
@@ -164,8 +155,8 @@ const Type = (props) => {
                       type="text"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Where You want to stay ?"
+                      onChange={(e) => setForm({...form, property_name: e.target.value})}
                       name="property_name"
-                      ref={formRef}
                     />
                   </div>
                 </div>
@@ -182,8 +173,9 @@ const Type = (props) => {
                       type="number"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Lowest price"
+                      onChange={(e) => setForm({...form, price_min: e.target.value})}
                       name="price_min"
-                      ref={formRef}
+
                     />
                   </div>
                 </div>
@@ -194,8 +186,8 @@ const Type = (props) => {
                       type="number"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Higher Price"
+                      onChange={(e) => setForm({...form, price_max: e.target.value})}
                       name="price_max"
-                      ref={formRef}
                     />
                   </div>
                 </div>
@@ -209,7 +201,8 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="ascending"
-                        ref={formRef}
+                        onChange={() => setForm({...form, ascending: 'asc'})}
+                        name="checked"
                       />
                       <label
                         className="form-check-label inline-block text-white"
@@ -223,7 +216,8 @@ const Type = (props) => {
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 ml-2 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                         id="descending"
-                        ref={formRef}
+                        onChange={() => setForm({...form, descending: 'desc'})}
+                        name="checked"
                       />
                       <label
                         className="form-check-label inline-block text-white"
