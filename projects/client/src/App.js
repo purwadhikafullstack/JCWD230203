@@ -25,7 +25,6 @@ import RoomDetails from "pages/room_details/roomDetails";
 import Transaction from "pages/transaction/transaction";
 import EditProfile from "components/edit_profile/editProfile";
 
-
 const provider = new GoogleAuthProvider();
 
 function App() {
@@ -67,11 +66,14 @@ function App() {
         }
       }
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        toast.error(error.response.data.message)
-      }else{
-        toast.error(error.message)
-    }
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -101,11 +103,14 @@ function App() {
         setRedirect(true);
       }, 2000);
     } catch (error) {
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        toast.error(error.response.data.message)
-      }else{
-        toast.error(error.message)
-    }
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -133,56 +138,36 @@ function App() {
         localStorage.setItem("tokenTid", `${response.data.data.token}`);
       }
       setTenantName(response.data.data.findEmailAndPhoneNumber.first_name);
-  } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      toast.error(error.response.data.message)
-    }else{
-      toast.error(error.message)
-  }
-  }
-}
+    } catch (error) {
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
 
-let onLoginWithGoogle = async() => {
-  try {
-    let response = await signInWithPopup(auth, provider)
-    setUsername(response.user.displayName)
-    setRedirect(true)
-   
-    localStorage.setItem('tokenUid', `${response.user.uid}` )
-  } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      toast.error(error.response.data.message)
-    }else{
-      toast.error(error.message)
-  }
-  }
-}
+  let onLoginWithGoogle = async () => {
+    try {
+      let response = await signInWithPopup(auth, provider);
+      setUsername(response.user.displayName);
+      setRedirect(true);
 
-onAuthStateChanged(auth, (userFromFireBase) => {
-  if(userFromFireBase){
-    setUsername(userFromFireBase.displayName)
-  }
-})
-
-let onLogout = async() => {
-  try {
-      localStorage.removeItem('token')
-      setUsername('') // dan merubah username menjadi string kosong
-      setRedirect(false)
-      localStorage.removeItem('tokenTid')
-      setUsername('')
-      setRedirect(false)
-      await signOut(auth)
-      localStorage.removeItem('tokenUid')
-      setUsername('')
-      setRedirect(false) // jadi ketika ke trigger clik button logout maka redirect akan false
-  } catch (error) {
-    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      toast.error(error.response.data.message)
-    }else{
-      toast.error(error.message)
-  }}
-}
+      localStorage.setItem("tokenUid", `${response.user.uid}`);
+    } catch (error) {
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
 
   onAuthStateChanged(auth, (userFromFireBase) => {
     if (userFromFireBase) {
@@ -224,26 +209,45 @@ let onLogout = async() => {
           <>
             {/* <Type /> */}
             <Rentals />
-
-            </>
-            }
-    </div>
-    <Routes>
-      <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
-      <Route path='/activation/:id' element={<Activation />} />
-      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
-      <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
-      <Route path='/tenant-register' element={<Register />} />
-      <Route path='/tenant-activation/:id' element={<TenantActivation />} />
-      <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
-      <Route path='/user-profile' element={<Profiling />}/>
-      <Route path='/details/:id' element={<Details />} />
-      <Route path='/category/:id' element={<Rentals />} />
-      <Route path='/room-details/:id' element={<RoomDetails />} />
-      <Route path='/edit-profile' element={<EditProfile />} />
-      <Route path="/transaction" element={<Transaction />} />
-    </Routes>
-    <Footer/>
+          </>
+        )}
+      </div>
+      <Routes>
+        <Route
+          path="/register"
+          element={<Register myGoogle={{ onLoginWithGoogle }} />}
+        />
+        <Route path="/activation/:id" element={<Activation />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              myFunc={{ onLogin }}
+              isRedirect={{ redirect }}
+              myGoogle={{ onLoginWithGoogle }}
+            />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={<Dashboard name={{ tenantName }} />}
+        />
+        <Route path="/tenant-register" element={<Register />} />
+        <Route path="/tenant-activation/:id" element={<TenantActivation />} />
+        <Route
+          path="/tenant-login"
+          element={
+            <Login myFunc={{ tenantLogin }} isRedirect={{ tenantRedirect }} />
+          }
+        />
+        <Route path="/user-profile" element={<Profiling />} />
+        <Route path="/details/:id" element={<Details />} />
+        <Route path="/category/:id" element={<Rentals />} />
+        <Route path="/room-details/:id" element={<RoomDetails />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/transaction" element={<Transaction />} />
+      </Routes>
+      <Footer />
     </>
   );
 }
