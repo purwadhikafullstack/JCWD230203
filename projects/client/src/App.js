@@ -1,7 +1,7 @@
 import axios from "axios";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Routes,Route } from 'react-router-dom';
+import { Routes,Route, useLocation } from 'react-router-dom';
 import Register from "./pages/register/register";
 import Activation from "./pages/activation/activation";
 import TenantActivation from "./pages/activation/tenantActivation"
@@ -9,14 +9,19 @@ import Login from "./pages/login/login";
 import toast, { Toaster } from 'react-hot-toast';
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import Home from "./pages/home/home";
 import {GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   signOut} from 'firebase/auth'
-  import {auth} from './firebase'
+import {auth} from './firebase'
 import Dashboard from "./pages/dashboard/dashboard";
 import Profiling from "./pages/profiling/userProfiling";
+
+import Carousel from "components/carousel/carousel";
+import Rentals from "./pages/rental/Rentals";
+import Details from './pages/rental_details/RentalDetails'
+import RoomDetails from "pages/room_details/roomDetails";
+import EditProfile from "components/edit_profile/editProfile";
 
 const provider = new GoogleAuthProvider();
 
@@ -27,13 +32,15 @@ function App() {
   const [tenantRedirect, setTenantRedirect] = useState(false);
 
 
+  const location = useLocation();
+
   useEffect(() => {
    checkIsLogin();
   }, []);
   
   let checkIsLogin = async() => {
     try {
-      let getTokenId = localStorage.getItem('token')
+      let getTokenId = localStorage.getItem('token') 
         if(getTokenId){
       let response = await axios.post(`http://localhost:5000/users/keep-login`, {},
       {headers: {
@@ -42,12 +49,22 @@ function App() {
         'Content-Type': 'application/json'
       }})
 
+      if(response){
+        setUsername(response.data.data.first_name)
+      }else{
+        setUsername('')
+      }
+
       if(response.status === 201){
         setRedirect(true)
       }
     }
     } catch (error) {
-      toast(error.message)
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+        toast.error(error.response.data.message)
+      }else{
+        toast.error(error.message)
+    }
     }
   }
 
@@ -73,7 +90,11 @@ function App() {
         }, 2000)
 
     } catch (error) {
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
         toast.error(error.response.data.message)
+      }else{
+        toast.error(error.message)
+    }
     }
 }
 
@@ -99,7 +120,11 @@ let tenantLogin = async(inputEmailOrPhoneNumber, inputPassword, checkbox) => {
       }, 2000)
 
   } catch (error) {
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
       toast.error(error.response.data.message)
+    }else{
+      toast.error(error.message)
+  }
   }
 }
 
@@ -111,7 +136,11 @@ let onLoginWithGoogle = async() => {
    
     localStorage.setItem('tokenUid', `${response.user.uid}` )
   } catch (error) {
-    console.log(error.message)
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+      toast.error(error.response.data.message)
+    }else{
+      toast.error(error.message)
+  }
   }
 }
 
@@ -134,15 +163,27 @@ let onLogout = async() => {
       setUsername('')
       setRedirect(false) // jadi ketika ke trigger clik button logout maka redirect akan false
   } catch (error) {
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+      toast.error(error.response.data.message)
+    }else{
       toast.error(error.message)
   }}
+}
 
 
   return (
     <>
     <Navbar data={{username}} myFunc={{onLogout}} />
+    <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
+            <Carousel />
+            {location.pathname !== '/' ? null :
+            <>
+            {/* <Type /> */}
+            <Rentals />
+            </>
+            }
+    </div>
     <Routes>
-      <Route path='/' element={<Home />} />
       <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
       <Route path='/activation/:id' element={<Activation />} />
       <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
@@ -151,10 +192,15 @@ let onLogout = async() => {
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
       <Route path='/user-profile' element={<Profiling />}/>
-    </Routes>
+      <Route path='/details/:id' element={<Details />} />
+      <Route path='/category/:id' element={<Rentals />} />
+      <Route path='/room-details/:id' element={<RoomDetails />} />
+      <Route path='/edit-profile' element={<EditProfile />} />
+    </Routes> 
     <Footer/>
     </>
   );
 }
+
 
 export default App;
