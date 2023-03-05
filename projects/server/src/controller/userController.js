@@ -345,13 +345,11 @@ module.exports = {
 
   keepLogin: async(req, res) => {
 
-
     let getName = await users.findOne({
       where: {
         id: req.dataToken.id
       }
     })
-
 
 
     return res.status(201).send({

@@ -16,12 +16,12 @@ import {GoogleAuthProvider,
 import {auth} from './firebase'
 import Dashboard from "./pages/dashboard/dashboard";
 import Profiling from "./pages/profiling/userProfiling";
-
 import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from './pages/rental_details/RentalDetails'
 import RoomDetails from "pages/room_details/roomDetails";
 import EditProfile from "components/edit_profile/editProfile";
+
 
 const provider = new GoogleAuthProvider();
 
@@ -171,6 +171,7 @@ let onLogout = async() => {
 }
 
 
+
   return (
     <>
     <Navbar data={{username}} myFunc={{onLogout}} />
@@ -196,11 +197,9 @@ let onLogout = async() => {
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/edit-profile' element={<EditProfile />} />
-    </Routes> 
+    </Routes>
     <Footer/>
     </>
   );
 }
-
-
 export default App;

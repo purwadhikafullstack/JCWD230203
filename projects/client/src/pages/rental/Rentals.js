@@ -280,32 +280,3 @@ const Rentals = () => {
 };
 
 export default Rentals;
-
-// const rentals = [
-//   { name: "Nusa Dua, Bali", image: house4, price: "4.500.000" },
-//   { title: "Dago, Bandung", image: house5, price: "2.000.000" },
-//   { title: "Gandaria, Jakarta", image: house1, price: "1.600.000" },
-//   { title: "Kebayoran Baru, Jakarta", image: house2, price: "2.700.000" },
-//   { title: "Rempoa, Jakarta", image: house3, price: "100.000" },
-//   { title: "Nusa Dua, Bali", image: house4, price: "4.500.000" },
-//   { title: "Dago, Bandung", image: house5, price: "2.000.000" },
-//   { title: "Gandaria, Jakarta", image: house1, price: "1.600.000" },
-//   { title: "Kebayoran Baru, Jakarta", image: house2, price: "2.700.000" },
-//   { title: "Rempoa, Jakarta", image: house3, price: "100.000" },
-//   { title: "Nusa Dua, Bali", image: house4, price: "4.500.000" },
-//   { title: "Dago, Bandung", image: house5, price: "2.000.000" },
-//   { title: "Gandaria, Jakarta", image: house1, price: "1.600.000" },
-//   { title: "Kebayoran Baru, Jakarta", image: house2, price: "2.700.000" },
-//   { title: "Rempoa, Jakarta", image: house3, price: "100.000" },
-//   { title: "Nusa Dua, Bali", image: house4, price: "4.500.000" },
-//   { title: "Dago, Bandung", image: house5, price: "2.000.000" },
-//   { title: "Gandaria, Jakarta", image: house1, price: "1.600.000" },
-//   { title: "Kebayoran Baru, Jakarta", image: house2, price: "2.700.000" },
-//   { title: "Rempoa, Jakarta", image: house3, price: "100.000" },
-//   { title: "Nusa Dua, Bali", image: house4, price: "4.500.000" },
-//   { title: "Dago, Bandung", image: house5, price: "2.000.000" },
-//   { title: "Gandaria, Jakarta", image: house1, price: "1.600.000" },
-//   { title: "Kebayoran Baru, Jakarta", image: house2, price: "2.700.000" },
-//   { title: "Rempoa, Jakarta", image: house3, price: "100.000" },
-
-// ];
