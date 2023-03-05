@@ -120,7 +120,7 @@ const Rentals = () => {
                     <div className="flex  ">
                       {/* Background */}
                         <img
-                          src={`http://localhost:5000/PROPERTY/${value.property_images[0].image_path}`}
+                          src={`http://localhost:5000/Public/PROPERTY/${value.property_images[0].image_path}`}
                           alt=""
                           className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full pointer"
                         />

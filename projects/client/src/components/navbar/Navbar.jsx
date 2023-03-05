@@ -11,24 +11,6 @@ import axios from "axios";
 const Navbar = (props) => {
   const location = useLocation();
   const { id } = useParams();
-  // const [searchText, setSearchText] = ([])
-
-  // const updateSearchText = (e) => {
-  //   setSearchText(e.target.value)
-  // }
-
-  // let onSearch = async() => {
-  //   try {
-  //     let res = await axios.get(`http://localhost:5000/properties/search?name=${searchText}`)
-  //     console.log(res)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   onSearch();
-  // },[])
 
   return (
     <>
@@ -120,6 +102,14 @@ const Navbar = (props) => {
                 </button>
               </div>
               <div className="offcanvas-body flex-grow overflow-y-auto p-4">
+                {localStorage.getItem('token') ? 
+                <>
+                <div className="login mb-5 hover:shadow-lg pointer">
+                  <Link to="/user-profile"> Profile </Link>
+                </div>
+                </>
+                :
+                <>
                 <div className="login mb-5 hover:shadow-lg pointer">
                   <Link to="/login"> Login </Link>
                 </div>
@@ -128,6 +118,7 @@ const Navbar = (props) => {
                     <Link to="/register"> Sign Up </Link>
                   </div>
                 </div>
+                </>}
 
                 {/* bottom */}
                 <div

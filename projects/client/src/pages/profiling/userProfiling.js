@@ -1,17 +1,26 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Modal from "components/modal/modal";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 
 const Profiling = () => {
-  const [profile, setProfile] = ({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone_number: '',
-    status: '',
-    address: '',
-    birth_date: '',
-    
-  })
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const [profile, setProfile] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    gender: "",
+    phone_number: "",
+    status: "",
+    address: "",
+    birth_date: "",
+    picture_path: "",
+  });
 
   const getProfile = async () => {
     try {
@@ -28,69 +37,143 @@ const Profiling = () => {
             },
           }
         );
-        console.log(response);
+        console.log(response.data.data);
+
+        setProfile({
+          ...profile,
+          first_name: response.data.data?.first_name,
+          last_name: response.data.data?.last_name,
+          email: response.data.data?.email,
+          gender: response.data.data.users_detail?.gender,
+          phone_number: response.data.data?.phone_number,
+          status: response.data.data?.status,
+          address: response.data.data.users_detail?.address,
+          birth_date: response.data.data.users_detail?.birth_date,
+          picture_path: response.data.data.users_detail?.picture_path,
+        });
+      } else if (!getTokenId) {
+        navigate("/register");
       }
-      console.log(getTokenId);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    getProfile();
-  }, []);
+  const dateToString = profile?.birth_date;
+  const date = new Date(dateToString);
+
+  const year = date.getFullYear();
+  const month = date.toLocaleString("default", { month: "long" });
+  const day = date.getDate();
 
   return (
     <>
-      <div class="container mx-auto my-5 p-5">
-        <div class="md:flex no-wrap md:-mx-2 ">
+      <div className="container mx-auto my-5 p-5">
+        <div className="md:flex no-wrap md:-mx-2 ">
           {/* <!-- Left Side --> */}
-          <div class="w-full md:w-3/12 md:mx-2">
+          <div className="w-full md:w-3/12 md:mx-2">
             {/* <!-- Profile Card --> */}
-
-            <div class="bg-white p-3 border-t-4 border-[#c9403e]">
-              <div class="image overflow-hidden">
+            <div className="bg-white p-3 border-t-4 border-[#c9403e]">
+              <div className="image overflow-hidden">
                 <img
                   src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp"
-                  class="w-24 rounded-full shadow-lg"
+                  className="w-24 rounded-full shadow-lg"
                   alt="Avatar"
                 />
               </div>
-              <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">
-                Gigi
+              <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
+                {profile?.first_name}
               </h1>
-              <h3 class="text-gray-600 font-lg text-semibold leading-6">
-                gigi.hartono@gmail.com
+              <h3 className="text-gray-600 font-lg text-semibold leading-6">
+                {profile?.email}
               </h3>
 
-              {/* <p class="text-sm text-gray-500 hover:text-gray-600 leading-6">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Reprehenderit, eligendi dolorum sequi illum qui unde aspernatur
-                non deserunt
-              </p> */}
-              <ul class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
-                <li class="flex items-center py-3">
+              {/* Change and Delete profile Picture */}
+              <div className="flex justify-start my-4">
+                <div>
+                  <div className="relative" data-te-dropdown-ref>
+                    <a
+                      className="flex items-center whitespace-nowrap rounded my-bg-main px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]  focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0  active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none"
+                      href="#"
+                      type="button"
+                      id="dropdownMenuButton2"
+                      data-te-dropdown-toggle-ref
+                      aria-expanded="false"
+                      data-te-ripple-init
+                      data-te-ripple-color="light"
+                    >
+                      Edit Profile
+                      <span className="ml-2 w-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="h-5 w-5"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                    </a>
+                    <ul
+                      className="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
+                      aria-labelledby="dropdownMenuButton2"
+                      data-te-dropdown-menu-ref
+                    >
+                      <li>
+                        <Link to='/edit-profile'>
+                        <div
+                          className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
+                          href="/edit-profile"
+                          data-te-dropdown-item-ref
+                        >
+                          Change Profile Picture
+                        </div>
+                        </Link>
+                      </li>
+                      <li>
+                        <a
+                          className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
+                          href="#"
+                          data-te-dropdown-item-ref
+                        >
+                          Delete Profile Picture
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status */}
+              <ul className="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
+                <li className="flex items-center py-3">
                   <span>Status</span>
-                  <span class="ml-auto">
-                    <span class="bg-[#c9403e] py-1 px-2 rounded text-white text-sm">
-                      Active
+                  <span className="ml-auto">
+                    <span className="bg-[#c9403e] py-1 px-2 rounded text-white text-sm">
+                      {profile?.status === "confirmed"
+                        ? "Active"
+                        : "Not Active"}
                     </span>
                   </span>
                 </li>
-                <li class="flex items-center py-3">
+                <li className="flex items-center py-3">
                   <span>Member since</span>
-                  <span class="ml-auto">Jan 01, 2023</span>
+                  <span className="ml-auto">Jan 01, 2023</span>
                 </li>
               </ul>
             </div>
             {/* <!-- End of profile card --> */}
-            <div class="my-4"></div>
+            <div className="my-4"></div>
             {/* <!-- Friends card --> */}
-            <div class="bg-white p-3 hover:shadow">
-              <div class="flex items-center space-x-3 font-semibold text-gray-900 text-xl leading-8">
-                <span class="text-[#c9403e]">
+            <div className="bg-white p-3 hover:shadow">
+              <div className="flex items-center space-x-3 font-semibold text-gray-900 text-xl leading-8">
+                <span className="text-[#c9403e]">
                   <svg
-                    class="h-5 fill-current"
+                    className="h-5 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -104,78 +187,129 @@ const Profiling = () => {
                     />
                   </svg>
                 </span>
-                <span>Gigi Confirmed</span>
+                <span>Confirmed</span>
               </div>
-              <div class="grid grid-cols-3">
-                <div id="tasks" class="my-5">
+              <div className="grid grid-cols-3">
+                <div id="tasks" className="my-5">
                   <div
                     id="task"
-                    class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
+                    className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
                   >
-                    <div class="inline-flex items-center space-x-2">
+                    <div className="inline-flex items-center space-x-2">
                       <div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
+                        {profile?.status === "confirmed" ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        )}
                       </div>
                       <div>Identity</div>
                     </div>
                   </div>
                   <div
                     id="task"
-                    class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
+                    className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
                   >
-                    <div class="inline-flex items-center space-x-2">
+                    <div className="inline-flex items-center space-x-2">
                       <div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
+                        {profile?.email?.length === 0 ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        )}
                       </div>
                       <div>Email address</div>
                     </div>
                   </div>
                   <div
                     id="task"
-                    class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
+                    className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
                   >
-                    <div class="inline-flex items-center space-x-2">
+                    <div className="inline-flex items-center space-x-2">
                       <div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
+                        {profile?.phone_number?.length === 0 ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6 text-slate-500 hover:text-indigo-600 hover:cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        )}
                       </div>
                       <div>Phone number</div>
                     </div>
@@ -185,15 +319,16 @@ const Profiling = () => {
             </div>
             {/* <!-- End of friends card --> */}
           </div>
+          
           {/* <!-- Right Side --> */}
-          <div class="w-full md:w-9/12 mx-2 h-64">
+          <div className="w-full md:w-9/12 mx-2 h-64">
             {/* <!-- Profile tab --> */}
             {/* <!-- About Section --> */}
-            <div class="bg-white p-3 shadow-sm rounded-sm">
-              <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
-                <span class="text-[#c9403e]">
+            <div className="bg-white p-3 shadow-sm rounded-sm">
+              <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
+                <span className="text-[#c9403e]">
                   <svg
-                    class="h-5"
+                    className="h-5"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -207,64 +342,69 @@ const Profiling = () => {
                     />
                   </svg>
                 </span>
-                <span class="tracking-wide">About</span>
+                <span className="tracking-wide">About</span>
               </div>
-              <div class="text-gray-700">
-                <div class="grid md:grid-cols-2 text-sm">
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">First Name</div>
-                    <div class="px-4 py-2">Gigi</div>
+              <div className="text-gray-700">
+                <div className="grid md:grid-cols-2 text-sm">
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">First Name</div>
+                    <div className="px-4 py-2">{profile?.first_name}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Last Name</div>
-                    <div class="px-4 py-2">Hartono</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Last Name</div>
+                    <div className="px-4 py-2">{profile?.last_name}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Email</div>
-                    <div class="px-4 py-2">
-                      <a class="text-blue-800" href="mailto:jane@example.com">
-                        gigi.hartono@gmail.com
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Email</div>
+                    <div className="px-4 py-2">
+                      <a
+                        className="text-blue-800"
+                        href={`mailto:${profile?.email}`}
+                      >
+                        {profile?.email}
                       </a>
                     </div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Gender</div>
-                    <div class="px-4 py-2">Male</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Gender</div>
+                    <div className="px-4 py-2">{profile?.gender}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Birthday</div>
-                    <div class="px-4 py-2">Jan 01, 1990</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Birthday</div>
+                    <div className="px-4 py-2">
+                      {dateToString ? <>{`${day} ${month} ${year}`}</> : ""}
+                    </div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Contact No</div>
-                    <div class="px-4 py-2">+62 877777777</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Contact No</div>
+                    <div className="px-4 py-2">+62 {profile?.phone_number}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Current Address</div>
-                    <div class="px-4 py-2">Rempoa, South Tangerang, Banten</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Current Address</div>
+                    <div className="px-4 py-2">{profile?.address}</div>
                   </div>
-                  <div class="grid grid-cols-2">
-                    <div class="px-4 py-2 font-semibold">Permanant Address</div>
-                    <div class="px-4 py-2">New Karawaci, Tangerang, Banten</div>
+                  <div className="grid grid-cols-2">
+                    <div className="px-4 py-2 font-semibold">Permanant Address</div>
+                    <div className="px-4 py-2">New Karawaci, Tangerang, Banten</div>
                   </div>
                 </div>
               </div>
-              <button class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
-                Edit Your Profile
+              <button className="block w-full flex justify-center  text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
+                <Modal />
               </button>
             </div>
             {/* <!-- End of about section --> */}
 
-            <div class="my-4"></div>
+            <div className="my-4"></div>
 
             {/* <!-- Experience and education --> */}
-            <div class="bg-white p-3 shadow-sm rounded-sm">
-              <div class="grid grid-cols-2">
+            <div className="bg-white p-3 shadow-sm rounded-sm">
+              <div className="grid grid-cols-2">
                 <div>
-                  <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span class="text-[#c9403e]">
+                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
+                    <span className="text-[#c9403e]">
                       <svg
-                        class="h-5"
+                        className="h-5"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -278,30 +418,30 @@ const Profiling = () => {
                         />
                       </svg>
                     </span>
-                    <span class="tracking-wide">My Booking</span>
+                    <span className="tracking-wide">My Booking</span>
                   </div>
-                  <ul class="list-inside space-y-2">
+                  <ul className="list-inside space-y-2">
                     <li>
-                      <div class="text-[#df6e6c]">
+                      <div className="text-[#df6e6c]">
                         Apartment Gandaria Heights Jakarta
                       </div>
-                      <div class="text-gray-500 text-xs">Mar 10, 2023</div>
+                      <div className="text-gray-500 text-xs">Mar 10, 2023</div>
                     </li>
                     <li>
-                      <div class="text-[#df6e6c]">
+                      <div className="text-[#df6e6c]">
                         Apartment Gandaria Heights Jakarta
                       </div>
-                      <div class="text-gray-500 text-xs">Mar 10, 2023</div>
+                      <div className="text-gray-500 text-xs">Mar 10, 2023</div>
                     </li>
                     <li>
-                      <div class="text-[#df6e6c]">
+                      <div className="text-[#df6e6c]">
                         Apartment Gandaria Heights Jakarta
                       </div>
-                      <div class="text-gray-500 text-xs">Mar 10, 2023</div>
+                      <div className="text-gray-500 text-xs">Mar 10, 2023</div>
                     </li>
                     <div className="">
                       <li>
-                        <button class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
+                        <button className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
                           Show More
                         </button>
                       </li>
@@ -309,10 +449,10 @@ const Profiling = () => {
                   </ul>
                 </div>
                 <div className="">
-                  <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span class="text-[#c9403e]">
+                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
+                    <span className="text-[#c9403e]">
                       <svg
-                        class="h-5"
+                        className="h-5"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -331,31 +471,31 @@ const Profiling = () => {
                         />
                       </svg>
                     </span>
-                    <span class="tracking-wide">History</span>
+                    <span className="tracking-wide">History</span>
                   </div>
 
                   <div className="">
-                    <ul class="list-inside space-y-2">
+                    <ul className="list-inside space-y-2">
                       <li>
-                        <div class="text-[#df6e6c]">
+                        <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div class="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
                       </li>
                       <li>
-                        <div class="text-[#df6e6c]">
+                        <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div class="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
                       </li>
                       <li>
-                        <div class="text-[#df6e6c]">
+                        <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div class="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
                       </li>
                       <li>
-                        <button class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
+                        <button className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
                           Show More
                         </button>
                       </li>

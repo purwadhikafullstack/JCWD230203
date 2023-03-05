@@ -71,7 +71,7 @@ let handleSubmit = async(event) => {
         style={{
           backgroundPosition: "50%",
           backgroundImage:
-            "url('http://localhost:5000/PROPERTY/logo.png')",
+            "url('http://localhost:5000/Public/PROPERTY/logo.png')",
           height: "300px"
         }}
       ></div>

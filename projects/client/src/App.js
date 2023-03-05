@@ -21,6 +21,7 @@ import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from './pages/rental_details/RentalDetails'
 import RoomDetails from "pages/room_details/roomDetails";
+import EditProfile from "components/edit_profile/editProfile";
 
 const provider = new GoogleAuthProvider();
 
@@ -59,7 +60,11 @@ function App() {
       }
     }
     } catch (error) {
-      toast(error.message)
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+        toast.error(error.response.data.message)
+      }else{
+        toast.error(error.message)
+    }
     }
   }
 
@@ -85,7 +90,11 @@ function App() {
         }, 2000)
 
     } catch (error) {
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
         toast.error(error.response.data.message)
+      }else{
+        toast.error(error.message)
+    }
     }
 }
 
@@ -111,7 +120,11 @@ let tenantLogin = async(inputEmailOrPhoneNumber, inputPassword, checkbox) => {
       }, 2000)
 
   } catch (error) {
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
       toast.error(error.response.data.message)
+    }else{
+      toast.error(error.message)
+  }
   }
 }
 
@@ -123,7 +136,11 @@ let onLoginWithGoogle = async() => {
    
     localStorage.setItem('tokenUid', `${response.user.uid}` )
   } catch (error) {
-    console.log(error.message)
+    if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+      toast.error(error.response.data.message)
+    }else{
+      toast.error(error.message)
+  }
   }
 }
 
@@ -147,7 +164,6 @@ let onLogout = async() => {
       setRedirect(false) // jadi ketika ke trigger clik button logout maka redirect akan false
   } catch (error) {
     if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-      console.log("tes1")
       toast.error(error.response.data.message)
     }else{
       toast.error(error.message)
@@ -179,7 +195,8 @@ let onLogout = async() => {
       <Route path='/details/:id' element={<Details />} />
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
-    </Routes>
+      <Route path='/edit-profile' element={<EditProfile />} />
+    </Routes> 
     <Footer/>
     </>
   );

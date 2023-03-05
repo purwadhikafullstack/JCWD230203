@@ -24,7 +24,7 @@ module.exports = {
 
     const t = await sequelize.transaction();
     try {
-      
+      console.log("tes")
       let { first_name, last_name, email, password, phone_number } = req.body;
 
       // input Validation if its not have a length
@@ -71,7 +71,7 @@ module.exports = {
           phone_number,
           otp_code: otp,
           otp_created_at: new Date(),
-          ktp_path: req.files.images[0].path, // get file data from req.file object
+          ktp_path: req.files.ktp_path[0].path, // get file data from req.file object
         },
         { transaction: t }
       );
