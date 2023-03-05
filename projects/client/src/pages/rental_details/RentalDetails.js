@@ -37,7 +37,7 @@ const Rental = () => {
                   <div className="flex justify-center my-4 ">
                     {/* Background */}
                     <img
-                      src={`http://localhost:5000/PROPERTY/${room.room_images[0].image_path}`}
+                      src={`http://localhost:5000/Public/PROPERTY/${room.room_images[0].image_path}`}
                       alt=""
                       className="object-cover sm:h-[17rem] md:h-[13rem] w-full px-5"
                     />

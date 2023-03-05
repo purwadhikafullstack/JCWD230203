@@ -15,6 +15,7 @@ const { createToken } = require("./../lib/webToken");
 // import transporter
 const transporter = require("../helpers/transporter");
 const handlebars = require("handlebars");
+const deleteFiles = require('./../helpers/deleteFiles')
 
 // import HttpResponse
 const HttpResponse = require("../helpers/httpResponse");
@@ -137,7 +138,7 @@ module.exports = {
       return res.status(404).send({
         isError: true,
         message: error.message,
-        data: null,
+        data: error,
       });
     }
   },
@@ -216,7 +217,7 @@ module.exports = {
       return res.status(404).send({
         isError: true,
         message: error.message,
-        data: null,
+        data: error,
       });
     }
   },
@@ -272,7 +273,7 @@ module.exports = {
       return res.status(400).send({
         isError: false,
         message: error.message,
-        data: null,
+        data: error,
       });
     }
   },
@@ -324,7 +325,7 @@ module.exports = {
         });
       }
 
-      res.status(200).send({
+      return res.status(200).send({
         isError: false,
         message: "Login Success",
         data: {
@@ -334,16 +335,15 @@ module.exports = {
       });
 
     } catch (error) {
-      res.status(404).send({
+      return res.status(404).send({
         isError: true,
         message: error.message,
-        data: null,
+        data: error,
       });
     }
   },
 
   keepLogin: async(req, res) => {
-    console.log(req.dataToken)
 
     let getName = await users.findOne({
       where: {
@@ -351,9 +351,8 @@ module.exports = {
       }
     })
 
-    console.log(getName.dataValues.first_name)
 
-    res.status(201).send({
+    return res.status(201).send({
       isError: false,
       message: "Token Valid",
       data: 
@@ -365,4 +364,118 @@ module.exports = {
       
     });
   },
+
+  getUser: async(req,res) => {
+    console.log(req.dataToken.id)
+    console.log("masuk sini")
+
+    try {
+      let user = await users.findOne({
+				where: { id: req.dataToken.id },
+				include: { model: db.users_details },
+			});
+
+      return res.status(201).send({
+        isError: false,
+        message: "Get user Success",
+        data: user
+        
+      })
+      
+    } catch (error) {
+      return res.status(404).send({
+        isError: true,
+        message: error.message,
+        data: error,
+      });
+    }
+  },
+
+  updateUser: async(req, res) => {
+    const {first_name, last_name, email, gender, phone_number, address, birth_date } = req.body 
+    console.log(req.body)
+    const t = await sequelize.transaction();
+    try {
+
+      const match = await users.findOne({
+        where: { phone_number },
+      });
+
+      if(match){
+        return res.status(400).send({
+          isError: true,
+          message: "Phone number already in used",
+          data: null
+        })
+      }
+
+
+       await db.users.update(
+         {first_name, last_name, email, phone_number},
+         {where: {id: req.dataToken.id}, transaction: t}
+       )
+
+       await db.users_details.update(
+        {gender, address, birth_date},
+        {where: {users_id: req.dataToken.id}, transaction: t}
+      )
+
+
+      await t.commit();
+
+       return res.status(200).send({
+         isError: false,
+         message: "Update Success",
+         data: {}
+       })
+
+
+    } catch (error) {
+      await t.rollback();
+        return res.status(404).send({
+          isError: true,
+          message: error.message,
+          data: error
+        })
+    }
+  },
+
+  editProfilePict: async(req, res) => {
+    let id = req.dataToken.id
+
+
+    try {
+        let img = await db.users.findOne({
+          where: {id},
+          include: [
+            {model: db.users_details,}
+          ]
+        })
+
+
+        console.log(req.files)
+        await db.users_details.update(
+          {
+          picture_path: req.files.images[0].path
+          },
+          {
+            where: {users_id: id}
+          }
+        );
+
+
+        return res.status(201).send({
+          isError: false,
+          message: "Success Updating Profile Picture",
+          data: img
+        })
+    } catch (error) {
+      deleteFiles(req.files)
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        error: error
+      })
+    }
+  }
 };

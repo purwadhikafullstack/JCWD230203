@@ -120,6 +120,14 @@ const Navbar = (props) => {
                 </button>
               </div>
               <div className="offcanvas-body flex-grow overflow-y-auto p-4">
+                {localStorage.getItem('token') ? 
+                <>
+                <div className="login mb-5 hover:shadow-lg pointer">
+                  <Link to="/user-profile"> Profile </Link>
+                </div>
+                </>
+                :
+                <>
                 <div className="login mb-5 hover:shadow-lg pointer">
                   <Link to="/login"> Login </Link>
                 </div>
@@ -128,6 +136,7 @@ const Navbar = (props) => {
                     <Link to="/register"> Sign Up </Link>
                   </div>
                 </div>
+                </>}
 
                 {/* bottom */}
                 <div
