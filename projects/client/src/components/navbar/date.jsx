@@ -1,18 +1,22 @@
-function Date() {
+function Date(props) {
+  const {name, value, onChange} = props;
   return (
     <>
       <div className="flex items-center justify-center">
         <div
           className="relative mb-3 xl:w-96"
-          data-te-datepicker-init
-          data-te-input-wrapper-init
+          // data-te-datepicker-init
+          // data-te-input-wrapper-init
         >
           <input
             type="date"
             className="peer block min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
             placeholder="Select a date"
-            data-te-datepicker-toggle-ref
-            data-te-datepicker-toggle-button-ref
+            // data-te-datepicker-toggle-ref
+            // data-te-datepicker-toggle-button-ref
+            name={name}
+            value={value}
+            onChange={onChange}
           />
           <label
             for="floatingInput"

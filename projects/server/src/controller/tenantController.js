@@ -24,7 +24,6 @@ module.exports = {
 
     const t = await sequelize.transaction();
     try {
-      
       let { first_name, last_name, email, password, phone_number } = req.body;
 
       // input Validation if its not have a length

@@ -1,24 +1,65 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import Date from "components/navbar/date";
 import Location from "components/navbar/location";
 import { useLocation } from "react-router-dom";
 
 
 function Carousel() {
-  const startDate = useRef();
-  const endDate = useRef();
-  const locationValue = useRef();
-
+  // const startDate = useRef();
+  // const endDate = useRef();
+  // const locationValue = useRef();
   const location = useLocation();
+
+  const [form, setForm] = useState({
+    startDate: '',
+    endDate: '',
+    location: ''
+  })
+
+  const [error, setError] = useState({
+    startDate: '',
+    endDate: '',
+    location: ''
+  })
+  
+  const handleChange = (event) => {
+    const {name, value} = event.target 
+    const _form = {
+      ...form,
+      [name]: value
+    }
+
+    setForm(_form)
+
+    let _error = {...error}
+
+    for(const key in _form){
+      console.log(key)
+      console.log(_form[key])
+      if(!_form[key]){
+        _error[key]="gaboleh kosong"
+         console.log("masuk")
+      }
+    }
+    console.log(_error)
+    setError(_error)
+
+   
+    console.log(_error)
+
+    
+
+  }
 
 
 let handleSubmit = async(event) => {
   event.preventDefault();
-  const startDateValue = startDate.current.getValue();
-  const endDateValue = endDate.current.getValue();
-  const locationValue = locationValue.current.getValue();
+  console.log(form)
+  // const startDateValue = startDate.current.getValue();
+  // const endDateValue = endDate.current.getValue();
+  // const locationValue = locationValue.current.getValue();
 
-  console.log(startDateValue, endDateValue, locationValue)
+  // console.log(startDateValue, endDateValue, locationValue)
 }
   return (
     <>
@@ -30,7 +71,7 @@ let handleSubmit = async(event) => {
         style={{
           backgroundPosition: "50%",
           backgroundImage:
-            "url('http://localhost:5000/PROPERTY/logo.png')",
+            "url('http://localhost:5000/Public/PROPERTY/logo.png')",
           height: "300px"
         }}
       ></div>
@@ -48,34 +89,44 @@ let handleSubmit = async(event) => {
             <div className="grow-0 shrink-0 basis-auto w-full xl:w-10/12 px-6">
               <div className="grid lg:grid-cols-2 gap-x-6 items-center">
                 <div className="mb-10 lg:mb-0">
-                  <h2 className="text-3xl font-bold">
+                  <div className="text-3xl font-bold">
                     Start Date
                     <br />
                     <span className="text-blue-600">
                       <Date 
-                      ref={startDate}/>
+                      onChange={handleChange}
+                      value={form.startDate}
+                      name='startDate'/>
                     </span>
-                  </h2>
+                    <p className="text-lg my-main">{error.startDate}</p>
+                  </div>
                 </div>
                 <div className="mb-10 lg:mb-0">
-                  <h2 className="text-3xl font-bold">
+                  <div className="text-3xl font-bold">
                     End Date
                     <br />
                     <span className="text-blue-600">
                     <Date 
-                    ref={endDate}/>
+                    onChange={handleChange}
+                    value={form.endDate}
+                    name='endDate'
+                    />
                     </span>
-                  </h2>
+                    <p className="text-lg my-main">{error.endDate}</p>
+                  </div>
                 </div>
                 <div className="mb-10 lg:mb-0">
-                  <h2 className="text-3xl font-bold">
+                  <div className="text-3xl font-bold">
                     Select Location
                     <br />
                     <span className="my-main">
                     <Location 
-                    ref={locationValue}/>
+                    onChange={handleChange}
+                    value={form.location}
+                    name="location" />
                     </span>
-                  </h2>
+                    <p className="text-lg my-main">{error.location}</p>
+                  </div>
                 </div>
 
                 <div className="mb-6 md:mb-0">

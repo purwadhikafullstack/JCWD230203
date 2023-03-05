@@ -38,7 +38,7 @@ function RoomDetails() {
                   </h3>
                   <u className="text-slate-700"> 
                   {/* disini ada bug, untuk nanti di mentoring */}
-                  {details ? details[0].name : "Loading.."}
+                  {details?.[0]?.name || "Loading.."}
                   </u>
                 </div>
               </div>
@@ -53,7 +53,7 @@ function RoomDetails() {
                       <img
                       alt="gallery"
                       className="block h-fit w-full rounded-lg object-cover object-center"
-                      src={`http://localhost:5000/PROPERTY/${value.image_path}`}
+                      src={`http://localhost:5000/Public/PROPERTY/${value.image_path}`}
                     />
                       </div>
                     </div>
