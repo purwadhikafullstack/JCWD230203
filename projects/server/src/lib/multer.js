@@ -7,20 +7,19 @@ const fs = require('fs')
 let defaultPath = 'Public'
 var storage =  multer.diskStorage({
     destination: async(req, file, cb) => {
-        console.log("masuk")
-        console.log(file.fieldname)
+
         // Check Directory (exist or NOT)
         let isDirectoryExist = fs.existsSync(`${defaultPath}/${file.fieldname}`)
 
         if(!isDirectoryExist){
-            await fs.promises.mkdir(`${defaultPath}/${file.fieldname    }`, {recursive: true});
+            await fs.promises.mkdir(`${defaultPath}/${file.fieldname}`, {recursive: true});
         }
 
         // TO create "Public/pdf" or "Public/images"
         if(file.fieldname === 'files'){
             cb(null, `${defaultPath}/${file.fieldname}`)
         }
-        if(file.fieldname === 'ktp_path'){
+        if(file.fieldname === 'images'){
             cb(null, `${defaultPath}/${file.fieldname}`)
         }
     },
