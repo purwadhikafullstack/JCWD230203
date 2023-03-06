@@ -12,7 +12,7 @@ var storage =  multer.diskStorage({
         let isDirectoryExist = fs.existsSync(`${defaultPath}/${file.fieldname}`)
 
         if(!isDirectoryExist){
-            await fs.promises.mkdir(`${defaultPath}/${file.fieldname    }`, {recursive: true});
+            await fs.promises.mkdir(`${defaultPath}/${file.fieldname}`, {recursive: true});
         }
 
         // TO create "Public/pdf" or "Public/images"

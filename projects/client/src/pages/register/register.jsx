@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { FiTarget } from "react-icons/fi";
+import Loader from "components/loader/loader";
 
 
 // const InitialState = {
@@ -63,8 +64,6 @@ function Register(props) {
       // Regex Validation
       let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
       if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
-
-     
       
       
       // send All valid data
@@ -79,8 +78,9 @@ function Register(props) {
         `http://localhost:5000/users/register`,
         dataToSend
       );
-      setDisabledButton(true)
       setLoading(true)
+      setDisabledButton(true)
+      
       
       // when its finish clear all input field
       setTimeout(() => {
@@ -148,9 +148,6 @@ let onImagesValidation = (e) => {
           fd.append('ktp_path', value)
       })
 
-      
-      
-
       fd.append('first_name', inputFirstName)
       fd.append('last_name', inputLastName)
       fd.append('email', inputEmail)
@@ -160,9 +157,13 @@ let onImagesValidation = (e) => {
       setDisabledButton(false)
       setLoading(false)
 
+      console.log("tes")
+
       let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
       
-     
+      console.log(tenantRegister)
+
+
       toast.success('Register Success')
       toast.success('Check your email')
       
@@ -254,7 +255,11 @@ let onImagesValidation = (e) => {
                       disabled={disabledButton}
                       // disabled={state.disabledButton}
                     >
-                      {loading ? "Loading.." : "SignUp"}
+                      {loading ? 
+                      <div className="px-7 py-3">
+                        <Loader />
+                      </div>
+                       : "Create Account"}
                     </button>
                   </div>
 
@@ -362,7 +367,7 @@ let onImagesValidation = (e) => {
                       type="button"
                       class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                       onClick={() => onSubmitTenant()}
-                      disabled={disabledButton}
+                      // disabled={disabledButton}
                       // disabled={state.disabledButton}
                     >
                       {loading ? "Loading.." : "SignUp"}
