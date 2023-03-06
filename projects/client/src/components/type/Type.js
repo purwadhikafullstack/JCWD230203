@@ -24,17 +24,38 @@ const Type = (props) => {
 
 
   const onGetData = async() => {
-    console.log(form)
+    console.log(form);
     try {
-      
       const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
-      console.log(res)
-
+      console.log(res);
+      const searchData = res.data;
+      const searchParams = new URLSearchParams({
+        property_name: form.property_name,
+        price_min: form.price_min,
+        price_max: form.price_max,
+        sort_order: form.ascending ? form.ascending : form.descending,
+        ...searchData
+      });
+      const redirectUrl = `/search-results?${searchParams.toString()}`;
+      window.location.href = redirectUrl;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
   };
+  
+
+  // const onGetData = async() => {
+  //   console.log(form)
+  //   try {
+      
+  //     const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
+  //     console.log(res)
+
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+
+  // };
 
   // const handleChange = (event) => {
   //   const {name, value} = event.target

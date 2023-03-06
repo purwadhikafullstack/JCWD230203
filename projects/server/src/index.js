@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
 //#region CLIENT
 const clientPath = "../../client/build";
 app.use(express.static(join(__dirname, clientPath)));
-app.use("/PROPERTY", express.static("PROPERTY"))
+app.use("/Public", express.static("Public"))
 
 // Serve the HTML page
 app.get("*", (req, res) => {

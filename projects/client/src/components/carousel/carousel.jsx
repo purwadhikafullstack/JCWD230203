@@ -1,26 +1,58 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import Date from "./../date/date";
 import Location from "./../location/location";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 
 function Carousel() {
-  // const startDate = useRef();  
-  // const endDate = useRef();
-  // const locationValue = useRef();
   const location = useLocation();
 
   const [form, setForm] = useState({
     startDate: '',
     endDate: '',
-    location: ''
+    location: '',
   })
 
-  const [error, setError] = useState({
-    startDate: '',
-    endDate: '',
-    location: ''
-  })
+  const [city, setCity] = useState([])
+
+
+  let getCity = async() => {
+    try {
+       const cities = await axios.get(`http://localhost:5000/properties/city`)
+       setCity(cities.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  let getDate = async() => {
+    try {
+       const details = await axios.get(`http://localhost:5000/properties/search-date?check_in=${form.startDate}&check_out=${form.endDate}&city=${form.location}&page=1`)
+       console.log(details)
+       const searchData = details.data;
+       const searchParams = new URLSearchParams({
+         startDate: form.startDate,
+         endDate: form.endDate,
+         location: form.location,
+         ...searchData
+       });
+       const redirectUrl = `/search-results?${searchParams.toString()}`;
+       window.location.href = redirectUrl;
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getCity();
+  },[])
+
+  // const [error, setError] = useState({
+  //   startDate: '',
+  //   endDate: '',
+  //   location: ''
+  // })
   
   const handleChange = (event) => {
     const {name, value} = event.target 
@@ -31,31 +63,23 @@ function Carousel() {
 
     setForm(_form)
 
-    let _error = {...error}
+    // let _error = {...error}
 
-    for(const key in _form){
-      console.log(key)
-      console.log(_form[key])
-      if(!_form[key]){
-        _error[key]="gaboleh kosong"
-         console.log("masuk")
-      }
-    }
-    console.log(_error)
-    setError(_error)
-
-   
-    console.log(_error)
-
-    
-
+    // for(const key in _form){
+    //   if(!_form[key]){
+    //     _error = {
+    //       ..._error,
+    //       [key]: "gaboleh kosong"
+    //     }
+    //   }
+    // }
+    // setError(_error)
   }
 
 
 let handleSubmit = async(event) => {
   event.preventDefault();
-  console.log(form)
- 
+  getDate();
 }
   return (
     <>
@@ -67,7 +91,7 @@ let handleSubmit = async(event) => {
         style={{
           backgroundPosition: "50%",
           backgroundImage:
-            "url('http://localhost:5000/PROPERTY/logo.png')",
+            "url('http://localhost:5000/Public/PROPERTY/logo.png')",
           height: "300px"
         }}
       ></div>
@@ -94,7 +118,7 @@ let handleSubmit = async(event) => {
                       value={form.startDate}
                       name='startDate'/>
                     </span>
-                    <p className="text-lg my-main">{error.startDate}</p>
+                    {/* <p className="text-lg my-main">{error.startDate}</p> */}
                   </div>
                 </div>
                 <div className="mb-10 lg:mb-0">
@@ -108,7 +132,7 @@ let handleSubmit = async(event) => {
                     name='endDate'
                     />
                     </span>
-                    <p className="text-lg my-main">{error.endDate}</p>
+                    {/* <p className="text-lg my-main">{error.endDate}</p> */}
                   </div>
                 </div>
                 <div className="mb-10 lg:mb-0">
@@ -118,10 +142,11 @@ let handleSubmit = async(event) => {
                     <span className="my-main">
                     <Location 
                     onChange={handleChange}
+                    city={city}
                     value={form.location}
                     name="location" />
                     </span>
-                    <p className="text-lg my-main">{error.location}</p>
+                    {/* <p className="text-lg my-main">{error.location}</p> */}
                   </div>
                 </div>
 
@@ -157,22 +182,3 @@ let handleSubmit = async(event) => {
 }
 
 export default Carousel;
-
-
-{/* <div className="wrapp flex justify-center border-b">
-            <div className="flex ml-2 mr-2 p-4 ">
-              <div className="wrapper flex flex-col">
-                <span>From</span>
-                <input
-                  type="date"
-                  id="birthday"
-                  name="birthday"
-                  className="md:w-24 rounded-lg"
-                />
-            </div>
-              <div className="wrapper flex flex-col ml-3 rounded-lg">
-                <span className="pb-1">Location</span>
-                <span className="h-auto rounded-lg"><Location /></span>
-              </div>
-            </div>
-          </div> */}

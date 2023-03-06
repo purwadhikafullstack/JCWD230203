@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Calendars from "components/calendar/calendar";
 
 function RoomDetails() {
     const { id } = useParams();
@@ -53,7 +54,7 @@ function RoomDetails() {
                       <img
                       alt="gallery"
                       className="block h-fit w-full rounded-lg object-cover object-center"
-                      src={`http://localhost:5000/PROPERTY/${value.image_path}`}
+                      src={`http://localhost:5000/Public/PROPERTY/${value.image_path}`}
                     />
                       </div>
                     </div>
@@ -71,7 +72,7 @@ function RoomDetails() {
           Description: 
         </div>
       </section>
-      
+      <Calendars />
     </>
   );
 }

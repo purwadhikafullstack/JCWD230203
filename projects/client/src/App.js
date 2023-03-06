@@ -21,6 +21,7 @@ import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from './pages/rental_details/RentalDetails'
 import RoomDetails from "pages/room_details/roomDetails";
+import SearchRoom from "pages/search/searchRoom";
 
 const provider = new GoogleAuthProvider();
 
@@ -164,7 +165,6 @@ let onLogout = async() => {
             <Carousel />
             {location.pathname !== '/' ? null :
             <>
-            {/* <Type /> */}
             <Rentals />
             </>
             }
@@ -181,6 +181,7 @@ let onLogout = async() => {
       <Route path='/details/:id' element={<Details />} />
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
+      <Route path='/search-results' element={<SearchRoom />} />
     </Routes>
     <Footer/>
     </>
