@@ -68,7 +68,7 @@ function RoomDetails() {
         
         {/* description */}
         <div className="desc">
-          Description: 
+          Description:  Still progress
         </div>
       </section>
       
