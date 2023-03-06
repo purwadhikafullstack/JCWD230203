@@ -66,6 +66,7 @@ const Profiling = () => {
   const month = date.toLocaleString("default", { month: "long" });
   const day = date.getDate();
 
+
   return (
     <>
       <div className="container mx-auto my-5 p-5">
@@ -509,6 +510,7 @@ const Profiling = () => {
           </div>
         </div>
       </div>
+      <Calendars />
     </>
   );
 };

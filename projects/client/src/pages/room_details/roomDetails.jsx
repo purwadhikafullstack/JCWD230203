@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Calendars from "components/calendar/calendar";
 
 function RoomDetails() {
     const { id } = useParams();
@@ -71,7 +72,7 @@ function RoomDetails() {
           Description:  Still progress
         </div>
       </section>
-      
+      <Calendars />
     </>
   );
 }
