@@ -7,13 +7,10 @@ const deleteFiles = require('./../helpers/deleteFiles')
 
 
 const uploadImages = async(req, res, next) => {
-
-
     const multerResult = multerUpload.fields([{name: 'images', maxCount: 3}])
 
     multerResult(req, res, function(err){
         try {
-
             if(err) throw err
             // check if files from BE is empty
             if (Object.keys(req.files).length === 0) {

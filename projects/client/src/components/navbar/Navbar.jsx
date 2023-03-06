@@ -9,7 +9,10 @@ import axios from "axios";
 const Navbar = (props) => {
   const location = useLocation();
   const { id } = useParams();
+<<<<<<< HEAD
+=======
  
+>>>>>>> main
 
   return (
     <>

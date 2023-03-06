@@ -175,6 +175,7 @@ function App() {
     }
   });
 
+
   let onLogout = async () => {
     try {
       localStorage.removeItem("token");

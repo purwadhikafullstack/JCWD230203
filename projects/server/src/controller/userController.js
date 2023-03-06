@@ -351,7 +351,6 @@ module.exports = {
       }
     })
 
-
     return res.status(201).send({
       isError: false,
       message: "Token Valid",
