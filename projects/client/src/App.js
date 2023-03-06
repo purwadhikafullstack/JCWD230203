@@ -1,7 +1,7 @@
 import axios from "axios";
 import "./App.css";
-import { useEffect, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes,Route, useLocation } from 'react-router-dom';
 import Register from "./pages/register/register";
 import Activation from "./pages/activation/activation";
 import TenantActivation from "./pages/activation/tenantActivation";
@@ -22,6 +22,7 @@ import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from "./pages/rental_details/RentalDetails";
 import RoomDetails from "pages/room_details/roomDetails";
+import SearchRoom from "pages/search/searchRoom";
 import Transaction from "pages/transaction/transaction";
 import EditProfile from "components/edit_profile/editProfile";
 
@@ -155,7 +156,6 @@ function App() {
       let response = await signInWithPopup(auth, provider);
       setUsername(response.user.displayName);
       setRedirect(true);
-
       localStorage.setItem("tokenUid", `${response.user.uid}`);
     } catch (error) {
       if (
@@ -202,53 +202,36 @@ function App() {
 
   return (
     <>
-      <Navbar data={{ username }} myFunc={{ onLogout }} />
-      <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
-        <Carousel />
-        {location.pathname !== "/" ? null : (
-          <>
-            {/* <Type /> */}
+
+    {/* myFunc={{onLogout}} */}
+    <Navbar data={{username}} myFunc={{onLogout}}/>
+    <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
+            <Carousel />
+            {location.pathname !== '/' ? null :
+            <>
             <Rentals />
-          </>
-        )}
-      </div>
-      <Routes>
-        <Route
-          path="/register"
-          element={<Register myGoogle={{ onLoginWithGoogle }} />}
-        />
-        <Route path="/activation/:id" element={<Activation />} />
-        <Route
-          path="/login"
-          element={
-            <Login
-              myFunc={{ onLogin }}
-              isRedirect={{ redirect }}
-              myGoogle={{ onLoginWithGoogle }}
-            />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={<Dashboard name={{ tenantName }} />}
-        />
-        <Route path="/tenant-register" element={<Register />} />
-        <Route path="/tenant-activation/:id" element={<TenantActivation />} />
-        <Route
-          path="/tenant-login"
-          element={
-            <Login myFunc={{ tenantLogin }} isRedirect={{ tenantRedirect }} />
-          }
-        />
-        <Route path="/user-profile" element={<Profiling />} />
-        <Route path="/details/:id" element={<Details />} />
-        <Route path="/category/:id" element={<Rentals />} />
-        <Route path="/room-details/:id" element={<RoomDetails />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/transaction" element={<Transaction />} />
-      </Routes>
-      <Footer />
+            </>
+            }
+    </div>
+    <Routes>
+      <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
+      <Route path='/activation/:id' element={<Activation />} />
+      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
+      <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
+      <Route path='/tenant-register' element={<Register />} />
+      <Route path='/tenant-activation/:id' element={<TenantActivation />} />
+      <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
+      <Route path='/user-profile' element={<Profiling />}/>
+      <Route path='/details/:id' element={<Details />} />
+      <Route path='/category/:id' element={<Rentals />} />
+      <Route path='/room-details/:id' element={<RoomDetails />} />
+      <Route path='/search-results' element={<SearchRoom />} />
+      <Route path="/edit-profile" element={<EditProfile />} />
+      <Route path="/transaction" element={<Transaction />} />
+    </Routes>
+    <Footer/>
     </>
   );
 }
 export default App;
+

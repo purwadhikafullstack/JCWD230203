@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../supports/assets/logo.png";
-import Location from "./location";
-import Date from "./date";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineHomeWork } from "react-icons/md";
@@ -11,24 +9,7 @@ import axios from "axios";
 const Navbar = (props) => {
   const location = useLocation();
   const { id } = useParams();
-  // const [searchText, setSearchText] = ([])
-
-  // const updateSearchText = (e) => {
-  //   setSearchText(e.target.value)
-  // }
-
-  // let onSearch = async() => {
-  //   try {
-  //     let res = await axios.get(`http://localhost:5000/properties/search?name=${searchText}`)
-  //     console.log(res)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   onSearch();
-  // },[])
+ 
 
   return (
     <>
@@ -41,10 +22,7 @@ const Navbar = (props) => {
             <div className=" my-5 h-10 md:flex pl-3">
               <img src={logo} className="object-cover my-1" alt="" />
             </div>
-          </Link>
-
-          {/* Middle */}
-          
+          </Link>          
 
           {/* Right */}
           <div className="flex items-center pr-3 font-semibold text-gray-600">
