@@ -11,6 +11,7 @@ import Filter from "../filter/Filter";
 import { Link } from "react-router-dom";
 import Location from "components/location/location";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const Type = (props) => {
 
@@ -26,6 +27,9 @@ const Type = (props) => {
   const onGetData = async() => {
     console.log(form);
     try {
+
+      if(!form.property_name || !form.price_min || !form.price_max) throw {message: "Field cannot blank!"}
+      
       const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
       console.log(res);
       const searchData = res.data;
@@ -36,36 +40,23 @@ const Type = (props) => {
         sort_order: form.ascending ? form.ascending : form.descending,
         ...searchData
       });
+      toast.success("Get the Room")
+      setTimeout(() => {
       const redirectUrl = `/search-results?${searchParams.toString()}`;
       window.location.href = redirectUrl;
+      },200)
+
     } catch (error) {
-      console.log(error);
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
-  
-
-  // const onGetData = async() => {
-  //   console.log(form)
-  //   try {
-      
-  //     const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
-  //     console.log(res)
-
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-
-  // };
-
-  // const handleChange = (event) => {
-  //   const {name, value} = event.target
-  //   const _form = {
-  //     ...form,
-  //     [name]: value
-  //   }
-  //   setForm(_form)
-  // }
-
   
 
   const handleClick = async(index) => {
@@ -76,7 +67,6 @@ const Type = (props) => {
 
   useEffect(() => {
     handleClick();
-    onGetData()
   }, [])
   
 
@@ -258,7 +248,7 @@ const Type = (props) => {
                   className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
-                  onClick={onGetData}
+                  onClick={() => onGetData()}
                 >
                   Search
                 </button>
@@ -267,6 +257,7 @@ const Type = (props) => {
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };

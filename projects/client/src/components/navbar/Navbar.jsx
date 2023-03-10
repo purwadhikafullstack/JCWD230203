@@ -9,10 +9,6 @@ import axios from "axios";
 const Navbar = (props) => {
   const location = useLocation();
   const { id } = useParams();
-<<<<<<< HEAD
-=======
- 
->>>>>>> main
 
   return (
     <>
@@ -125,12 +121,15 @@ const Navbar = (props) => {
                   style={{ position: "absolute", bottom: 0 }}
                 >
                   <button
-                    className="hover:shadow-lg pointer"
+                    className="hover:shadow-lg pointer mb-5 "
                     onClick={props.myFunc.onLogout}
                   >
                     {localStorage.getItem("token") ||
                     localStorage.getItem("tokenUid")
-                      ? "Sign Out"
+                      ? 
+                      <div className="login mb-5 hover:shadow-lg pointer">
+                        Sign Out
+                      </div>
                       : null}
                   </button>
                 </div>

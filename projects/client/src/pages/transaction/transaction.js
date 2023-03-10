@@ -1,7 +1,7 @@
 import React from "react";
-import AptJktKbyBrBtnMtr from "./../../assets/apartment-jakarta-kbybaru-botanica-master-2-1.webp";
-import Bca from "./../../assets/bcavector.png";
-import Bri from "./../../assets/bankbri.png";
+import AptJktKbyBrBtnMtr from "../../supports/assets/apartment-jakarta-kbybaru-botanica-master-2-1.webp";
+import Bca from "../../supports/assets/bcavector.png";
+import Bri from "../../supports/assets/bankbri.png";
 
 const Transaction = () => {
   return (

@@ -65,16 +65,20 @@ const Rentals = () => {
                   
                     <div className="relative">
                       <div className="grad absolute w-full h-full rounded-b-[1.3rem]"></div>
-                      <div className="flex object-cover rounded-[1.3rem] sm:h-[17rem] md:h-[13rem] w-full ">
-                        {/* Background */}
-                        <Slider props={value} />
-                        {/* Title */}
-                        <div className="absolute hidden md:flex text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
-                          {value.name}
-                          <span>&#x2022;</span>
-                          <p className="text-[18px] text-slate-200"></p>
-                        </div>
+                      <div className="flex  ">
+                      {/* Background */}
+                        <img
+                          src={`http://localhost:5000/Public/PROPERTY/${value.property_images[0].image_path}`}
+                          alt=""
+                          className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full pointer"
+                        />
+                      {/* Title */}
+                      <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
+                        {value.name}
+                        <span>&#x2022;</span>
+                        <p className="text-[18px] text-slate-200"></p>
                       </div>
+                    </div>
                       
                     </div>
                   {/* Description */}

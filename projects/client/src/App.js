@@ -1,7 +1,7 @@
 import axios from "axios";
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import { Routes,Route, useLocation } from 'react-router-dom';
+import { Routes,Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import Register from "./pages/register/register";
 import Activation from "./pages/activation/activation";
 import TenantActivation from "./pages/activation/tenantActivation";
@@ -25,6 +25,9 @@ import RoomDetails from "pages/room_details/roomDetails";
 import SearchRoom from "pages/search/searchRoom";
 import Transaction from "pages/transaction/transaction";
 import EditProfile from "components/edit_profile/editProfile";
+import Calendars from "components/calendar/calendar";
+import ForgotPassword from "pages/forget_password/forgetPassword";
+import ResetPassword from "pages/reset_pasword/reset_password";
 
 const provider = new GoogleAuthProvider();
 
@@ -35,6 +38,7 @@ function App() {
   const [tenantRedirect, setTenantRedirect] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkIsLogin();
@@ -72,9 +76,7 @@ function App() {
         error.message === "Request failed with status code 404"
       ) {
         toast.error(error.response.data.message);
-      } else {
-        toast.error(error.message);
-      }
+      } 
     }
   };
 
@@ -198,6 +200,8 @@ function App() {
       } else {
         toast.error(error.message);
       }
+    }finally{
+      navigate('/');
     }
   };
 
@@ -227,8 +231,11 @@ function App() {
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/search-results' element={<SearchRoom />} />
-      <Route path="/edit-profile" element={<EditProfile />} />
-      <Route path="/transaction" element={<Transaction />} />
+      <Route path='/edit-profile' element={<EditProfile />} />
+      <Route path='/transaction' element={<Transaction />} />
+      <Route path='/forget-password' element={<ForgotPassword />} />
+      <Route path='/reset-password/:id' element={<ResetPassword />} />
+      <Route path="/calendar" element={<Calendars />} />
     </Routes>
     <Footer/>
     </>

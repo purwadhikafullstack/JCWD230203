@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, UUIDV4
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class transactions_history extends Model {
@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     status_id:  {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 4
     }
   }, {
     sequelize,

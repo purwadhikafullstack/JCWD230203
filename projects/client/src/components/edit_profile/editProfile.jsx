@@ -4,10 +4,30 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 
+
 function EditProfile() {
   //   const { register, handleSubmit, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [profilePicture, setProfilePicture] = useState([]);
+
+  useEffect(() => {
+    getProfile();
+    // if (loading) {
+    //   setTimeout(() => {
+    //     // reset({
+    //     //   first_name: '',
+    //     //   last_name: '',
+    //     //   email: '',
+    //     //   gender: '',
+    //     //   phone_number: '',
+    //     //   address: '',
+    //     //   birth_date: '',
+    //     // });
+    //     setLoading(false);
+    //   }, 2000);
+    // }
+  }, []);
 
   let onImagesValidation = (e) => {
     try {
@@ -34,20 +54,46 @@ function EditProfile() {
     }
   };
 
-  const onSubmit = async () => {
-    try {
+  let onSubmitPP = async() => {
+      try {
+
         let fd = new FormData();
         if(!selectedImages) throw {message: "please Upload Your Image"}
         selectedImages.forEach(value => {
           fd.append('images', value)
       })
 
+      let getTokenId = localStorage.getItem("token")
+      if(getTokenId){
+        let res = await axios.patch(
+          `http://localhost:5000/users/profile-picture`, fd,
+          {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
 
+      
+        
+      } catch (error) {
+        console.log(error.message)
+      }
+  }
+
+
+  const getProfile = async () => {
+    try {
+       
       let getTokenId = localStorage.getItem("token");
       if (getTokenId) {
-        let res = await axios.patch(
-          `http://localhost:5000/users/profile-picture`,
-          fd,
+
+        let response = await axios.post(
+          `http://localhost:5000/users/user-profile`,
+          {},
           {
             headers: {
               auth: getTokenId,
@@ -57,9 +103,9 @@ function EditProfile() {
           }
         );
 
-        console.log(res)
+        console.log(response.data.data)
 
-        setLoading(true);
+        setLoading(true)
       }
     } catch (error) {
       if (
@@ -71,25 +117,12 @@ function EditProfile() {
       } else {
         toast.error(error.message);
       }
+    }finally{
+      setLoading(false)
     }
   };
 
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        // reset({
-        //   first_name: '',
-        //   last_name: '',
-        //   email: '',
-        //   gender: '',
-        //   phone_number: '',
-        //   address: '',
-        //   birth_date: '',
-        // });
-        setLoading(false);
-      }, 2000);
-    }
-  }, [loading]);
+ 
 
   return (
     <>
@@ -99,7 +132,7 @@ function EditProfile() {
             <div className="flex flex-wrap ">
               <div className="grow-0 shrink-0 basis-auto block w-full lg:flex lg:w-6/12 xl:w-4/12">
                 <img
-                  src={`http://localhost:5000/Public/images/`}
+                  src={`http://localhost:5000`}
                   alt="Trendy Pants and Shoes"
                   className="w-full rounded-t-lg lg:rounded-tr-none lg:rounded-bl-lg"
                 />
@@ -213,7 +246,7 @@ function EditProfile() {
                       className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                       data-te-ripple-init
                       data-te-ripple-color="light"
-                      onClick={() => onSubmit()}
+                      onClick={() => onSubmitPP()}
                     >
                       Save Changes
                     </button>
