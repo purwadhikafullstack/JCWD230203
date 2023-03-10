@@ -65,6 +65,8 @@ function Register(props) {
       let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
       if(!regex.test(inputPassword)) throw {message: 'Password must contains letter and any number'}
       
+      setLoading(true)
+      setDisabledButton(true)
       
       // send All valid data
       let dataToSend = {
@@ -78,10 +80,8 @@ function Register(props) {
         `http://localhost:5000/users/register`,
         dataToSend
       );
-      setLoading(true)
-      setDisabledButton(true)
       
-      
+      toast.success("Register Success");
       // when its finish clear all input field
       setTimeout(() => {
         firstName.current.value = "";
@@ -89,7 +89,6 @@ function Register(props) {
         email.current.value = "";
         password.current.value = "";
         phoneNumber.current.value = "";
-        toast.success("Register Success");
         toast.success("Check your email");
       }, 2000);
 
@@ -105,6 +104,9 @@ function Register(props) {
         console.log("tes")
         toast.error(error.message)
       }
+    }finally{
+      setLoading(false)
+      setDisabledButton(false)
     }
   };
 
@@ -116,7 +118,7 @@ let onImagesValidation = (e) => {
     if(files.length > 2 ) throw {message : 'Select Just 1 Image!'}
 
     files.forEach((value) => {
-      if(value.size > 2000000) throw {message: `${value.name} more than 100kb`}
+      if(value.size > 2000000) throw {message: `${value.name} more than 2Mb`}
     })
 
     setSelectedImages(files)
@@ -126,7 +128,7 @@ let onImagesValidation = (e) => {
       console.log("tes1")
       toast.error(error.response.data.message)
     }else{
-      console.log("tes")
+      console.log("tes sini")
       toast.error(error.message)
     }
   }
@@ -145,7 +147,7 @@ let onImagesValidation = (e) => {
       let fd = new FormData();
       if(!selectedImages) throw {message: "please upload your KTP"}
       selectedImages.forEach(value => {
-          fd.append('ktp_path', value)
+          fd.append('images', value)
       })
 
       fd.append('first_name', inputFirstName)
@@ -154,29 +156,25 @@ let onImagesValidation = (e) => {
       fd.append('password', inputPassword)
       fd.append('phone_number', inputPhoneNumber)
         
-      setDisabledButton(false)
-      setLoading(false)
-
-      console.log("tes")
-
-      let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
       
-      console.log(tenantRegister)
-
+      let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
 
       toast.success('Register Success')
       toast.success('Check your email')
+      setDisabledButton(false)
+      setLoading(false)
       
-
-
      } catch (error) {
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
+        console.log("masuk sini")
         toast.error(error.response.data.message)
       }else{
         console.log("tes")
         toast.error(error.message)
       }
+     }finally{
+      setDisabledButton(false)
+      setLoading(false)
      }
   }
 
@@ -256,7 +254,7 @@ let onImagesValidation = (e) => {
                       // disabled={state.disabledButton}
                     >
                       {loading ? 
-                      <div className="px-7 py-3">
+                      <div className="px-7 py-1 text-xs">
                         <Loader />
                       </div>
                        : "Create Account"}
@@ -370,7 +368,7 @@ let onImagesValidation = (e) => {
                       // disabled={disabledButton}
                       // disabled={state.disabledButton}
                     >
-                      {loading ? "Loading.." : "SignUp"}
+                      {loading ? <Loader /> : "Create Account"}
                     </button>
                   </div>
                 </form>

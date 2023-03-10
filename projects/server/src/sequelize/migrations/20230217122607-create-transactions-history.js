@@ -15,7 +15,8 @@ module.exports = {
       },
       status_id:  {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 4
       },
       createdAt: {
         allowNull: false,

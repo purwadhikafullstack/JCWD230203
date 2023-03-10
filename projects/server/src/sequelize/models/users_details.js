@@ -37,7 +37,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'users_details',
-    freezeTableName: true
+    freezeTableName: true,
+    createdAt: false,
+    updatedAt: false
   });
   return users_details;
 };

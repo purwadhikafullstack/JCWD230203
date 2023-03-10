@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "components/loader/loader";
 
 
 function Activation() {
@@ -30,21 +31,25 @@ function Activation() {
           id : id,
           otp: otp
         }
+
+        setLoading(true)
         
         let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
         console.log(confirmation)
-        setLoading(true)
+        
         toast.success("User Validate Success")
         
         setTimeout(() => {
-          setLoading(false)
           setActive(true)
         }, 2000)
         
         
       } catch (error) {
+        setLoading(false)
         console.log(error.response.data.message)
         toast.error(error.response.data.message)
+      }finally{
+          setLoading(false)
       }
     }
 
@@ -60,10 +65,12 @@ function Activation() {
         await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
         toast.success("Check your Email")
         setClickCount(clickCount + 1)
-        setLoading(false)
       } catch (error) {
+        setLoading(false)
         console.log(error)
         toast.error(error.response.data.message)
+      }finally{
+        setLoading(false)
       }
     }
 
@@ -127,7 +134,7 @@ function Activation() {
                   OTP expired ?
                 </span>
                 {clickCount < 5 ? <span className="my-main pointer">
-                  {loading ? 'Loading..' : <button  onClick={(event) => onResend(event)}>Click here!</button>}
+                  {loading ? <Loader /> : <button  onClick={(event) => onResend(event)}>Click here!</button>}
                 </span> : <p>Maximum request OTP is 5 Times</p>}
               </div>
           </form>

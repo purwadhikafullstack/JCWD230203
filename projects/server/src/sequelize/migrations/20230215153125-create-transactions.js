@@ -20,6 +20,7 @@ module.exports = {
       status_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 4
       },
       total_price: {
         type: Sequelize.INTEGER,
@@ -34,12 +35,20 @@ module.exports = {
         allowNull: false
       },
       expired: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       image_path: {
         type: Sequelize.TEXT,
         allowNull: true
+      },
+      total_guest: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      order_id: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

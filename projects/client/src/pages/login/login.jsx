@@ -98,7 +98,7 @@ function Login(props) {
                     Remember me
                   </label>
                 </div>
-                <a href="#!" className="text-gray-800">
+                <a href="/forget-password" className="text-gray-800">
                   Forgot password?
                 </a>
               </div>

@@ -10,6 +10,12 @@ const Profiling = () => {
     getProfile();
   }, []);
 
+  const [show, setShow] = useState({
+    editProfile: false,
+    changePicture: false,
+    changePassword: false,
+  });
+
   const [profile, setProfile] = useState({
     first_name: "",
     last_name: "",
@@ -21,6 +27,26 @@ const Profiling = () => {
     birth_date: "",
     picture_path: "",
   });
+
+  const handleShowProfile = (editProfile) => {
+    setShow((prevState) => ({ ...prevState, [editProfile]: true }));
+  };
+  const handleShowPicture = (changePicture) => {
+    setShow((prevState) => ({ ...prevState, [changePicture]: true }));
+  };
+  const handleShowPassword = (changePassword) => {
+    setShow((prevState) => ({ ...prevState, [changePassword]: true }));
+  };
+
+  const handleCloseProfile = (editProfile) => {
+    setShow((prevState) => ({ ...prevState, [editProfile]: false }));
+  };
+  const handleClosePicture = (changePicture) => {
+    setShow((prevState) => ({ ...prevState, [changePicture]: false }));
+  };
+  const handleClosePassword = (changePassword) => {
+    setShow((prevState) => ({ ...prevState, [changePassword]: false }));
+  };
 
   const getProfile = async () => {
     try {
@@ -66,7 +92,6 @@ const Profiling = () => {
   const month = date.toLocaleString("default", { month: "long" });
   const day = date.getDate();
 
-
   return (
     <>
       <div className="container mx-auto my-5 p-5">
@@ -77,7 +102,7 @@ const Profiling = () => {
             <div className="bg-white p-3 border-t-4 border-[#c9403e]">
               <div className="image overflow-hidden">
                 <img
-                  src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp"
+                  src={profile?.picture_path?.length === 0 ? `https://tecdn.b-cdn.net/img/new/avatars/2.webp` : `http://localhost:5000/${profile?.picture_path}`}
                   className="w-24 rounded-full shadow-lg"
                   alt="Avatar"
                 />
@@ -125,24 +150,40 @@ const Profiling = () => {
                       data-te-dropdown-menu-ref
                     >
                       <li>
-                        <Link to='/edit-profile'>
                         <div
                           className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                          href="/edit-profile"
+                          // onClick={() => handleShowPicture("changePicture")}
+                          data-te-target="#changePicture"
+                          data-te-toggle="modal"
+                          role="button"
                           data-te-dropdown-item-ref
                         >
-                          Change Profile Picture
+                          Change picture
                         </div>
-                        </Link>
                       </li>
                       <li>
-                        <a
+                        <div
                           className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-                          href="#"
+                          // onClick={() => handleShowProfile("editProfile")}
                           data-te-dropdown-item-ref
+                          data-te-target="#editProfile"
+                          data-te-toggle="modal"
+                          role="button"
                         >
-                          Delete Profile Picture
-                        </a>
+                          Edit Profile
+                        </div>
+                      </li>
+                      <li>
+                        <div
+                          className="block w-full whitespace-nowrap bg-transparent py-2 px-4 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
+                          // onClick={() => handleShowPassword("changePassword")}
+                          data-te-dropdown-item-ref
+                          data-te-target="#changePassword"
+                          data-te-toggle="modal"
+                          role="button"
+                        >
+                          Change Password
+                        </div>
                       </li>
                     </ul>
                   </div>
@@ -320,7 +361,7 @@ const Profiling = () => {
             </div>
             {/* <!-- End of friends card --> */}
           </div>
-          
+
           {/* <!-- Right Side --> */}
           <div className="w-full md:w-9/12 mx-2 h-64">
             {/* <!-- Profile tab --> */}
@@ -381,22 +422,44 @@ const Profiling = () => {
                     <div className="px-4 py-2">+62 {profile?.phone_number}</div>
                   </div>
                   <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">Current Address</div>
+                    <div className="px-4 py-2 font-semibold">
+                      Current Address
+                    </div>
                     <div className="px-4 py-2">{profile?.address}</div>
                   </div>
                   <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">Permanant Address</div>
-                    <div className="px-4 py-2">New Karawaci, Tangerang, Banten</div>
+                    <div className="px-4 py-2 font-semibold">
+                      Permanant Address
+                    </div>
+                    <div className="px-4 py-2">
+                      New Karawaci, Tangerang, Banten
+                    </div>
                   </div>
                 </div>
               </div>
-              <button className="block w-full flex justify-center  text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
-                <Modal />
-              </button>
+             
+               <Modal
+                showEditProfile={show.editProfile}
+                // handleCloseProfile={() => handleCloseProfile("editProfile")}
+                profile={profile}
+              />
+              <Modal
+                showChangePicture={show.changePicture}
+                handleClosePicture={() => handleClosePicture("changePicture")}
+              />
+              <Modal
+                showChangePassword={show.changePassword}
+                handleClosePassword={() =>
+                  handleClosePassword("changePassword")
+                }
+              />
+              {/* </button> */}
             </div>
             {/* <!-- End of about section --> */}
 
-            <div className="my-4"></div>
+            <div className="my-4">
+             
+            </div>
 
             {/* <!-- Experience and education --> */}
             <div className="bg-white p-3 shadow-sm rounded-sm">
@@ -481,19 +544,25 @@ const Profiling = () => {
                         <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">
+                          Mar 15, 2023
+                        </div>
                       </li>
                       <li>
                         <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">
+                          Mar 15, 2023
+                        </div>
                       </li>
                       <li>
                         <div className="text-[#df6e6c]">
                           Villa Bumi Andung Bandung
                         </div>
-                        <div className="text-gray-500 text-xs">Mar 15, 2023</div>
+                        <div className="text-gray-500 text-xs">
+                          Mar 15, 2023
+                        </div>
                       </li>
                       <li>
                         <button className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
@@ -510,7 +579,7 @@ const Profiling = () => {
           </div>
         </div>
       </div>
-      <Calendars />
+      {/* <Calendars /> */}
     </>
   );
 };

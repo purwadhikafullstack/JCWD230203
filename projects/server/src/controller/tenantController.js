@@ -26,6 +26,7 @@ module.exports = {
     try {
 
       let { first_name, last_name, email, password, phone_number } = req.body;
+      console.log("tes")
 
       // input Validation if its not have a length
       if (
@@ -71,10 +72,15 @@ module.exports = {
           phone_number,
           otp_code: otp,
           otp_created_at: new Date(),
-          ktp_path: req.files.ktp_path[0].path, // get file data from req.file object
+          ktp_path: req.files.images[0].path, // get file data from req.file object
         },
         { transaction: t }
       );
+
+      await db.tenant_details.create(
+        {tenant_id: createTenant.dataValues.id},
+        {transaction: t}
+      )
 
       const template = await fs.readFile(
         "./template/confirmation.html",

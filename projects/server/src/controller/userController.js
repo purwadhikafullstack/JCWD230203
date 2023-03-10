@@ -19,6 +19,7 @@ const deleteFiles = require('./../helpers/deleteFiles')
 
 // import HttpResponse
 const HttpResponse = require("../helpers/httpResponse");
+const { Console } = require("console");
 
 const fs = require("fs").promises;
 
@@ -105,6 +106,12 @@ module.exports = {
         },
         { transaction: t }
       );
+
+
+      await db.users_details.create(
+        {users_id: createUsers.dataValues.id},
+        {transaction: t}
+      )
 
       // make validation using email
       const template = await fs.readFile(
@@ -468,12 +475,164 @@ module.exports = {
           message: "Success Updating Profile Picture",
           data: img
         })
+
+        
     } catch (error) {
       deleteFiles(req.files)
       return res.status(400).send({
         isError: true,
         message: error.message,
         error: error
+      })
+    }
+  },
+
+  changedPassword: async(req, res) => {
+
+    const {old_password, new_password} = req.body;
+
+    try {
+        const data = await users.findOne({
+          where: {id: req.dataToken.id}
+        })
+
+        let matchPassword = await hashMatch(
+          old_password, 
+          data.dataValues.password)
+
+        if(!matchPassword){
+          return res.status(400).send({
+            isError: true,
+            message: "Password not match",
+            data: null
+          })
+        }
+
+        await users.update(
+          {password: await hashPassword(new_password)},
+          {where: {id: req.dataToken.id}}
+        );
+        return res.status(200).send({
+          isError: false,
+          message: "Password update Success",
+          data: null
+        })
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null
+      })
+    }
+  },
+
+  forgotPassword: async(req, res) => {
+    try {
+        let {email} = req.body;
+
+        if(!email){
+          return res.status(400).send({
+            isError: true,
+            message: "Please Input Your Email"
+          })
+        }
+
+        let findEmail = await users.findOne({
+          where: {email}
+        })
+
+        if(!findEmail){
+          return res.status(400).send({
+            isError: true,
+            message: "Email Not Found!",
+            data: null
+          })
+        }
+
+        const first_name = findEmail.dataValues.first_name
+        
+        const template = await fs.readFile(
+          "./template/forgetPassword.html",
+        "utf-8"
+        )
+
+        const templateCompile = await handlebars.compile(template);
+        const newTemplate = templateCompile({
+          first_name,
+          url: `http://localhost:3000/reset-password/${findEmail.dataValues.id}`
+        })
+
+        await transporter.sendMail({
+          from: "Vcation",
+          to: email,
+          Subject: "Reset Password",
+          html: newTemplate
+        })
+
+        return res.status(200).send({
+          isError: false,
+          message: "Check Your Email for reset password",
+          data: null
+        })
+
+
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null
+      })
+    }
+  },
+
+  resetPassword: async(req, res) => {
+    try {
+      const {id, password, confirm_password} = req.body;
+      console.log(req.body)
+
+      const findUser = await users.findOne({
+        where: {id: id}
+      }) 
+
+
+      if (!findUser) {
+        return res.status(400).send({
+          isError: true,
+          message: "User Not Found!",
+          data: null
+        })
+      }
+
+      if(!password){
+        return res.status(400).send({
+          isError: true,
+          message: "Password cannot Blank",
+          data: null
+        })
+      }
+
+      if(password !== confirm_password){
+        return res.status(400).send({
+          isError: true,
+          message: "Password not match",
+          data: null
+        })
+      }
+
+      await findUser.update(
+        {password: await hashPassword(password)},
+      )
+
+      return res.status(200).send({
+        isError: false,
+        message: "Update Password Success!",
+        data: null
+      })
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null
       })
     }
   }

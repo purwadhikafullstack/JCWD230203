@@ -14,6 +14,9 @@ Router.post('/keep-login', jwtVerify, userController.keepLogin)
 Router.post('/user-profile', jwtVerify, userController.getUser)
 Router.patch('/edit', jwtVerify, userController.updateUser)
 Router.patch('/profile-picture', jwtVerify, upload, userController.editProfilePict)
+Router.post('/change-password', jwtVerify, userController.changedPassword)
+Router.post('/forget-password', userController.forgotPassword)
+Router.post('/reset-password/:id', userController.resetPassword)
 
 
 module.exports = Router;    

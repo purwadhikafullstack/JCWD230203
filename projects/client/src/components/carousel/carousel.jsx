@@ -2,6 +2,7 @@ import React, {useRef, useState, useEffect} from "react";
 import Date from "./../date/date";
 import Location from "./../location/location";
 import { useLocation } from "react-router-dom";
+import CalendarFunc from "pages/room_details/Calendar";
 import axios from "axios";
 
 
@@ -62,6 +63,7 @@ function Carousel() {
     }
 
     setForm(_form)
+    console.log(_form)
 
     // let _error = {...error}
 

@@ -202,7 +202,6 @@ module.exports = {
             ],
           },
         ],
-        // Op.ilke not casesensitive, so it will get all property
         where: name ? { name: { [Op.like]: `%${name}%` } } : {},
         offset,
         limit,
@@ -334,22 +333,10 @@ module.exports = {
   getRoomByDateAndLocation: async (req, res) => {
     const { check_in, check_out, city, page = 1 } = req.query;
     console.log(req.query)
-    // const checkInDate = new Date(check_in);
-    // const checkOutDate = new Date(check_out);
-
-    // const formattedCheckIn = moment(checkInDate, "YYYY-MM-DD", true).format(
-    //   "YYYY-MM-DD HH:mm:ss"
-    // );
-    // const formattedCheckOut = moment(checkOutDate, "YYYY-MM-DD", true).format(
-    //   "YYYY-MM-DD HH:mm:ss"
-    // );
-
     let page_size = 10;
     const offset = (page - 1) * page_size;
     const limit = page_size;
 
-    // console.log(formattedCheckIn);
-    // console.log(formattedCheckOut);
     try {
       const transaction = await db.location.findAll({
         where: { city_id: city },
@@ -358,6 +345,9 @@ module.exports = {
             model: db.property,
             include: [
               {
+                model: db.property_image
+              },
+              {
                 model: db.room,
                 include: [
                   {
@@ -365,20 +355,20 @@ module.exports = {
                   },
                   {
                     model: db.transactions,
-                    // where: {
-                    //   [Op.or]: [
-                    //     {
-                    //       check_in: {
-                    //         [Op.between]: [check_in, check_out],
-                    //       },
-                    //     },
-                    //     {
-                    //       check_out: {
-                    //         [Op.between]: [check_in, check_out],
-                    //       },
-                    //     },
-                    //   ],
-                    // },
+                    where: {
+                      [Op.or]: [
+                        {
+                          check_in: {
+                            [Op.between]: [check_in, check_out],
+                          },
+                        },
+                        {
+                          check_out: {
+                            [Op.between]: [check_in, check_out],
+                          },
+                        },
+                      ],
+                    },
                     required: false,
                   },
                 ],
@@ -390,13 +380,17 @@ module.exports = {
         limit,
       });
 
-      const total_count = await db.room.count();
+      console.log("masuk")
+      console.log(transaction)
+
+      const total_count = await db.location.count();
       const total_pages = Math.ceil(total_count / page_size);
 
       return res.status(200).json({
         isError: false,
         message: "Get room by query success",
-        data: transaction,
+        data: 
+        transaction,
         total_count,
         total_pages,
       });
