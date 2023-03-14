@@ -161,7 +161,7 @@ left: 5rem;
 }
 
 .close-cal{
-    background-color: #ff385c;
+    background-color: #c9403e;
     height: 3.5rem;
     width: 12rem;
     transition: 400ms;
@@ -174,7 +174,7 @@ left: 5rem;
 }
 
 .checkout-btn{
-    background-color: #ff385c;
+    background-color: #c9403e;
     height: 3.8rem;
     width: 12rem;
     transition: 400ms;
@@ -190,7 +190,7 @@ left: 5rem;
 .checkout-btn-after{
     top: 21.3rem;
     position: absolute;
-    background-color: #ff385c;
+    background-color: #c9403e;
     height: 3.8rem;
     width: 12rem;
     transition: 400ms;
