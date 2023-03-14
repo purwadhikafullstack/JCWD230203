@@ -45,6 +45,7 @@
 
 .single-page-main-pic {
     width: 42.5rem;
+    height: 32rem;
     position: absolute;
     left: 3rem;
     top: 10rem;
@@ -69,7 +70,7 @@
     position: absolute;
     top: 10.4rem;
     left: 15rem;
-    color: #ff385c;
+    color: #c9403e;
     font-weight: 600;
     font-size: 19px;
 }
@@ -92,13 +93,13 @@
 
 .features-text {
     position: absolute;
-    top: 40rem;
+    top: 43rem;
     left: 7rem;
 }
 
 .actual-features {
     position: absolute;
-    top: 42rem;
+    top: 45rem;
     left: 7rem;
 }
 
@@ -164,7 +165,7 @@
     top: 43rem;
     background-color: white;
     width: 25rem;
-    height: 31rem;
+    height: 25rem;
     left: 60rem;
 
     border: 1px solid rgb(221, 221, 221);
@@ -208,13 +209,13 @@
 
 .reserve-date-button-holder {
     position: absolute;
-    top: 50rem;
+    top: 47rem;
     left: 65rem;
     width: 20rem;
 }
 
 .reserve-date-button {
-    background-color: #ff385c;
+    background-color:#c9403e;
     height: 3.5rem;
     width: 12rem;
     transition: 400ms;
@@ -230,7 +231,7 @@
 
 .calendarHolder {
     position: absolute;
-    top: -25rem;
+    top: -31rem;
     left: 27rem;
     z-index: 9999999999999999999;
 }
@@ -266,7 +267,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    top: 60rem;
+    top: 53rem;
     left: 62rem;
 }
 
@@ -275,23 +276,23 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    top: 56.5rem;
-    left: 73rem;
+    top: 53rem;
+    left: 71rem;
 }
 
 .line-total {
     position: absolute;
-    top: 68.5rem;
+    top: 63rem;
     left: 60rem;
 }
 
 .price-total-text {
-    top: 71.1rem;
+    top: 65.1rem;
     left: 63rem;
 }
 
 .price-total {
-    top: 71.1rem;
+    top: 65.1rem;
     left: 67.6rem;
 }
 
