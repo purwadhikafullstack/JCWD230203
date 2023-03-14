@@ -57,12 +57,12 @@ const Rentals = () => {
       <Type />
       {location.pathname === `/category/${id}` ? 
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-6 px-10">
         {type
           ? type.map((value) => { 
               return (
                 <div className="">
-                  
+                    <Link to={`/details/${value.id}`}>
                     <div className="relative">
                       <div className="grad absolute w-full h-full rounded-b-[1.3rem]"></div>
                       <div className="flex  ">
@@ -74,7 +74,7 @@ const Rentals = () => {
                         />
                       {/* Title */}
                       <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
-                        {value.name}
+                        {/* {value.name} */}
                         <span>&#x2022;</span>
                         <p className="text-[18px] text-slate-200"></p>
                       </div>
@@ -82,19 +82,18 @@ const Rentals = () => {
                       
                     </div>
                   {/* Description */}
-                  <Link to={`/details/${value.id}`}>
-                  <div className="pt-3 flex justify-between items-start">
+                  <div className="pt-3 flex justify-between items-start mx-10">
                     {/* Left */}
-                    <div className="">
-                      <p className="max-w-[17rem] font-semibold text-[17px]">
+                    <div className="max-w-[17rem]">
+                      <p className=" font-semibold text-[17px]">
                         {/* {title} */}
                         {value.name}
                       </p>
-                      <p className="max-w-[17rem]  text-[16px]-mt-1 text-gray-500">
-                      Start from Rp. {value.rooms[1].price.toLocaleString()}
+                      <p className="text-[16px]-mt-1">
+                      <span className="text-gray-500">Start from </span> <span className="font-black"> Rp. {value.rooms[1].price.toLocaleString()}</span>
                       </p>
-                      <p className="max-w-[17rem] font-semibold text-[17px]">
-                        Click For See the Room
+                      <p className="font-semibold text-[17px]">
+                        {/* Click For See the Room */}
                       </p>
                     </div>
                     
@@ -113,7 +112,7 @@ const Rentals = () => {
       :
       
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {properties
           ? properties.map((value) => {
               return (
@@ -130,7 +129,7 @@ const Rentals = () => {
                         />
                       {/* Title */}
                       <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
-                        {value.name}
+                        {/* {value.name} */}
                         <span>&#x2022;</span>
                         <p className="text-[18px] text-slate-200"></p>
                       </div>
@@ -138,18 +137,18 @@ const Rentals = () => {
                     
                   </div>
                   {/* Description */}
-                  <div className="pt-3 flex justify-between items-start">
+                  <div className="pt-3 flex justify-between items-start mx-10">
                     {/* Left */}
                     <div className="">
-                      <p className="max-w-[17rem] font-semibold text-[17px]">
+                      <p className="max-w-[17rem] font-bold text-[17px]">
                         {/* {title} */}
                         {value.name}
                       </p>
-                      <p className="max-w-[17rem]  text-[16px]-mt-1 text-gray-500">
-                      Start from Rp. {value.rooms[1].price.toLocaleString()}
+                      <p className="max-w-[17rem]  text-[16px]-mt-1">
+                      <span className="text-gray-500">Start from </span> <span className="font-black"> Rp. {value.rooms[1].price.toLocaleString()}</span>
                       </p>
                       <p className="max-w-[17rem] font-semibold text-[17px]">
-                        Click For See the Room
+                        {/* Click For See the Room */}
                       </p>
                     </div>
                     
