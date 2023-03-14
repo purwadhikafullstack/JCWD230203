@@ -3,7 +3,7 @@ import "../../supports/styles/SinglePageMiddle.css"
 import section3 from "../../supports/styles/av.png"
 import { useParams } from 'react-router-dom'
 import { FaStar } from "react-icons/fa"
-import { placesStore } from './../../supports/assets/Store'
+// import { placesStore } from './../../supports/assets/Store'
 import rev1 from "../../supports/styles/stars1.png"
 import rev2 from "../../supports/styles/stars2.png"
 import reviews from "../../supports/styles/rev.png";
@@ -12,21 +12,21 @@ import modalPic from "../../supports/styles/pic.png"
 
 
 
-const SinglePageMiddle = () => {
+const SinglePageMiddle = (props) => {
 
     const params = useParams();
     const { id } = params;
 
-    const placeClicked = placesStore.find((item) => item.id === id)
+    // const placeClicked = placesStore.find((item) => item.id === id)
 
-    const { stars } = placeClicked || {}
+    // const { stars } = placeClicked || {}
 
     return (<div>
 
         <p className='spmLine text-gray-300'>__________________________________________________________________________________________________________</p>
 
         <div className='section1-hold'>
-            <img src='https://a0.muscache.com/im/pictures/54e427bb-9cb7-4a81-94cf-78f19156faad.jpg' className='w-36' />
+            <img src='http://localhost:5000/Public/assets/logo.png' className='w-36' />
 
             <p>Every booking includes free protection from Host cancellations,
                 listing inaccuracies, and other issues like trouble checking in.</p>
@@ -57,7 +57,7 @@ const SinglePageMiddle = () => {
             <FaStar className='text-2xl st' />
         </div>
 
-        <p className='spm-rev text-2xl'>{stars}</p>
+        {/* <p className='spm-rev text-2xl'>{stars}</p> */}
 
         <div className='star-calc-hold'>
 

@@ -12,11 +12,14 @@ function RoomDetails() {
     onGetData();
   }, []);
 
+  
+
   const onGetData = async () => {
     try {
       const res = await axios.get(
         `http://localhost:5000/properties/room-details?room_id=${id}`
       );
+      console.log(res)
       setDetails(res.data.data);
       
     } catch (error) {
