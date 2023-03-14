@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { Sequelize } = require("./../sequelize/models");
 const db = require("../sequelize/models");
 const { offset } = require("@popperjs/core");
@@ -9,7 +9,7 @@ const property = db.property;
 module.exports = {
   getAllProperty: async (req, res) => {
     const { page = 1 } = req.query;
-    const page_size = 10;
+    const page_size = 9;
     const offset = (page - 1) * page_size;
     const limit = page_size;
 
@@ -228,6 +228,7 @@ module.exports = {
 
   getPropertyByRooms: async (req, res) => {
     const { room_id } = req.query;
+
     try {
       const rooms = await db.room.findAll({
         where: { id: room_id },
@@ -236,13 +237,24 @@ module.exports = {
             model: db.room_image,
             as: "room_images",
           },
-        ],
+          {
+            model: property,
+            as: "property",
+            include: [
+              {model: db.tenant},
+              {model: db.location,
+              include: {model: db.city}}
+            
+            ]
+          }
+        ]
+        ,
       });
 
       res.status(200).send({
         isError: false,
         message: "Get Room details Success",
-        data: rooms,
+        data: rooms
       });
     } catch (error) {
       res.status(400).send({

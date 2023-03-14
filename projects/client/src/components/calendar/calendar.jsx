@@ -1,18 +1,24 @@
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-// import "@fullcalendar/core/main.css";
-// import "@fullcalendar/daygrid/main.css";
-// import "@fullcalendar/timegrid/main.css";
+// import FullCalendar from "@fullcalendar/react";
+// import dayGridPlugin from "@fullcalendar/daygrid";
+// import timeGridPlugin from "@fullcalendar/timegrid";
+// // import "@fullcalendar/core/main.css";
+// // import "@fullcalendar/daygrid/main.css";
+// // import "@fullcalendar/timegrid/main.css";
+
 
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-export default function Calendars(props) {
-  // const { price } = props;
+export default function Calendars(props){
+  // console.log(props??rates?..details?.details?.[0]?.price)
+  const params = useParams();
+  const { id } = params;
 
-  const price = [
-    {"date": "2023-03-10", "price": 100000}
-  ]
+  // const price = [
+  //   {"date": "2023-03-10", "price": 100000}
+  // ]
+  
   const [year, setYear] = useState(null);
   const [month, setMonth] = useState(null);
   const [listMonth, setListMonth] = useState([
@@ -32,11 +38,12 @@ export default function Calendars(props) {
   ]);
   const [days, setDays] = useState(0);
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
-  let onCreateCalendar = (btn, year1 = new Date().getUTCFullYear(), month1 = new Date().getMonth() + 1) => {
-    if(btn === '+'){
+  let onCreateCalendar = async(btn, year1 = new Date().getUTCFullYear(), month1 = new Date().getMonth() + 1) => {
+    try {
+      const rates = await axios.get(`http://localhost:5000/transaction/rates?room_id=${id}`)
+
+      if(btn === '+'){
         let curMonth = month 
         curMonth++
         let curYear = year
@@ -51,7 +58,7 @@ export default function Calendars(props) {
         for(let i=1; i<=new Date(curYear, curMonth, 0).getDate(); i++){
             dates.push(i)
         }
-        console.log(dates)
+
         setYear(curYear)
         setMonth(curMonth)
         setDays(dates)
@@ -78,34 +85,44 @@ export default function Calendars(props) {
         let dates = [];
 
         for(let i=1; i<=new Date(year1, month1, 0).getDate(); i++){
-            dates.push(i)
-        }
+          rates?.data?.data?.forEach(value => {
+
+            if((new Date(`${year1}-${month1.toLocaleString('en-US', {
+              minimumIntegerDigits: 2,
+              useGrouping: false
+            })}-${i.toLocaleString('en-US', {
+              minimumIntegerDigits: 2,
+              useGrouping: false
+            })}`).getTime() >= new Date(value?.start_date).getTime()) && (new Date(`${year1}-${month1.toLocaleString('en-US', {
+              minimumIntegerDigits: 2,
+              useGrouping: false
+            })}-${i.toLocaleString('en-US', {
+              minimumIntegerDigits: 2,
+              useGrouping: false
+            })}`).getTime() <= new Date(value?.end_date).getTime()) ){
+              dates.push({date: i, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
+          }else{
+              dates.push({date: i, discount: 0, markup: 0 })
+          }
+          })
+      }
         setYear(year1)
         setMonth(month1)
         setDays(dates)
     }
-}
-
-let onSelectedDate = (value, month, year) => {
-    if(startDate === null){
-        console.log('Masuk1')
-        setStartDate({ date: value, month: month, year: year })
-    }else if(startDate !== null && endDate === null){
-        console.log('Masuk2')
-        setEndDate({ date: value, month: month, year: year })
-    }else if(startDate !== null && endDate !== null){
-        console.log('Masuk3')
-        setStartDate({ date: value, month: month, year: year })
-        setEndDate(null)
+    } catch (error) {
+      console.log(error)
     }
 }
+
+
 
 useEffect(() => {
     onCreateCalendar()
 }, [])
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 mx-6">
       <h1 className="text-3xl font-bold mb-3">Calendar</h1>
       <h5 className="text-lg font-medium mb-3">
         {year} - {listMonth[month]}
@@ -113,8 +130,7 @@ useEffect(() => {
       <div>
         <div className="grid grid-cols-7 gap-2">
           {days
-            ? days.map((value, price) => {
-                console.log(value);
+            ? days.map((value) => {
                 return (
                   <>
                     <div
@@ -126,19 +142,19 @@ useEffect(() => {
                           new Date(`${year}-${month}-${value}`).getTime() /
                             86400000 >=
                             new Date(
-                              `${startDate?.year}-${startDate?.month}-${startDate?.date}`
+                              `${props?.rates?.startDate?.year}-${props?.rates?.startDate?.month}-${props?.rates?.startDate?.date}`
                             ).getTime() /
                               86400000 &&
                           new Date(`${year}-${month}-${value}`).getTime() /
                             86400000 <=
                             new Date(
-                              `${endDate?.year}-${endDate?.month}-${endDate?.date}`
+                              `${props?.rates?.endDate?.year}-${props?.rates?.endDate?.month}-${props?.rates?.endDate?.date}`
                             ).getTime() /
                               86400000
                             ? "rounded-full bg-blue-500 text-white cursor-pointer"
-                            : value < startDate?.date &&
-                              month <= startDate?.month &&
-                              year <= startDate?.year
+                            : value < props?.rates?.startDate?.date &&
+                              month <= props?.rates?.startDate?.month &&
+                              year <= props?.rates?.startDate?.year
                             ? "text-gray-400 cursor-pointer"
                             : null
                         }
@@ -149,14 +165,14 @@ useEffect(() => {
                               : "8px 16px",
                         }}
                         onClick={
-                          (value < startDate?.date &&
-                          month <= startDate?.month &&
-                          year <= startDate?.year ) && (endDate === null)
+                          (value < props?.rates?.startDate?.date &&
+                          month <= props?.rates?.startDate?.month &&
+                          year <= props?.rates?.startDate?.year ) && (props?.rates?.endDate === null)
                             ? null
-                            : () => onSelectedDate(value, month, year)
+                            : () => props?.rates?.onSelectedDate(value, month, year, value.discount)
                         }
                       >
-                        {value}
+                        {value?.discount ? value?.discount : value?.date}
                       </span>
                     </div>
                   </>

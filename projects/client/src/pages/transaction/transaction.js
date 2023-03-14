@@ -1,9 +1,115 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AptJktKbyBrBtnMtr from "../../supports/assets/apartment-jakarta-kbybaru-botanica-master-2-1.webp";
 import Bca from "../../supports/assets/bcavector.png";
 import Bri from "../../supports/assets/bankbri.png";
+import { format } from "date-fns";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import toast, { Toaster }from "react-hot-toast";
+import Loader from "components/loader/loader";
 
 const Transaction = () => {
+  const getTokenId = localStorage.getItem("token");
+  const [details, setDetails] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [loading, setLoading] = useState(false)
+  const [payment, setPayment] = useState(false)
+  const data = useParams();
+
+  const startDate = details?.[0]?.check_in?.split("T")[0]?.split("-")[2];
+  const endDate = details?.[0]?.check_out?.split("T")[0]?.split("-")[2];
+  // const format1 = details?.[0]?.check_in?.split("T")[0]
+  // const newStartDate = format(new Date(format1), 'MMM dd, yyyy')
+  // const format2 = details?.[0]?.check_out?.split("T")[0]
+  // const newEndDate = format(new Date(format2), 'MMM dd, yyyy')
+
+  var daysCheck = endDate - startDate;
+
+
+  useEffect(() => {
+    transaction();
+  }, []);
+
+  const transaction = async () => {
+    try {
+      if (getTokenId) {
+        const res = await axios.post(
+          `http://localhost:5000/transaction/data`,
+          {
+            room_id: data?.id,
+            order_id1: data?.order_id1,
+            order_id2: data?.order_id2,
+          },
+          {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setDetails(res?.data?.data);
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  };
+
+  let onImagesValidation = (e) => {
+    try {
+      let files = [...e.target.files]
+      if(files.length > 2) throw {message: "Select Just 1 Image"};
+
+      files.forEach((value) => {
+        if(value.size > 2000000) throw {message: `${value.name} more than 2Mb`}
+      });
+
+      setSelectedImages(files);
+      toast.success("Upload success!");
+    } catch (error) {
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+  }
+
+  const uploadPayment = async() => {
+    try {
+      setLoading(true)
+      let fd = new FormData();
+      if(!selectedImages) throw {message: "Please Upload Your Payment Proof"}
+      selectedImages.forEach((value) => {
+        fd.append("images", value);
+      })
+
+      fd.append('room_id', data?.id)
+      fd.append('order_id1', data?.order_id1)
+      fd.append('order_id2', data?.order_id2)
+
+        const res = await axios.patch(`http://localhost:5000/transaction/payment-proof`, fd)
+
+        console.log(res)
+        if(res.status === 200) {
+          setPayment(true)
+          toast.success(res.data.message)
+        }
+    } catch (error) {
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+        toast.error(error.response.data.message)
+      }else{
+        toast.error(error.message)
+      }
+    }finally{
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       <div className="px-32 pt-5">
@@ -43,34 +149,150 @@ const Transaction = () => {
         <div className="w-full px-44">
           <div className="md:flex items-start pt-10">
             <div className="px-3 md:w-7/12 lg:pr-10">
-              <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
-                <div className="pb-3">
-                  <h7 className="font-extrabold uppercase text-xl">
-                    Hotel & Room Details
-                  </h7>
-                </div>
-                <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
-                  <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
-                    <img src={AptJktKbyBrBtnMtr} />
-                  </div>
-                  <div className="flex-grow pl-3">
-                    <h7 className="font-bold uppercase">
-                      Apartment Botanica Jakarta
-                    </h7>
-                    <div>
-                      <h7 className="font-bold uppercase">Master Bedroom</h7>
+              {details?.length > 1 ? (
+                <>
+                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
+                    <div className="pb-3">
+                      <h7 className="font-extrabold uppercase text-xl">
+                        Hotel & Room Details
+                      </h7>
                     </div>
-                    <p className="text-gray-500 font-medium">1x </p>
-                    <p className="text-gray-500 font-medium">Night </p>
+                    <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
+                      <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                        <img
+                          src={`http://localhost:5000/Public/PROPERTY/${details?.[0].room?.room_images?.[0]?.image_path}`}
+                        />
+                      </div>
+                      <div className="flex-grow pl-3">
+                        <h7 className="font-bold uppercase">
+                          {details?.[0].room?.property?.name}
+                        </h7>
+                        <div>
+                          <h7 className="font-bold uppercase">
+                            {details?.[0].room?.name}
+                          </h7>
+                        </div>
+                        <p className="text-gray-500 font-medium">
+                          {daysCheck}x{" "}
+                        </p>
+                        <p className="text-gray-500 font-medium">Night </p>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-400 text-sm">
+                          Rp
+                        </span>{" "}
+                        <span className="font-semibold text-md">
+                          {details?.[1].room?.price?.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-semibold text-gray-400 text-sm">
-                      Rp
-                    </span>{" "}
-                    <span className="font-semibold text-md">700.000</span>
+
+                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
+                    <div className="pb-3"></div>
+                    <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
+                      <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                        <img
+                          src={`http://localhost:5000/Public/PROPERTY/${details?.[1].room?.room_images?.[0]?.image_path}`}
+                        />
+                      </div>
+                      <div className="flex-grow pl-3">
+                        <h7 className="font-bold uppercase">
+                          {details?.[1].room?.property?.name}
+                        </h7>
+                        <div>
+                          <h7 className="font-bold uppercase">
+                            {details?.[1].room?.name}
+                          </h7>
+                        </div>
+                        <p className="text-gray-500 font-medium">
+                          {daysCheck}x{" "}
+                        </p>
+                        <p className="text-gray-500 font-medium">Night </p>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-400 text-sm">
+                          Rp
+                        </span>{" "}
+                        <span className="font-semibold text-md">
+                          {details?.[1].room?.price?.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
+                    <div className="pb-3">
+                      <h7 className="font-extrabold uppercase text-xl">
+                        Hotel & Room Details
+                      </h7>
+                    </div>
+                    <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
+                      <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                        <img
+                          src={`http://localhost:5000/Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
+                        />
+                      </div>
+                      <div className="flex-grow pl-3">
+                        <h7 className="font-bold uppercase">
+                          {details?.[0]?.room?.property?.name}
+                        </h7>
+                        <div>
+                          <h7 className="font-bold uppercase">
+                            {details?.[0]?.room?.name}
+                          </h7>
+                        </div>
+                        <p className="text-gray-500 font-medium">1x </p>
+                        <p className="text-gray-500 font-medium">Night </p>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-400 text-sm">
+                          Rp
+                        </span>{" "}
+                        <span className="font-semibold text-md">
+                          {details?.[0]?.room?.price?.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
+                    <div className="pb-3"></div>
+                    <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
+                      <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                        <img
+                          src={`http://localhost:5000/Public/PROPERTY/${details?.[1]?.room?.room_images?.[0]?.image_path}`}
+                        />
+                      </div>
+                      <div className="flex-grow pl-3">
+                        <h7 className="font-bold uppercase">
+                          {details?.[1]?.room?.property?.name}
+                        </h7>
+                        <div>
+                          <h7 className="font-bold uppercase">
+                            {details?.[1]?.room?.name}
+                          </h7>
+                        </div>
+                        <p className="text-gray-500 font-medium">
+                          {daysCheck}x{" "}
+                        </p>
+                        <p className="text-gray-500 font-medium">Night </p>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-400 text-sm">
+                          Rp
+                        </span>{" "}
+                        <span className="font-semibold text-md">
+                          {details?.[1]?.room?.price?.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="w-full mx-auto rounded-lg bg-gray-100 border text-gray-800  font-light mb-6 border-b border-gray-200 pb-6 p-3 ">
                 <div className="w-full border-gray-200">
                   <div className="pb-3">
@@ -84,7 +306,10 @@ const Transaction = () => {
                         <span className="text-gray-600">Username </span>
                       </div>
                       <div className="pl-3">
-                        <span className="font-semibold">Gigi Hartono</span>
+                        <span className="font-semibold capitalize">
+                          {details?.[0]?.user?.first_name}{" "}
+                          {details?.[0]?.user?.last_name}
+                        </span>
                       </div>
                     </div>
                     <div className="w-full flex justify-between mb-3 items-center">
@@ -92,7 +317,9 @@ const Transaction = () => {
                         <span className="text-gray-600">User Contact</span>
                       </div>
                       <div className="pl-3">
-                        <span className="font-semibold">+628777777</span>
+                        <span className="font-semibold">
+                          +62{details?.[0]?.user?.phone_number}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -139,9 +366,17 @@ const Transaction = () => {
                       </div>
                       <div className="pl-3">
                         <span className="font-semibold text-gray-400 text-sm">
-                          Rp
+                          {daysCheck} Nights x Rp
                         </span>{" "}
                         <span className="font-semibold">700.000</span>
+                      </div>
+                    </div>
+                    <div className="w-full flex justify-between mb-3 items-center">
+                      <div className="flex">
+                        <span className="text-gray-600">Total Room</span>
+                      </div>
+                      <div className="pl-3">
+                        <span className="font-semibold">{details?.length}</span>
                       </div>
                     </div>
                     <div className="w-full flex justify-between mb-3 border-b pb-3 items-center">
@@ -149,10 +384,7 @@ const Transaction = () => {
                         <span className="text-gray-600">Taxes</span>
                       </div>
                       <div className="pl-3">
-                        <span className="font-semibold text-gray-400 text-sm">
-                          Rp
-                        </span>{" "}
-                        <span className="font-semibold">70.000</span>
+                        <span className="font-semibold">10%</span>
                       </div>
                     </div>
                     <div className="w-full flex border-gray-200 md:border-none text-gray-800 text-xl">
@@ -164,7 +396,12 @@ const Transaction = () => {
                           <span className="font-semibold text-gray-400 text-sm">
                             Rp
                           </span>{" "}
-                          <span className="font-semibold">770.000</span>
+                          <span className="font-semibold">
+                            {`${(
+                              details?.[0]?.total_price * details?.length +
+                              details?.[0]?.total_price * details?.length * 0.1
+                            ).toLocaleString()}`}{" "}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -184,7 +421,18 @@ const Transaction = () => {
                     <span className="text-gray-600 font-medium">No. Order</span>
                   </div>
                   <div className="flex-grow font-bold">
-                    <span>123123123</span>
+                    {details?.length > 1
+                      ? 
+                      <div className="flex truncate">
+                      <p>
+                       { details?.[0]?.order_id } &
+                      </p>
+                      <p className="pl-1">
+                      {details?.[1]?.order_id}
+                      </p>
+                      </div>
+                      
+                      : details?.[0]?.order_id}
                   </div>
                 </div>
                 <div className="w-full flex mb-3 items-center">
@@ -192,7 +440,7 @@ const Transaction = () => {
                     <span className="text-gray-600 font-medium">Check-in</span>
                   </div>
                   <div className="flex-grow font-bold">
-                    <span>Mar 1, 2023</span>
+                    {/* <span>{newStartDate ? newStartDate : null }</span> */}
                   </div>
                   <div className="w-32">
                     <span className="text-gray-600 font-medium pl-6">From</span>
@@ -206,7 +454,7 @@ const Transaction = () => {
                     <span className="text-gray-600 font-medium">Check-out</span>
                   </div>
                   <div className="flex-grow font-bold">
-                    <span>Mar 2, 2023</span>
+                    {/* <span>{newEndDate ? newEndDate : null}</span> */}
                   </div>
                   <div className="w-32">
                     <span className="text-gray-600 font-medium pl-5">
@@ -282,24 +530,28 @@ const Transaction = () => {
                     <input
                       className="w-full px-3 py-2 mb-1 border bg-white border-gray-200 rounded-lg focus:outline-none focus:border-[#c9403e] transition-colors"
                       type="file"
-                      id="formFileMultiple"
-                      multiple
+                      id="formFile"
+                      accept="image/*"
+                      onChange={(e) => onImagesValidation(e)}
                     />
                     <label className="text-gray-600 font-normal text-sm mb-2 ml-1">
-                      * Multiple file max 1MB (.jpg or .png only)
+                      * Multiple file max 2MB (.jpg or .png only)
                     </label>
                   </div>
                 </div>
               </div>
               <div>
-                <button className="block w-full max-w-xs mx-auto bg-[#c9403e] hover:bg-[#e58786] focus:bg-green-600 text-white rounded-lg px-3 py-2 font-semibold">
-                  <i className="mdi mdi-lock-outline mr-1"></i> PAY NOW
+                <button className="block w-full max-w-xs mx-auto bg-[#c9403e] hover:bg-[#e58786] focus:bg-green-600 text-white rounded-lg px-3 py-2 font-semibold"
+                onClick={() => uploadPayment()}
+                disabled={payment}>
+                  <i className="mdi mdi-lock-outline mr-1"></i> {loading? (<Loader />) : (payment ? "PAID" : "PAY NOW") }
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Toaster />
     </>
   );
 };
