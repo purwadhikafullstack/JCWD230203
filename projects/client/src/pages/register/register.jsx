@@ -97,11 +97,11 @@ function Register(props) {
       
     } catch (error) {
       // dispatch({type: "setDisabledButton", payload: true})
+      setLoading(false)
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("tes1")
         toast.error(error.response.data.message)
       }else{
-        console.log("tes")
+
         toast.error(error.message)
       }
     }finally{
@@ -160,16 +160,21 @@ let onImagesValidation = (e) => {
       let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
 
       toast.success('Register Success')
-      toast.success('Check your email')
+      setTimeout(() => {
+        tenantFirstName.current.value = "";
+        tenantLastName.current.value = "";
+        tenantEmail.current.value = "";
+        tenantPassword.current.value = "";
+        tenantPhoneNumber.current.value = "";
+        toast.success("Check your email");
+      }, 2000);
       setDisabledButton(false)
       setLoading(false)
       
      } catch (error) {
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        console.log("masuk sini")
         toast.error(error.response.data.message)
       }else{
-        console.log("tes")
         toast.error(error.message)
       }
      }finally{
@@ -187,68 +192,68 @@ let onImagesValidation = (e) => {
     <>
       {location.pathname !== "/tenant-register" ? (
         // register user
-        <section class="h-screen">
-          <div class="px-6 h-full text-gray-800">
-            <div class="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
-              <div class="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
-                <img src={person} class="w-full" alt="Register" />
+        <section className="h-screen">
+          <div className="px-6 h-full text-gray-800">
+            <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
+              <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
+                <img src={person} className="w-full" alt="Register" />
               </div>
-              <div class="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
+              <div className="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
                 <div className="title flex justify-center text-bold text-3xl pb-5">
                   <p>Registration Form</p>
                 </div>
                 <form>
-                  <div class="mb-6 flex">
+                  <div className="mb-6 flex">
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputFirstName"
                       placeholder="First Name"
                       ref={firstName}
                     />
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal ml-2 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal ml-2 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputLastName"
                       placeholder="Last Name"
                       ref={lastName}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputEmail"
                       placeholder="Email address"
                       ref={email}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="password"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputPassword"
                       placeholder="Password"
                       ref={password}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="number"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputPhoneNumber"
                       placeholder="Phone Number"
                       ref={phoneNumber}
                     />
                   </div>
 
-                  <div class="text-center flex flex-col lg:text-left">
+                  <div className="text-center flex flex-col lg:text-left">
                     <button
                       type="button"
-                      class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
+                      className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                       onClick={() => onSubmit()}
                       disabled={disabledButton}
                       // disabled={state.disabledButton}
@@ -261,19 +266,19 @@ let onImagesValidation = (e) => {
                     </button>
                   </div>
 
-                  <div class="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
-                    <p class="text-center font-semibold mx-4 mb-0 flex ">
+                  <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
+                    <p className="text-center font-semibold mx-4 mb-0 flex ">
                       Or Register Here
                     </p>
                   </div>
 
-                  <div class="flex flex-row items-center justify-center lg:justify-start">
-                    <p class="text-lg mb-0 mr-4">Register with</p>
+                  <div className="flex flex-row items-center justify-center lg:justify-start">
+                    <p className="text-lg mb-0 mr-4">Register with</p>
                     <button
                       type="button"
                       data-mdb-ripple="true"
                       data-mdb-ripple-color="light"
-                      class="inline-block p-3 my-bg-light text-white font-medium text-xl leading-tight uppercase rounded-full shadow-md hover:bg-white hover:shadow-lg focus:bg-white focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg transition duration-150 ease-in-out mx-1"
+                      className="inline-block p-3 my-bg-light text-white font-medium text-xl leading-tight uppercase rounded-full shadow-md hover:bg-white hover:shadow-lg focus:bg-white focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg transition duration-150 ease-in-out mx-1"
                       onClick={() => props.myGoogle.onLoginWithGoogle()}
                     >
                       <FcGoogle />
@@ -287,83 +292,83 @@ let onImagesValidation = (e) => {
         </section>
       ) : (
         // regiter tenant
-        <section class="h-screen">
-          <div class="px-6 h-full text-gray-800">
-            <div class="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
-              <div class="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
-                <img src={person} class="w-full" alt="Register" />
+        <section className="h-screen">
+          <div className="px-6 h-full text-gray-800">
+            <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
+              <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
+                <img src={person} className="w-full" alt="Register" />
               </div>
-              <div class="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
+              <div className="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
                 <div className="title flex justify-center text-bold text-3xl pb-5">
                   <p>Tenant Registration Form</p>
                 </div>
                 <form>
-                  <div class="mb-6 flex">
+                  <div className="mb-6 flex">
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputFirstName"
                       placeholder="First Name"
                       ref={tenantFirstName}
                     />
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal ml-2 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal ml-2 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputLastName"
                       placeholder="Last Name"
                       ref={tenantLastName}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="text"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputEmail"
                       placeholder="Email address"
                       ref={tenantEmail}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="password"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputPassword"
                       placeholder="Password"
                       ref={tenantPassword}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                     <input
                       type="number"
-                      class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       id="inputPhoneNumber"
                       placeholder="Phone Number"
                       ref={tenantPhoneNumber}
                     />
                   </div>
 
-                  <div class="mb-6">
+                  <div className="mb-6">
                   <label
                         for="formFile"
-                        class="mb-2 inline-block text-neutral-700 dark:text-neutral-200"
+                        className="mb-2 inline-block text-neutral-700 dark:text-neutral-200"
                       >
                         Upload your KTP
                       </label>
                       <input
-                        class="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-300 ease-in-out file:-mx-3 file:-my-1.5 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-1.5 file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[margin-inline-end:0.75rem] file:[border-inline-end-width:1px] hover:file:bg-neutral-200 focus:border-primary focus:bg-white focus:text-neutral-700 focus:shadow-[0_0_0_1px] focus:shadow-primary focus:outline-none dark:bg-transparent dark:text-neutral-200 dark:focus:bg-transparent"
+                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-300 ease-in-out file:-mx-3 file:-my-1.5 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-1.5 file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[margin-inline-end:0.75rem] file:[border-inline-end-width:1px] hover:file:bg-neutral-200 focus:border-primary focus:bg-white focus:text-neutral-700 focus:shadow-[0_0_0_1px] focus:shadow-primary focus:outline-none dark:bg-transparent dark:text-neutral-200 dark:focus:bg-transparent"
                         type="file"
                         id="formFile"
                         accept="image/*" multiple onChange={(e) => onImagesValidation(e)} 
                       />
                   </div>
 
-                  <div class="text-center flex flex-col lg:text-left">
+                  <div className="text-center flex flex-col lg:text-left">
                     <button
                       type="button"
-                      class="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
+                      className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                       onClick={() => onSubmitTenant()}
                       // disabled={disabledButton}
                       // disabled={state.disabledButton}
