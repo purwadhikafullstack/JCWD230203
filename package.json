@@ -25,8 +25,8 @@
     "@fullcalendar/react": "^6.1.4",
     "@popperjs/core": "^2.11.6",
     "chart.js": "^2.9.4",
-    "react-hook-form": "^7.43.4",
     "fullcalendar": "^6.1.4",
+    "react-hook-form": "^7.43.4",
     "react-slick": "^0.29.0"
   }
 }

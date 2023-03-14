@@ -232,10 +232,11 @@ function App() {
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/search-results' element={<SearchRoom />} />
       <Route path='/edit-profile' element={<EditProfile />} />
-      <Route path='/transaction' element={<Transaction />} />
+      <Route path='/transaction/:id/:order_id' element={<Transaction />} />
+      <Route path='/transaction/:id/:order_id1/:order_id2' element={<Transaction />} />
       <Route path='/forget-password' element={<ForgotPassword />} />
       <Route path='/reset-password/:id' element={<ResetPassword />} />
-      <Route path="/calendar" element={<Calendars />} />
+      {/* <Route path="/calendar" element={<Calendars/>} /> */}
     </Routes>
     <Footer/>
     </>
