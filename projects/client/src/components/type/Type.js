@@ -32,8 +32,11 @@ const Type = (props) => {
       
       const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
       console.log(res);
-      const searchData = res.data;
-      const searchParams = new URLSearchParams({
+
+      if(res?.data?.data?.length !== 0 ){
+        console.log("masjk")
+        const searchData = res.data;
+        const searchParams = new URLSearchParams({
         property_name: form.property_name,
         price_min: form.price_min,
         price_max: form.price_max,
@@ -45,7 +48,7 @@ const Type = (props) => {
       const redirectUrl = `/search-results?${searchParams.toString()}`;
       window.location.href = redirectUrl;
       },200)
-
+      }
     } catch (error) {
       if (
         error.message === "Request failed with status code 400" ||
@@ -106,12 +109,14 @@ const Type = (props) => {
             data-te-ripple-init
             data-te-ripple-color="light"
           >
-            Filter by
+            Sort by
           </button>
         </span>
 
+
+
         <div
-          class="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-1/3 max-h-full max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
+          class="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-1/3 h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
           tabindex="-1"
           id="offcanvasTop"
           aria-labelledby="offcanvasTopLabel"
@@ -135,7 +140,7 @@ const Type = (props) => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
-                  stroke="targetColor"
+                  stroke="currentColor"
                   class="h-6 w-6"
                 >
                   <path
@@ -149,7 +154,7 @@ const Type = (props) => {
           </div>
 
           {/* FIlter By: */}
-          <div className="flex flex-wrap justify-center lg:text-left md:mt-10">
+          <div className="flex flex-wrap justify-center lg:text-left md:mt-0">
             <div className="mb-6 md:mb-0">
               <div className="md:flex flex-row items-center">
                 <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
@@ -245,7 +250,7 @@ const Type = (props) => {
               <div className="mb-6 ml-4 md:mb-0">
                 <button
                   type="submit"
-                  className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                  className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-rose-700 hover:shadow-lg focus:bg-rose-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-rose-700 active:shadow-lg transition duration-150 ease-in-out"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
                   onClick={() => onGetData()}

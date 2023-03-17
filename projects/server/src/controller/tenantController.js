@@ -21,7 +21,6 @@ const fs = require("fs").promises;
 
 module.exports = {
   register: async (req, res) => {
-
     const t = await sequelize.transaction();
     try {
 
@@ -105,7 +104,7 @@ module.exports = {
       return res.status(200).send({
         isError: false,
         message: "Register Success",
-        data: null,
+        data: {token: createToken({ id: createTenant.dataValues.id })},
       });
       
     } catch (error) {
@@ -327,4 +326,34 @@ module.exports = {
       data: req.headers.auth,
     });
   },
+
+  getTenant: async(req, res) => {
+
+    try {
+      let data = await tenant.findOne({
+				where: { id: req.dataToken.id },
+				include: { model: db.tenant_details },
+			});
+      console.log(tenant)
+
+      return res.status(201).send({
+        isError: false,
+        message: "Get Tenant Success",
+        data: data
+        
+      })
+      
+    } catch (error) {
+      return res.status(404).send({
+        isError: true,
+        message: error.message,
+        data: error,
+      });
+    }
+  },
+
+  // updateTenant: async(req, res) => {
+  //   const {first_name, last_name, email, gender, phone_number, address, birth_date } = req.body 
+  //   const t = await sequelize.transaction();
+  // }
 };

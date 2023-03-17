@@ -14,20 +14,23 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   signOut,
+  signInWithCredential,
 } from "firebase/auth";
 import { auth } from "./firebase";
 import Dashboard from "./pages/dashboard/dashboard";
 import Profiling from "./pages/profiling/userProfiling";
-import Carousel from "components/carousel/carousel";
 import Rentals from "./pages/rental/Rentals";
 import Details from "./pages/rental_details/RentalDetails";
 import RoomDetails from "pages/room_details/roomDetails";
 import SearchRoom from "pages/search/searchRoom";
 import Transaction from "pages/transaction/transaction";
 import EditProfile from "components/edit_profile/editProfile";
-import Calendars from "components/calendar/calendar";
 import ForgotPassword from "pages/forget_password/forgetPassword";
-import ResetPassword from "pages/reset_pasword/reset_password";
+import ResetPassword from "pages/reset_password/reset_password";
+import NotFound from "pages/not_found/notFound";
+import { AuthProvider } from "state/user-firebase/AuthContext";
+import { useAuthValue } from "state/user-firebase/AuthContext";
+import DashboardTenant from "pages/tenant/dashboardTenant";
 
 const provider = new GoogleAuthProvider();
 
@@ -36,6 +39,9 @@ function App() {
   const [tenantName, setTenantName] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [tenantRedirect, setTenantRedirect] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [profile, setProfile] = useState({})
+  const [cacheUserGoogle, setCacheUserGoogle] = useState(null)
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,6 +49,7 @@ function App() {
   useEffect(() => {
     checkIsLogin();
   }, []);
+
 
   let checkIsLogin = async () => {
     try {
@@ -85,6 +92,7 @@ function App() {
       if (inputEmailOrPhoneNumber.length === 0 || inputPassword.length === 0)
         throw { message: "Field Cannot Blank" };
 
+      setLoading(true)
       // insert props into object
       let dataToSend = {
         emailOrPhone: inputEmailOrPhoneNumber,
@@ -95,17 +103,23 @@ function App() {
         dataToSend
       );
       console.log(response);
-
+      localStorage.setItem("token", `${response.data.data.token}`);
       if (checkbox) {
-        localStorage.setItem("token", `${response.data.data.token}`);
+        localStorage.setItem("email", `${response.data.data.findEmailAndPhoneNumber.email}`);
+        localStorage.setItem("password", `${response.data.data.findEmailAndPhoneNumber.password}`)
       }
-      setUsername(response.data.data.findEmailAndPhoneNumber.first_name);
 
+      
+      setTimeout(() => {
       toast.success("Login Success!");
+      setUsername(response.data.data.findEmailAndPhoneNumber.first_name);
+      }, 3000);
       setTimeout(() => {
         setRedirect(true);
-      }, 2000);
+      }, 4000);
+      
     } catch (error) {
+      setLoading(false)
       if (
         error.message === "Request failed with status code 400" ||
         error.message === "Request failed with status code 404"
@@ -114,6 +128,11 @@ function App() {
       } else {
         toast.error(error.message);
       }
+    }finally{
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000);
+      
     }
   };
 
@@ -123,9 +142,10 @@ function App() {
     checkbox
   ) => {
     try {
+      
       if (inputEmailOrPhoneNumber.length === 0 || inputPassword.length === 0)
         throw { message: "Field Cannot Blank" };
-
+        setLoading(true)
       // insert props into object
       let dataToSend = {
         emailOrPhone: inputEmailOrPhoneNumber,
@@ -135,13 +155,22 @@ function App() {
         "http://localhost:5000/tenant/login/",
         dataToSend
       );
-      console.log(response);
 
-      if (checkbox) {
         localStorage.setItem("tokenTid", `${response.data.data.token}`);
+      if (checkbox) {
+        localStorage.setItem("email", `${response.data.data.findEmailAndPhoneNumber.email}`);
       }
-      setTenantName(response.data.data.findEmailAndPhoneNumber.first_name);
+      
+      setTimeout(() => {
+        toast.success("Login Success!");
+        setTenantName(response.data.data.findEmailAndPhoneNumber.first_name);
+        
+      }, 3000);
+      setTimeout(() => {
+        setTenantRedirect(true);
+      }, 4000);
     } catch (error) {
+      setLoading(false)
       if (
         error.message === "Request failed with status code 400" ||
         error.message === "Request failed with status code 404"
@@ -150,32 +179,93 @@ function App() {
       } else {
         toast.error(error.message);
       }
+    }finally{
+      setTimeout(() => {
+        setLoading(false)
+      }, 2000);
+      
     }
   };
 
   let onLoginWithGoogle = async () => {
     try {
       let response = await signInWithPopup(auth, provider);
+      console.log(response)
       setUsername(response.user.displayName);
-      setRedirect(true);
-      localStorage.setItem("tokenUid", `${response.user.uid}`);
+      
+      // localStorage.setItem("tokenUid", `${response.user.uid}`);
+      
+      let dataToSend = {
+        first_name: response?._tokenResponse?.firstName,
+        last_name: response?._tokenResponse?.lastName,
+        email: response.user.email,
+        password: "",
+        phone_number: response?.user?.phoneNumber,
+        google_id: response?.user?.uid,
+        isFromGoogle: true,
+        picture_path: response?.user?.photoURL
+      };
+
+
+      const {data: register} = await axios.post('http://localhost:5000/users/register', dataToSend)
+      console.log(register)
+      if(!register.isError){
+        toast.success("Login With Google Success")
+        localStorage.setItem("token", register?.data?.token)
+        setTimeout(() => {
+          setRedirect(true);
+        }, 2000);
+      }
+      
     } catch (error) {
       if (
         error.message === "Request failed with status code 400" ||
-        error.message === "Request failed with status code 404"
+        error.message === "Request failed with status code 404" ||
+        error.message ===  "Request failed with status code 500"
       ) {
         toast.error(error.response.data.message);
       } else {
+        console.log(error)
         toast.error(error.message);
       }
     }
   };
 
-  onAuthStateChanged(auth, (userFromFireBase) => {
-    if (userFromFireBase) {
-      setUsername(userFromFireBase.displayName);
-    }
-  });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const token = localStorage.getItem("tokenUid");
+  //       console.log(token)
+  //       if (token) {
+  //         const credential = GoogleAuthProvider.credential(token)
+  //         await signInWithCredential(auth, credential);
+  //         // const user = await currentUser.getTokenId();
+  //         // setCurrentUser(user);
+  //         // console.log(user)
+  //       }else{
+  //         setCacheUserGoogle(null)
+  //       }
+  //     } catch (error) {
+  //       setCacheUserGoogle(null)
+  //       // localStorage.removeItem("tokenUid");
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // onAuthStateChanged(auth, (user) => {
+  //   setCacheUserGoogle(user)
+  //   // localStorage.setItem("token", user.accessToken)
+  //   console.log(user.accessToken)
+  // })
+
+  // onAuthStateChanged(auth, (userFromFireBase) => {
+  //   if (userFromFireBase) {
+  //     setUsername(userFromFireBase.displayName);
+  //   }
+  // });
 
 
   let onLogout = async () => {
@@ -183,10 +273,10 @@ function App() {
       localStorage.removeItem("token");
       setUsername(""); // dan merubah username menjadi string kosong
       setRedirect(false);
-      localStorage.removeItem("tokenTid");
+      // localStorage.removeItem("tokenTid");
       setUsername("");
       setRedirect(false);
-      await signOut(auth);
+      // await signOut(auth);
       localStorage.removeItem("tokenUid");
       setUsername("");
       setRedirect(false); // jadi ketika ke trigger clik button logout maka redirect akan false
@@ -210,34 +300,48 @@ function App() {
 
     {/* myFunc={{onLogout}} */}
     <Navbar data={{username}} myFunc={{onLogout}}/>
+
     <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
-            <Carousel />
-            {location.pathname !== '/' ? null :
+
+    <AuthProvider value={{cacheUserGoogle}} >       
+    <Routes>
+    {location.pathname !== '/' ? null :
             <>
-            <Rentals />
+            <Route path='/' element={<Rentals />} />
             </>
             }
-    </div>
-    <Routes>
-      <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} />
+      <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} /> {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/activation/:id' element={<Activation />} />
-      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} myGoogle={{onLoginWithGoogle}}/>}  />
+      <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} isLoading={{loading}} myGoogle={{onLoginWithGoogle}}/>}  /> {/*myGoogle={{onLoginWithGoogle}} */}
+      <Route path='/forget-password' element={<ForgotPassword />} />
+      <Route path='/reset-password/:id' element={<ResetPassword />} />
+      <Route path='/user-profile' element={<Profiling />}/>
+
+      {/* Tenant */}
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
+      <Route path='/dashboard-reservation' element={<Dashboard />} />
+      <Route path="/dashboard-profile" element={<Dashboard />} />
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
-      <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} />} />
-      <Route path='/user-profile' element={<Profiling />}/>
+      <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} isLoading={{loading}} />} />
+      
+      
+
+      {/* property */}
       <Route path='/details/:id' element={<Details />} />
       <Route path='/category/:id' element={<Rentals />} />
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/search-results' element={<SearchRoom />} />
       <Route path='/edit-profile' element={<EditProfile />} />
+
+      {/* transaction */}
       <Route path='/transaction/:id/:order_id' element={<Transaction />} />
       <Route path='/transaction/:id/:order_id1/:order_id2' element={<Transaction />} />
-      <Route path='/forget-password' element={<ForgotPassword />} />
-      <Route path='/reset-password/:id' element={<ResetPassword />} />
+      <Route path='*' element={<NotFound />} />
       {/* <Route path="/calendar" element={<Calendars/>} /> */}
     </Routes>
+    </AuthProvider>
+    </div>
     <Footer/>
     </>
   );

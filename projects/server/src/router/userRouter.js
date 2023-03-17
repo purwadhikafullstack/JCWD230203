@@ -7,6 +7,7 @@ const upload = require('./../middleware/upload')
 const jwtVerify = require('./../middleware/decrypt')
 
 Router.post('/register', userController.register)
+// Router.post('/register-google', userController.authGoogle)
 Router.post('/activation/:id', userController.activation)
 Router.post('/resend-otp/:id', userController.resendOtp)
 Router.post('/login', userController.Login)

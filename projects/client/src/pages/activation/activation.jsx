@@ -41,7 +41,7 @@ function Activation() {
         
         setTimeout(() => {
           setActive(true)
-        }, 2000)
+        }, 6000)
         
         
       } catch (error) {
@@ -49,7 +49,9 @@ function Activation() {
         console.log(error.response.data.message)
         toast.error(error.response.data.message)
       }finally{
+        setTimeout(() => {
           setLoading(false)
+        }, 5000);
       }
     }
 
@@ -61,27 +63,32 @@ function Activation() {
           return;
         }
 
-        setLoading(true)
+        setActive(true)
         await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
-        toast.success("Check your Email")
+        setTimeout(() => {
+          toast.success("Check your Email")
+        }, 6000)
         setClickCount(clickCount + 1)
       } catch (error) {
-        setLoading(false)
+        setActive(false)
         console.log(error)
         toast.error(error.response.data.message)
       }finally{
-        setLoading(false)
+        setTimeout(() => {
+          setLoading(false)
+        }, 5000);
+        
       }
     }
 
   
   if(isActive){
-    navigate('/login')
+    navigate('/')
   }
 
   return (
     <>
-      <div className="wrapper flex justify-center py-[250px]">
+      <div className="wrapper flex justify-center py-[100px]">
         <div className="block max-w-md rounded-lg bg-white p-6 shadow-lg ">
             <div className="p text-4xl flex justify-center mb-5">Activation Form</div>
           <form>

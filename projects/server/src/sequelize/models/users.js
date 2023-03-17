@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model, UUIDV4
+  Model, UUIDV4, BOOLEAN
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class users extends Model {
@@ -47,26 +47,34 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING(250),
-      allowNullL: false,
+      allowNullL: true,
       notEmpty: {msg: "User password must not be empty"},
       notNull: {msg: "User must have a password"}
     },
     phone_number: {
       type: DataTypes.BIGINT,
-      allowNull: false
+      allowNull: true
     },
     otp_code: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     otp_created_at: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     role: {
       type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: "user"
+    },
+    google_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    isFromGoogle: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
     }
   }, 
   {

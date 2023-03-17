@@ -4,7 +4,7 @@ import Bca from "../../supports/assets/bcavector.png";
 import Bri from "../../supports/assets/bankbri.png";
 import { format } from "date-fns";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster }from "react-hot-toast";
 import Loader from "components/loader/loader";
 
@@ -15,15 +15,18 @@ const Transaction = () => {
   const [loading, setLoading] = useState(false)
   const [payment, setPayment] = useState(false)
   const data = useParams();
+  const navigate = useNavigate()
 
   const startDate = details?.[0]?.check_in?.split("T")[0]?.split("-")[2];
   const endDate = details?.[0]?.check_out?.split("T")[0]?.split("-")[2];
-  // const format1 = details?.[0]?.check_in?.split("T")[0]
+  // const format1 = details[0].check_in.split("T")[0]
   // const newStartDate = format(new Date(format1), 'MMM dd, yyyy')
-  // const format2 = details?.[0]?.check_out?.split("T")[0]
+  // const format2 = details[0].check_out.split("T")[0]
   // const newEndDate = format(new Date(format2), 'MMM dd, yyyy')
 
   var daysCheck = endDate - startDate;
+
+  console.log(data)
 
 
   useEffect(() => {
@@ -31,14 +34,15 @@ const Transaction = () => {
   }, []);
 
   const transaction = async () => {
+    console.log("masuk")
     try {
       if (getTokenId) {
         const res = await axios.post(
           `http://localhost:5000/transaction/data`,
           {
             room_id: data?.id,
-            order_id1: data?.order_id1,
-            order_id2: data?.order_id2,
+            order_id1: data?.order_id || data?.order_id1,
+            order_id2: data?.order_id2 || null,
           },
           {
             headers: {
@@ -48,7 +52,7 @@ const Transaction = () => {
             },
           }
         );
-
+          // console.log(res) 
         setDetails(res?.data?.data);
       }
     } catch (error) {
@@ -62,7 +66,7 @@ const Transaction = () => {
       if(files.length > 2) throw {message: "Select Just 1 Image"};
 
       files.forEach((value) => {
-        if(value.size > 2000000) throw {message: `${value.name} more than 2Mb`}
+        if(value.size > 1000000) throw {message: `${value.name} more than 2Mb`}
       });
 
       setSelectedImages(files);
@@ -89,15 +93,16 @@ const Transaction = () => {
       })
 
       fd.append('room_id', data?.id)
-      fd.append('order_id1', data?.order_id1)
-      fd.append('order_id2', data?.order_id2)
+      fd.append('order_id1', data?.order_id || data?.order_id1,)
+      fd.append('order_id2', data?.order_id2 || null)
 
         const res = await axios.patch(`http://localhost:5000/transaction/payment-proof`, fd)
 
-        console.log(res)
         if(res.status === 200) {
+          setTimeout(() => {
           setPayment(true)
           toast.success(res.data.message)
+          }, 40000);
         }
     } catch (error) {
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
@@ -106,9 +111,19 @@ const Transaction = () => {
         toast.error(error.message)
       }
     }finally{
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+      }, 3000);
     }
   }
+
+  if(payment){
+    setTimeout(() => {
+      navigate('/user-profile')
+    }, 5000);
+  }
+
+  console.log(payment)
 
   return (
     <>
@@ -150,6 +165,8 @@ const Transaction = () => {
           <div className="md:flex items-start pt-10">
             <div className="px-3 md:w-7/12 lg:pr-10">
               {details?.length > 1 ? (
+
+                // 2 order ID
                 <>
                   <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
                     <div className="pb-3">
@@ -221,7 +238,10 @@ const Transaction = () => {
                     </div>
                   </div>
                 </>
-              ) : (
+              ) : 
+              
+                // 1 order ID
+              (
                 <>
                   <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
                     <div className="pb-3">
@@ -253,39 +273,6 @@ const Transaction = () => {
                         </span>{" "}
                         <span className="font-semibold text-md">
                           {details?.[0]?.room?.price?.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
-                    <div className="pb-3"></div>
-                    <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
-                      <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
-                        <img
-                          src={`http://localhost:5000/Public/PROPERTY/${details?.[1]?.room?.room_images?.[0]?.image_path}`}
-                        />
-                      </div>
-                      <div className="flex-grow pl-3">
-                        <h7 className="font-bold uppercase">
-                          {details?.[1]?.room?.property?.name}
-                        </h7>
-                        <div>
-                          <h7 className="font-bold uppercase">
-                            {details?.[1]?.room?.name}
-                          </h7>
-                        </div>
-                        <p className="text-gray-500 font-medium">
-                          {daysCheck}x{" "}
-                        </p>
-                        <p className="text-gray-500 font-medium">Night </p>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-gray-400 text-sm">
-                          Rp
-                        </span>{" "}
-                        <span className="font-semibold text-md">
-                          {details?.[1]?.room?.price?.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -352,6 +339,9 @@ const Transaction = () => {
                   </div>
                 </div>
               </div>
+
+
+              {/* Prcicing Details */}
               <div className="w-full mx-auto rounded-lg bg-gray-100 border text-gray-800  font-light mb-6 border-gray-200 pb-6 p-3 ">
                 <div className="w-full border-gray-200">
                   <div className="pb-3">
@@ -368,7 +358,7 @@ const Transaction = () => {
                         <span className="font-semibold text-gray-400 text-sm">
                           {daysCheck} Nights x Rp
                         </span>{" "}
-                        <span className="font-semibold">700.000</span>
+                        <span className="font-semibold">{details?.[0]?.room?.price.toLocaleString()}</span>
                       </div>
                     </div>
                     <div className="w-full flex justify-between mb-3 items-center">
@@ -535,7 +525,7 @@ const Transaction = () => {
                       onChange={(e) => onImagesValidation(e)}
                     />
                     <label className="text-gray-600 font-normal text-sm mb-2 ml-1">
-                      * Multiple file max 2MB (.jpg or .png only)
+                      * Multiple file max 1MB (.jpg or .png only)
                     </label>
                   </div>
                 </div>

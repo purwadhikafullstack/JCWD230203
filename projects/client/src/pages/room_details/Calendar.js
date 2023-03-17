@@ -20,7 +20,7 @@ const CalendarFunc = (props) => {
 
   var daysCheck = differenceInDays(endDate, startDate);
   
-  const data = daysCheck;
+  // const data = daysCheck;
 
   const handleSelect = async (ranges) => {
     try {
@@ -61,6 +61,7 @@ const CalendarFunc = (props) => {
         }
       }
 
+      var daysCheck = differenceInDays(ranges.selection.endDate, ranges.selection.startDate);
       setNewPrice(new_price);
       setDays(daysCheck)
       props.onSelectedDate(newPrice, daysCheck, rates)

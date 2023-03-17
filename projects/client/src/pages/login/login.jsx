@@ -3,10 +3,13 @@ import person from "./../../supports/assets/administrator-working-at-desk.png";
 import { FcGoogle } from "react-icons/fc";
 import { Toaster } from "react-hot-toast";
 import { Navigate, useLocation } from "react-router-dom";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import Loader from "components/loader/loader";
 
 function Login(props) {
-
   const [rememberMe, setRememberMe] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showTenantPassword, setShowTenantPassword] = useState(false)
 
   const emailOrPhone = useRef();
   const password = useRef();
@@ -20,8 +23,7 @@ function Login(props) {
 
   }
 
-
-  if(props.isRedirect.redirect || props.isRedirect.tenantRedirect){
+  if(props?.isRedirect?.redirect || props?.isRedirect?.tenantRedirect){
     if(location.pathname === '/login'){
       return <Navigate to='/' />
     }else{
@@ -29,7 +31,7 @@ function Login(props) {
     }
   }
 
-
+  console.log(props)
   return (
     <>
       {location.pathname !== '/tenant-login' ? 
@@ -67,20 +69,36 @@ function Login(props) {
                   className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                   id="exampleFormControlInput2"
                   placeholder="Email address or phone number"
+                  defaultValue={localStorage.getItem("email") ? localStorage.getItem("email") : null}
                   ref={emailOrPhone}
                   required
                 />
               </div>
 
-              <div className="mb-6">
+              <div className="mb-6 relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                   id="exampleFormControlInput2"
                   placeholder="Password"
                   ref={password}
                   required
                 />
+                <div className="absolute password-icon my-main text-2xl right-5 top-3.5">
+                  {showPassword ? (
+                        <AiFillEye
+                          onClick={() =>
+                            setShowPassword((showPassword) => !showPassword)
+                          }
+                        />
+                      ) : (
+                        <AiFillEyeInvisible
+                          onClick={() =>
+                            setShowPassword((showPassword) => !showPassword)
+                          }
+                        />
+                      )}
+                </div>
               </div>
 
               <div className="flex justify-between items-center mb-6">
@@ -106,10 +124,10 @@ function Login(props) {
               <div className="text-center lg:text-left">
                 <button
                   type="button"
-                  className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                  className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-800 hover:shadow-lg focus:bg-emerald-800 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                   onClick={() => props.myFunc.onLogin(emailOrPhone.current.value, password.current.value, rememberMe)}
                 >
-                  Login
+                  {props?.isLoading?.loading ? <div className="px-3"><Loader /> </div> : "Login"}
                 </button>
                 <p className="text-sm font-semibold mt-2 pt-1 mb-0">
                   Don't have an account?
@@ -152,15 +170,31 @@ function Login(props) {
                   />
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-6 relative">
                   <input
-                    type="password"
+                    type={showTenantPassword ? "text" : "password"}
                     className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                     id="exampleFormControlInput2"
                     placeholder="Password"
                     ref={password}
                     required
-                  />
+                    />
+                    <div className="absolute password-icon my-main text-2xl right-5 top-3.5">
+                    {showTenantPassword ? (
+                      <AiFillEye
+                        onClick={() =>
+                          setShowTenantPassword((showTenantPassword) => !showTenantPassword)
+                        }
+                      />
+                    ) : (
+                      <AiFillEyeInvisible
+                        onClick={() =>
+                          setShowTenantPassword((showTenantPassword) => !showTenantPassword)
+                        }
+                      />
+                    )}
+                    </div>
+                  
                 </div>
 
                 <div className="flex justify-between items-center mb-6">
@@ -186,10 +220,10 @@ function Login(props) {
                 <div className="text-center lg:text-left">
                   <button
                     type="button"
-                    className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                    className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-800 hover:shadow-lg focus:bg-emerald-800 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                     onClick={() => props.myFunc.tenantLogin(emailOrPhone.current.value, password.current.value, rememberMe)}
                   >
-                    Login
+                     {props?.isLoading?.loading ? <div className="px-3"><Loader /> </div> : "Login"}
                   </button>
                   <p className="text-sm font-semibold mt-2 pt-1 mb-0">
                     Don't have an account?

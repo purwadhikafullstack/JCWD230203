@@ -266,6 +266,7 @@ module.exports = {
   },
 
   getRoomByQuery: async (req, res) => {
+
     const {
       property_name,
       price_min,
@@ -273,16 +274,16 @@ module.exports = {
       sort_order,
       page = 1,
     } = req.query;
-
+    
     console.log(req.body);
-
-    const page_size = 10;
+    
+    const page_size = 20;
     const offset = (page - 1) * page_size;
     const limit = page_size;
-
+    
     try {
       let order = [];
-
+    
       if (sort_order) {
         if (sort_order === "asc" || sort_order === "desc") {
           order.push(["price", sort_order]);
@@ -290,7 +291,7 @@ module.exports = {
           throw { message: "Invalid sort order" };
         }
       }
-
+    
       const rooms = await db.room.findAll({
         where: {
           price: {
@@ -315,17 +316,19 @@ module.exports = {
         subQuery: false,
       });
 
+      console.log(rooms)
+    
       if (rooms.length === 0) {
-        return res.status(200).send({
-          isError: false,
-          message: "Cannot search the Room",
+        return res.status(400).send({
+          isError: true,
+          message: "There is No Room Match the Criteria ",
           data: rooms,
         });
       }
-
+    
       const total_count = await db.room.count();
       const total_pages = Math.ceil(total_count / page_size);
-
+    
       return res.status(200).json({
         isError: false,
         message: "Get room by query success",
@@ -340,7 +343,8 @@ module.exports = {
         data: null,
       });
     }
-  },
+    },
+  
 
   getRoomByDateAndLocation: async (req, res) => {
     const { check_in, check_out, city, page = 1 } = req.query;
@@ -350,6 +354,13 @@ module.exports = {
     const limit = page_size;
 
     try {
+      if(!check_in || !check_out || !city || !page){
+        return res.status(400).send({
+          isError: true,
+          message: "Field cannot Empty",
+          data: null
+        })
+      }
       const transaction = await db.location.findAll({
         where: { city_id: city },
         include: [
@@ -392,7 +403,6 @@ module.exports = {
         limit,
       });
 
-      console.log("masuk")
       console.log(transaction)
 
       const total_count = await db.location.count();
@@ -433,3 +443,153 @@ module.exports = {
     }
   },
 };
+
+
+
+// const {
+//   property_name,
+//   price_min,
+//   price_max,
+//   sort_order,
+//   page = 1,
+// } = req.query;
+
+// console.log(req.body);
+
+// const page_size = 10;
+// const offset = (page - 1) * page_size;
+// const limit = page_size;
+
+// try {
+//   let order = [];
+
+//   if (sort_order) {
+//     if (sort_order === "asc" || sort_order === "desc") {
+//       order.push(["price", sort_order]);
+//     } else {
+//       throw { message: "Invalid sort order" };
+//     }
+//   }
+
+//   const rooms = await db.room.findAll({
+//     where: {
+//       price: {
+//         [Op.gte]: price_min,
+//         [Op.lte]: price_max,
+//       },
+//       "$property.name$": { [Op.like]: `%${property_name}%` },
+//     },
+//     include: [
+//       {
+//         model: db.room_image,
+//         as: "room_images",
+//       },
+//       {
+//         model: property,
+//         as: "property",
+//       },
+//     ],
+//     order: order,
+//     offset,
+//     limit,
+//     subQuery: false,
+//   });
+
+//   if (rooms.length === 0) {
+//     return res.status(200).send({
+//       isError: false,
+//       message: "Cannot search the Room",
+//       data: rooms,
+//     });
+//   }
+
+//   const total_count = await db.room.count();
+//   const total_pages = Math.ceil(total_count / page_size);
+
+//   return res.status(200).json({
+//     isError: false,
+//     message: "Get room by query success",
+//     data: rooms,
+//     total_count,
+//     total_pages,
+//   });
+// } catch (error) {
+//   return res.status(400).json({
+//     isError: true,
+//     message: error.message,
+//     data: null,
+//   });
+// }
+// }
+
+
+// const { sort_order, price_min = 300000, price_max = 99999999, page = 1,  } = req.query;
+//       let page_size = 10;
+//       const offset = (page - 1) * page_size;
+//       const limit = page_size;
+//       try {
+//         let order = [];
+  
+//         if (sort_order) {
+//           if (sort_order === "asc" || sort_order === "desc") {
+//             order.push(["rooms", "price", sort_order]);
+//           } else {
+//             throw { message: "Invalid sort order" };
+//           }
+//         }
+  
+//         const properties = await property.findAll({
+//           include: [
+//             {
+//               model: db.property_image,
+//               as: "property_images",
+//             },
+//             {
+//               model: db.room,
+//               as: "rooms",
+//               where: {
+//                 price: {
+//                   [Op.gte]: price_min,
+//                   [Op.lte]: price_max,
+//                 },
+//               },
+//               include: [
+//                 {
+//                   model: db.room_image,
+//                   as: "room_images",
+//                 },
+//               ],
+//             },
+//             {
+//               model: db.location,
+//               as: "locations",
+//               include: [
+//                 {
+//                   model: db.city,
+//                   as: "city",
+//                 },
+//               ],
+//             },
+//           ],
+//           order: order,
+//           offset,
+//           limit,
+//         });
+  
+//         const total_count = await property.count(); // get total number of properties
+//         const total_pages = Math.ceil(total_count / page_size); // calculate total number of pages
+  
+//         return res.status(200).send({
+//           isError: false,
+//           message: "Get data by type Success",
+//           data: properties,
+//           total_data: total_count,
+//           total_pages,
+//         });
+//       } catch (error) {
+//         return res.status(400).send({
+//           isError: true,
+//           message: error.message,
+//           data: null,
+//         });
+//       }

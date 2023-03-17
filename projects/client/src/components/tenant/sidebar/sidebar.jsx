@@ -78,6 +78,44 @@ export default function Sidebar() {
               </div>
             </form>
             {/* Navigation */}
+            {localStorage.getItem("tokenTid") ?
+             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
+              <li className="items-center">
+                <Link
+                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
+                  to="/dashboard"
+                >
+                  <i className="fas fa-tv opacity-75 mr-2 text-sm"></i> Main Dashboard
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
+                  to="/"
+                >
+                  <i className="fas fa-newspaper text-blueGray-400 mr-2 text-sm"></i> Landing Page
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
+                  to="/dashboard-profile"
+                >
+                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Profile Page
+                </Link>
+              </li>
+              <li className="items-center">
+                <Link
+                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
+                  to="/dashboard-reservation"
+                >
+                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Reservation
+                </Link>
+              </li>
+            </ul> 
+            : 
             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
               <li className="items-center">
                 <Link
@@ -123,7 +161,8 @@ export default function Sidebar() {
                   <i className="fas fa-fingerprint text-blueGray-400 mr-2 text-sm"></i> Register
                 </Link>
               </li>
-            </ul>
+            </ul>      
+            }
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
           </div>

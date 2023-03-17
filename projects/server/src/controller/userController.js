@@ -23,12 +23,78 @@ const { Console } = require("console");
 
 const fs = require("fs").promises;
 
+const authGoogle = async(user, userProfile, t) => {
+ try {
+  const {first_name, last_name, email, phone_number, google_id, picture_path} = user
+  console.log(picture_path)
+  // cari user berdasarkan google_id
+  const userData = await users.findOne({
+    where: {google_id}
+  }) // masukan google_id
+  if(userData){
+    return {
+      code: 200, 
+      isError: false,
+      message: "Login Google Success",
+      data: {token: createToken({ id: userData.id })}
+    }
+  }
+
+  let createUsers = await users.create(
+    {
+      first_name,
+      last_name,
+      email,
+      phone_number,
+      status: "confirmed",
+      google_id,
+      isFromGoogle: true
+    },
+    { transaction: t }
+  );
+  console.log(createUsers)
+
+
+  await db.users_details.create(
+    {users_id: createUsers.dataValues.id,
+    picture_path: picture_path,
+    ...userProfile},
+    {transaction: t}
+  )
+  await t.commit()
+  return {
+    code: 200,
+    isError: false,
+    message: "Register Google Success",
+    data: {token: createToken({ id: createUsers.dataValues.id })}
+    
+  }
+ } catch (error) {
+   await t.rollback()
+   return {
+     code: 500,
+     isError: true,
+     message: error.message,
+     data: null
+   }
+ }
+    }
+
 module.exports = {
   register: async (req, res) => {
     const t = await sequelize.transaction();
     try {
-      let { first_name, last_name, email, password, phone_number } = req.body;
+      let { first_name, last_name, email, password, phone_number, isFromGoogle } = req.body;
       console.log(req.body);
+
+      if(isFromGoogle){
+        const googleProfile = {
+          // address: req.body.address
+        }
+        const googleAuthProcess = await authGoogle(req.body, googleProfile, t)
+        const {code, ...result} = googleAuthProcess
+        return res.status(code).send(result)
+      }
 
       // input validation if its not have a length
       if (
@@ -103,6 +169,7 @@ module.exports = {
           phone_number,
           otp_code: otp,
           otp_created_at: new Date(),
+          isFromGoogle: false
         },
         { transaction: t }
       );
@@ -137,7 +204,7 @@ module.exports = {
       return res.status(200).send({
         isError: false,
         message: "Register Success",
-        data: null,
+        data: {token: createToken({ id: createUsers.dataValues.id })}
       });
 
     } catch (error) {
@@ -403,17 +470,17 @@ module.exports = {
     const t = await sequelize.transaction();
     try {
 
-      const match = await users.findOne({
-        where: { phone_number },
-      });
+      // const match = await users.findOne({
+      //   where: { phone_number },
+      // });
 
-      if(match){
-        return res.status(400).send({
-          isError: true,
-          message: "Phone number already in used",
-          data: null
-        })
-      }
+      // if(match){
+      //   return res.status(400).send({
+      //     isError: true,
+      //     message: "Phone number already in used",
+      //     data: null
+      //   })
+      // }
 
 
        await db.users.update(
