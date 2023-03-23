@@ -12,8 +12,10 @@ import { Link } from "react-router-dom";
 import Location from "components/location/location";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "components/loader/loader";
 
 const Type = (props) => {
+  const [loading, setLoading] = useState(false)
 
   const [form, setForm] = useState({
     property_name: '',
@@ -22,31 +24,48 @@ const Type = (props) => {
     ascending: false,
     descending: false,
   })
+  const [city, setCity] = useState([]);
+  
+  let getCity = async () => {
+    try {
+      const cities = await axios.get(`http://localhost:5000/properties/city`);
+      setCity(cities.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
 
   const onGetData = async() => {
     console.log(form);
     try {
-
+      setLoading(true)
       if(!form.property_name || !form.price_min || !form.price_max) throw {message: "Field cannot blank!"}
       
       const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
       console.log(res);
-      const searchData = res.data;
-      const searchParams = new URLSearchParams({
+
+      if(res?.data?.data?.length !== 0 ){
+        console.log("masjk")
+        const searchData = res.data;
+        const searchParams = new URLSearchParams({
         property_name: form.property_name,
         price_min: form.price_min,
         price_max: form.price_max,
         sort_order: form.ascending ? form.ascending : form.descending,
         ...searchData
       });
-      toast.success("Get the Room")
+      setTimeout(() => {
+        toast.success("Get the Room")
+      }, 4000);
       setTimeout(() => {
       const redirectUrl = `/search-results?${searchParams.toString()}`;
       window.location.href = redirectUrl;
-      },200)
-
+      },5000)
+      }
     } catch (error) {
+      setLoading(false)
       if (
         error.message === "Request failed with status code 400" ||
         error.message === "Request failed with status code 404"
@@ -55,6 +74,10 @@ const Type = (props) => {
       } else {
         toast.error(error.message);
       }
+    }finally{
+      setTimeout(() => {
+        setLoading(false)
+      }, 3000);
     }
   };
   
@@ -67,6 +90,7 @@ const Type = (props) => {
 
   useEffect(() => {
     handleClick();
+    getCity()
   }, [])
   
 
@@ -106,12 +130,14 @@ const Type = (props) => {
             data-te-ripple-init
             data-te-ripple-color="light"
           >
-            Filter by
+            Sort by
           </button>
         </span>
 
+
+
         <div
-          class="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-1/3 max-h-full max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
+          class="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-1/3 h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
           tabindex="-1"
           id="offcanvasTop"
           aria-labelledby="offcanvasTopLabel"
@@ -135,7 +161,7 @@ const Type = (props) => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
-                  stroke="targetColor"
+                  stroke="currentColor"
                   class="h-6 w-6"
                 >
                   <path
@@ -149,7 +175,7 @@ const Type = (props) => {
           </div>
 
           {/* FIlter By: */}
-          <div className="flex flex-wrap justify-center lg:text-left md:mt-10">
+          <div className="flex flex-wrap justify-center lg:text-left md:mt-0">
             <div className="mb-6 md:mb-0">
               <div className="md:flex flex-row items-center">
                 <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
@@ -164,11 +190,21 @@ const Type = (props) => {
                     {/* property Name */}
                     <input
                       type="text"
+                      list="text-editor"
                       className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Where You want to stay ?"
                       onChange={(e) => setForm({...form, property_name: e.target.value})}
                       name="property_name"
                     />
+                    <datalist id="text-editor" className="w-full">
+                      {city && city?.map((value, idx) => {
+                        return (
+                          <>
+                          <option key={idx} value={value?.city}></option>
+                          </>
+                        )
+                      })}
+                    </datalist>
                   </div>
                 </div>
                 <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
@@ -245,12 +281,12 @@ const Type = (props) => {
               <div className="mb-6 ml-4 md:mb-0">
                 <button
                   type="submit"
-                  className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                  className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-rose-700 hover:shadow-lg focus:bg-rose-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-rose-700 active:shadow-lg transition duration-150 ease-in-out"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
                   onClick={() => onGetData()}
                 >
-                  Search
+                  {loading? <Loader /> : "Search"}
                 </button>
               </div>
             </div>

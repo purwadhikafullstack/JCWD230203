@@ -4,12 +4,12 @@ import { getAuth } from "firebase/auth";
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
-    apiKey: "AIzaSyAXm7lJk8hdXOfSeCiQCBFbKLauVWMUxKc",
-    authDomain: "trialjcwd2302.firebaseapp.com",
-    projectId: "trialjcwd2302",
-    storageBucket: "trialjcwd2302.appspot.com",
-    messagingSenderId: "606301520935",
-    appId: "1:606301520935:web:2f838c029e537936ce3a02"
+  apiKey: "AIzaSyBPceFc6yaHVIaGV91IUHWqIjoef0hVI1k",
+  authDomain: "vcation-property-rent.firebaseapp.com",
+  projectId: "vcation-property-rent",
+  storageBucket: "vcation-property-rent.appspot.com",
+  messagingSenderId: "383148702770",
+  appId: "1:383148702770:web:9150f31d843d8f86d1502b"
   };
 
 // Initialize Firebase

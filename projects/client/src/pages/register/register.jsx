@@ -3,23 +3,9 @@ import person from "./../../supports/assets/stressed-person-using-computer-at-de
 import toast, { Toaster } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { FiTarget } from "react-icons/fi";
 import Loader from "components/loader/loader";
-
-
-// const InitialState = {
-//   disabledButton:false
-// }
-
-// const reducer = (state = InitialState, action) => { //action type&payload
-//   switch(action.type){
-//     case "setDisabledButton":
-//       state = {...state, disabledButton:action.payload}
-//     break;
-//     default: return state;
-//   }
-// }
 
 
 function Register(props) {
@@ -27,7 +13,7 @@ function Register(props) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const[selectedImages, setSelectedImages] = useState([]);
-
+  const navigate = useNavigate();
   // const [state, dispatch] = useReducer(reducer, InitialState);
 
   const firstName = useRef();
@@ -80,8 +66,11 @@ function Register(props) {
         `http://localhost:5000/users/register`,
         dataToSend
       );
-      
-      toast.success("Register Success");
+
+      localStorage.setItem("token", `${register.data.data.token}`)
+      setTimeout(() => {
+        toast.success("Register Success");
+      }, 5500);
       // when its finish clear all input field
       setTimeout(() => {
         firstName.current.value = "";
@@ -90,23 +79,26 @@ function Register(props) {
         password.current.value = "";
         phoneNumber.current.value = "";
         toast.success("Check your email");
-      }, 2000);
+      }, 6000);
 
-      setLoading(false)
-      setDisabledButton(false)
+      setTimeout(() => {
+        navigate(`/activation/${register?.data?.id}`)
+      }, 6500)
+
       
     } catch (error) {
       // dispatch({type: "setDisabledButton", payload: true})
       setLoading(false)
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
+      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404" || error.message ===  "Request failed with status code 500"){
         toast.error(error.response.data.message)
       }else{
-
         toast.error(error.message)
       }
     }finally{
-      setLoading(false)
-      setDisabledButton(false)
+      setTimeout(() => {
+        setLoading(false)
+        setDisabledButton(false)
+      }, 5000);
     }
   };
 
@@ -159,7 +151,12 @@ let onImagesValidation = (e) => {
       
       let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
 
-      toast.success('Register Success')
+      
+      localStorage.setItem("tokenTid", `${tenantRegister.data.data.token}`)
+
+      setTimeout(() => {
+        toast.success("Register Success");
+      }, 5500);
       setTimeout(() => {
         tenantFirstName.current.value = "";
         tenantLastName.current.value = "";
@@ -167,19 +164,25 @@ let onImagesValidation = (e) => {
         tenantPassword.current.value = "";
         tenantPhoneNumber.current.value = "";
         toast.success("Check your email");
-      }, 2000);
-      setDisabledButton(false)
-      setLoading(false)
+      }, 6000);
+
+      setTimeout(() => {
+        navigate(`/tenant-activation/${tenantRegister?.data?.id}`)
+      }, 6500)
       
      } catch (error) {
+      setLoading(false)
+      setDisabledButton(false)
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
         toast.error(error.response.data.message)
       }else{
         toast.error(error.message)
       }
      }finally{
-      setDisabledButton(false)
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+        setDisabledButton(false)
+      }, 5000);
      }
   }
 
@@ -187,6 +190,7 @@ let onImagesValidation = (e) => {
   if((localStorage.getItem("token") && localStorage.getItem("tokenUid")) && location.pathname !== '/tenant-register') {
     return <Navigate to="/" />;
   }
+
 
   return (
     <>
@@ -259,21 +263,19 @@ let onImagesValidation = (e) => {
                       // disabled={state.disabledButton}
                     >
                       {loading ? 
-                      <div className="px-7 py-1 text-xs">
                         <Loader />
-                      </div>
                        : "Create Account"}
                     </button>
                   </div>
 
                   <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                     <p className="text-center font-semibold mx-4 mb-0 flex ">
-                      Or Register Here
+                      Or Login 
                     </p>
                   </div>
 
                   <div className="flex flex-row items-center justify-center lg:justify-start">
-                    <p className="text-lg mb-0 mr-4">Register with</p>
+                    <p className="text-lg mb-0 mr-4"></p>
                     <button
                       type="button"
                       data-mdb-ripple="true"

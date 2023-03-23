@@ -19,7 +19,7 @@ var storage =  multer.diskStorage({
         if(file.fieldname === 'files'){
             cb(null, `${defaultPath}/${file.fieldname}`)
         }
-        if(file.fieldname === 'images'){
+        if(file.fieldname === 'PROPERTY'){
             cb(null, `${defaultPath}/${file.fieldname}`)
         }
     },

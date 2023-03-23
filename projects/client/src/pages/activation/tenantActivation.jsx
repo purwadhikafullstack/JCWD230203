@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "components/loader/loader";
 
 
 function TenantActivation() {
@@ -35,18 +36,23 @@ function TenantActivation() {
         let confirmation = await axios.post(`http://localhost:5000/tenant/tenant-activation/${id}`, dataSend)
         console.log(confirmation)
 
-        toast.success("Tenant Validate Success")
+        
         
         setTimeout(() => {
+          toast.success("Tenant Validate Success")
           setLoading(false)
           setActive(true)
-        }, 2000)
+        }, 6000)
         
         
       } catch (error) {
-        console.log(error)
+        setLoading(false)
         console.log(error.response.data.message)
         toast.error(error.response.data.message)
+      }finally{
+        setTimeout(() => {
+          setLoading(false)
+        }, 5000);
       }
     }
 
@@ -71,7 +77,7 @@ function TenantActivation() {
 
   
   if(isActive){
-    navigate('/tenant-login')
+    navigate('/dashboard')
   }
 
   return (
@@ -129,7 +135,7 @@ function TenantActivation() {
                   OTP expired ?
                 </span>
                 {clickCount < 5 ? <span className="my-main pointer">
-                  {loading ? 'Loading..' : <button  onClick={(event) => onResend(event)}>Click here!</button>}
+                  {loading ? <Loader /> : <button  onClick={(event) => onResend(event)}>Click here!</button>}
                 </span> : <p>Maximum request OTP is 5 Times</p>}
               </div>
           </form>

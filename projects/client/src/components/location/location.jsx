@@ -5,6 +5,7 @@ function Location(props) {
       <div className="flex justify-center rounded-lg">
         <div className="pt-3 mb-4 xl:w-full ">
           <select name={name} value={value} onChange={onChange} >
+          <option value="" disabled selected>Select a city</option>
             {city ? city.map((value, idx) => {
               return (
                 <>

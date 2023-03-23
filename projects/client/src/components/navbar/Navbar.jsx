@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../../supports/assets/logo.png";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
@@ -10,36 +10,74 @@ const Navbar = (props) => {
   const location = useLocation();
   const { id } = useParams();
   const [showMenu, setShowMenu] = useState(false)
+  const menuRef = useRef()  
+
+  const handleClick = () => {
+    setShowMenu(!showMenu);
+  };
+  
+  const handleOutsideClick = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setShowMenu(false);
+    }
+  };
+  
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [menuRef]);
 
   return (
     <>
-      {location.pathname === "/dashboard" ||
-      location.pathname === "/dashboard-register" ||
+      {location.pathname === "/dashboard" || location.pathname === "/dashboard-reservation" ||
+      location.pathname === "/dashboard-register" || location.pathname === "/dashboard-profile" ||
       location.pathname === `/tenant-activation/${id}` ? null : (
-        <div className="flex justify-between items-center ml-2 mr-2 border-b ">
+        <div className="flex justify-between items-center ml-2 mr-2 border-b top-0  ">
           {/* Left */}
           <Link to="/" className="hidden md:flex ">
             <div className=" my-5 h-10 md:flex pl-3">
-              <img src={logo} className="object-cover my-1" alt="" />
+              <img src={`http://localhost:5000/Public/assets/logo.png`} className="object-cover my-1" alt="" />
+            </div>
+          </Link>
+          <Link to="/" className="flex items-center md:hidden ">
+            <div className="mb-2 ml-4 h-2 w-fit md:flex pl-3">
+              <img src={`http://localhost:5000/Public/assets/logo-vcation02.png`} className="object-cover h-5 " alt="" />
             </div>
           </Link>
 
+          
+
           {/* Right */}
           <div className="flex items-center pr-3 font-semibold text-gray-600">
+            {localStorage.getItem("tokenTid") && 
             <div className="flex rounded-full px-4 py-2 hover:bg-[#c7c7c743] duration-100 ease-out">
-              <Link to="/dashboard" className="hidden md:flex ">
-                <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
-                  Vcation your
-                </p>
-                <MdOutlineHomeWork className="text-[22px]" />
-              </Link>
-            </div>
+            <Link to="/dashboard" className="hidden md:flex ">
+              <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
+                Vcation your
+              </p>
+              <MdOutlineHomeWork className="text-[22px]" />
+            </Link>
+          </div>}
+
+          {!localStorage.getItem("tokenTid") &&
+          <div className="flex rounded-full px-4 py-2 hover:bg-[#c7c7c743] duration-100 ease-out">
+          <Link to="/tenant-login" className="hidden md:flex ">
+            <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
+              Vcation your
+            </p>
+            <MdOutlineHomeWork className="text-[22px]" />
+          </Link>
+        </div>}
 
           
             <div className="flex items-center border px-4 py-2 rounded-full gap-3 bg-[#c9403e] text-white font-bold shadow-sm shadow-gray-300 hover:bg-[#e58786] cursor-pointer"
-            onClick={() => setShowMenu(!showMenu)}>
+            onClick={handleClick}
+            >
               {props.data.username ? (
-                <div className="font-bold">
+                <div className="font-bold capitalize">
                   {localStorage.getItem("token") ||
                   localStorage.getItem("tokenUid")
                     ? props.data.username
@@ -54,7 +92,8 @@ const Navbar = (props) => {
 
            {showMenu && 
            
-           <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3 transition duration-300 ease-in-out">
+           <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3 transition duration-300 ease-in-out z-99"
+           ref={menuRef}>
            <ul>
              {localStorage.getItem("token") ||
              localStorage.getItem("tokenUid") ? (
@@ -86,7 +125,7 @@ const Navbar = (props) => {
                    <span> Profile </span>
                  </li>
                  </Link>
-                 <li className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
+                 <li className="px-3 cursor-pointer py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
                  onClick={props.myFunc.onLogout}>
                    <span>
                      <svg

@@ -1,5 +1,6 @@
 function Date(props) {
   const {name, value, onChange} = props;
+  
   return (
     <>
       <div className="flex items-center justify-center">

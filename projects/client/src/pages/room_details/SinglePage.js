@@ -69,6 +69,7 @@ const SinglePage = (props) => {
     setButtonOpen(false);
   };
 
+
   return (
     <>
       <div>
@@ -125,14 +126,14 @@ const SinglePage = (props) => {
         </div>
 
         <p className="features-text text-2xl font-semibold uppercase">
-          Entire rental unit hosted by {details?.[0]?.property?.name}{" "}
+          Entire rental unit hosted by {details?.[0]?.property?.tenant?.first_name} {details?.[0]?.property?.tenant?.last_name}{" "}
         </p>
 
         <p className="actual-features text-xl">
-          {Math.floor(Math.random() * 6) + 3} guests .{" "}
-          {Math.floor(Math.random() * 6) + 1} . bedrooms{" "}
+          Max guests per room is 2.{" "}
+          {/* {Math.floor(Math.random() * 6) + 1} . bedrooms{" "}
           {Math.floor(Math.random() * 5) + 3} beds .{" "}
-          {Math.floor(Math.random() * 2) + 3} bathrooms
+          {Math.floor(Math.random() * 2) + 3} bathrooms */}
         </p>
 
         <p className="line1 text-gray-300">

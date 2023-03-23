@@ -14,6 +14,7 @@ function Modal(props) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [msg, setMsg] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const [disable, setDisable] = useState(false);
@@ -22,6 +23,8 @@ function Modal(props) {
     last_name: "",
   });
 
+console.log(props?.endDate?.date)
+
   const navigate = useNavigate();
   // const [triggerClose, setTriggerClose] = useState({
   //   editProfile: false,
@@ -29,97 +32,144 @@ function Modal(props) {
   //   changePassword: false,
   // });
 
-  const bookedRoom = async() => {
-    const date1 = new Date(props?.endDate)
-    const setDate1 = date1.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+  const bookedRoom = async () => {
+    const date1 = new Date(props?.endDate);
+    const setDate1 = date1
+      .toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
     const dateStr = setDate1;
     const dateParts = dateStr.split("-");
     const year = dateParts[2];
     const month = dateParts[0];
     const day = dateParts[1];
-    const endDate = `${year}-${month}-${day}`;
-    const date2 = new Date(props?.startDate)
-    const setDate2 = date2.toLocaleDateString(`en-US`, { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    const endDate = `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`;
+
+    const date2 = new Date(props?.startDate);
+    const setDate2 = date2
+      .toLocaleDateString(`en-US`, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
     const dateStr2 = setDate2;
     const dateParts2 = dateStr2.split("-");
     const year2 = dateParts2[2];
     const month2 = dateParts2[0];
     const day2 = dateParts2[1];
-    const startDate = `${year2}-${month2}-${day2}`;
-    console.log(startDate)
-    console.log(endDate)
-    try {
-      setLoading(true)
-      if(!getTokenId){
-        navigate('/register')
-      }
-      if(getTokenId){
-        const booking = await axios.post(`http://localhost:5000/transaction/booked`,
-        {
-          check_in: startDate,
-          check_out: endDate,
-          total_guest: props.totalGuest,
-          room_id: props.placeId
-        },
-        {
-          headers: {
-            auth: getTokenId,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        })
-        console.log(booking?.data?.data)
-        toast.success(booking.data.message)
+    const startDate = `${props?.endDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`;
 
-        setTimeout(()=>{
-          if(booking?.data?.data?.length <= 2) {
-            navigate(`/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}`)
-          }else{
-            navigate(`/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}/${booking?.data?.data?.[2]?.order_id}`)
+    try {
+      setLoading(true);
+      if (!getTokenId) {
+        navigate("/register");
+      }
+      if (getTokenId) {
+        const booking = await axios.post(
+          `http://localhost:5000/transaction/booked`,
+          {
+            check_in: startDate,
+            check_out: endDate,
+            total_guest: props.totalGuest,
+            room_id: props.placeId,
+          },
+          {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
           }
-        }, 2000)
+        );
+
+        toast.success(booking.data.message);
+
+        setTimeout(() => {
+          if (booking?.data?.data?.length <= 2) {
+            navigate(
+              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}`
+            );
+          } else {
+            navigate(
+              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}/${booking?.data?.data?.[2]?.order_id}`
+            );
+          }
+        }, 2000);
       }
     } catch (error) {
+      setLoading(false);
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelOrder = async() => {
+    try {
+      setLoading(true)
+      const res = await axios.patch(`http://localhost:5000/transaction/cancel`,
+      {
+        room_id: props?.data?.id,
+        order_id1: props?.data?.order_id || props?.data?.order_id1,
+        order_id2: props?.data?.order_id2 || null
+      } )
+
+      setTimeout(() => {
+        toast.success(res?.data?.message)
+      }, 5000);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 5500)
+      
+      // setTimeout(() => {
+      //   if(res?.data?.data?.length <= 1){
+      //     navigate(`/transaction/${props?.data?.id}/${props?.data?.order_id || props?.data?.order_id1}`)
+      //   }else{
+      //     navigate(`/transaction/${props?.data?.id}/${props?.data?.order_id1}/${props?.data?.order_id2}`)
+      //   }
+      // }, 2000);
+
+    } catch (error) {
       setLoading(false)
-      if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
-        toast.error(error.response.data.message)
-      }else{
-        toast.error(error.message)
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
       }
     }finally{
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false);
+      }, 5000);
     }
   }
 
-  // const editProfileModalRef = useRef()
-
-  //  useEffect(() => {
-  //     return() => {
-  //       setTriggerClose(false)
-  //     }
-  //  }, [])
-
-  // useEffect(() => {
-  //   setShowEditProfile(props.showEditProfile);
-  // }, [props.showEditProfile]);
-
-  // useEffect(() => {
-  //   setShowChangePicture(props.showChangePicture);
-  // }, [props.showChangePicture]);
-
-  // useEffect(() => {
-  //   setShowChangePassword(props.showChangePassword);
-  // }, [props.showChangePassword]);
-
-
   const onSubmit = async (data) => {
     try {
-      if (data?.length === 0) throw { message: "Field cannot blank" };
+      setLoading(true);
+      if (data?.first_name?.length === 0)
+        throw { message: "Please fill first name" };
+      if (data?.last_name?.length === 0)
+        throw { message: "Please fill last name" };
       if (!data?.email?.includes("@") || data?.email?.length < 10)
         throw { message: "email must contain @ and contain at least 10 char" };
       if (data?.phone_number?.length < 9)
         throw { message: "Phone Number not Valid" };
-      console.log("masuk1");
+      if (data?.gender?.length === 0) throw { message: "Choose a gender" };
 
       if (getTokenId) {
         let res = await axios.patch(
@@ -141,9 +191,15 @@ function Modal(props) {
             },
           }
         );
-        setLoading(true);
+        
+        setTimeout(() => {
+          toast.success("Update Profile Success");
+        }, 5000);
+        
 
-        toast.success("Update Profile Success");
+        setTimeout(() => {
+          window.location.reload();
+        }, 6000)
       }
     } catch (error) {
       setLoading(false);
@@ -156,7 +212,9 @@ function Modal(props) {
         toast.error(error.message);
       }
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 
@@ -187,6 +245,7 @@ function Modal(props) {
 
   let onSubmitPP = async () => {
     try {
+      setLoading(true);
       let fd = new FormData();
       if (!selectedImages) throw { message: "please Upload Your Image" };
       selectedImages.forEach((value) => {
@@ -205,22 +264,40 @@ function Modal(props) {
             },
           }
         );
-        toast.success("Update Profile Picture Success");
 
-        if (res.status === 200) {
-          navigate("/user-profile");
-        }
+        setTimeout(() => {
+          toast.success(res.data.message);
+        }, 5000);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 6000)
       }
     } catch (error) {
+      setLoading(false);
       if (
         error.message === "Request failed with status code 400" ||
         error.message === "Request failed with status code 404"
       ) {
-        setLoading(false);
         toast.error(error.response.data.message);
       } else {
         toast.error(error.message);
       }
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+      // setTimeout(() => {
+      //   setCloseModal(false);
+      // }, 5000);
+    }
+  };
+
+  const validateProfile = (e) => {
+    if (e === "") {
+      setMsg("Field Cannot Blank ");
+    } else {
+      setMsg("");
     }
   };
 
@@ -269,9 +346,13 @@ function Modal(props) {
         );
 
         if (res.status === 200) {
-          toast.success(res.data.message);
-          return <Navigate to="/user-profile" />;
+          setTimeout(() => {
+            toast.success(res.data.message);
+          }, 5000);
         }
+        setTimeout(() => {
+          window.location.reload();
+        }, 6000)
       }
     } catch (error) {
       setLoading(false);
@@ -282,14 +363,19 @@ function Modal(props) {
         toast.error(error.message);
       }
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 
-  useEffect(() => {
-    // onSubmit();
-    // onSubmitPP();
+  // useEffect(() => {
+  //   if (modalOpen === false) {
+  //     window.location.reload();
+  //   }
+  // }, [modalOpen]);
 
+  useEffect(() => {
     if (loading) {
       setTimeout(() => {
         reset({
@@ -303,8 +389,8 @@ function Modal(props) {
           formFile: "",
           old_password: "",
           new_password: "",
+          formFile: "",
         });
-        setLoading(false);
       }, 2000);
     }
   }, [loading, reset]);
@@ -315,23 +401,20 @@ function Modal(props) {
 
       <div
         data-te-modal-init
-        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden \"
         id="editProfile"
-        data-te-backdrop="static"
-        data-te-keyboard="false"
         tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
+        aria-labelledby="editProfile"
         aria-hidden="true"
-        // ref={editProfileModalRef}
       >
         <div
           data-te-modal-dialog-ref
           className="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
         >
-          <div className="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none dark:bg-neutral-600">
-            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
+          <div className="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none mt-10">
+            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-opacity-100 p-4 ">
               <h5
-                className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200"
+                className="text-xl text-xl font-semi-bold leading-normal"
                 id="editProfile"
               >
                 Edit Profile
@@ -364,7 +447,7 @@ function Modal(props) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="max-w-2xl mx-auto"
               >
-                <div className="form bg-gray-900 max-w-md mx-auto p-6 rounded-lg">
+                <div className="form bg-gray-600 max-w-md mx-auto p-6 rounded-lg">
                   {/* first_name */}
                   <label
                     className="block mb-3 text-white font-medium"
@@ -373,26 +456,34 @@ function Modal(props) {
                     First name
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     type="text"
                     {...register("first_name")}
                     id="first_name"
                     defaultValue={props?.profile?.first_name}
+                    onChange={(e) => validateProfile(e.target.value)}
                   />
+                  <div className=" text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
                   {/* last_name */}
                   <label
                     className="block mb-3 text-white font-medium"
                     htmlFor="last_name"
+                    onChange={(e) => validateProfile(e.target.value)}
                   >
                     Last name
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     type="text"
                     {...register("last_name")}
                     id="last_name"
                     defaultValue={props?.profile?.last_name}
                   />
+                  <div className=" text-red-700 text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
                   {/* email */}
                   <label
                     className="block mb-3 text-white font-medium"
@@ -401,12 +492,16 @@ function Modal(props) {
                     Email
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 "
                     type="text"
                     {...register("email")}
                     id="email"
                     defaultValue={props?.profile?.email}
+                    onChange={(e) => validateProfile(e.target.value)}
                   />
+                  <div className=" text-red-700 text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
                   {/* gender */}
                   <label
                     className="block mb-3 text-white font-medium"
@@ -416,7 +511,7 @@ function Modal(props) {
                   </label>
                   <select
                     {...register("gender")}
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     name="gender"
                   >
                     <option value="Female">Female</option>
@@ -430,12 +525,16 @@ function Modal(props) {
                     Phone Number
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     type="number"
                     {...register("phone_number")}
                     id="phone_number"
                     defaultValue={props?.profile?.phone_number}
+                    onChange={(e) => validateProfile(e.target.value)}
                   />
+                  <div className=" text-red-700 text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
                   {/* address */}
                   <label
                     className="block mb-3 text-white font-medium"
@@ -444,14 +543,17 @@ function Modal(props) {
                     Address
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     type="text"
                     {...register("address")}
                     id="address"
                     defaultValue={props?.profile?.address}
+                    onChange={(e) => validateProfile(e.target.value)}
                   />
-
-                  {/* birthdate */}
+                  <div className=" text-red-700 text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
+                  '{/* birthdate */}
                   <label
                     className="block mb-3 text-white font-medium"
                     htmlFor="birth_date"
@@ -459,17 +561,20 @@ function Modal(props) {
                     Birth date
                   </label>
                   <input
-                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4"
+                    className="block w-full p-3 rounded-md border border-solid border-gray-500 bg-transparent text-gray-100 mb-4 capitalize"
                     type="date"
                     {...register("birth_date")}
                     id="birth_date"
                     defaultValue={props?.profile?.birth_date}
+                    onChange={(e) => validateProfile(e.target.value)}
                   />
-
+                  <div className=" text-red-700 text-sm font-semibold ">
+                    {msg ? msg : null}
+                  </div>
                   <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
                     <button
                       type="button"
-                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal my-main transition duration-150 ease-in-out hover:bg-primary-accent-300 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
                       data-te-modal-dismiss
                       data-te-ripple-init
                       data-te-ripple-color="light"
@@ -478,11 +583,17 @@ function Modal(props) {
                     </button>
                     <button
                       type="submit"
-                      className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                      className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus::bg-emerald-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                       data-te-ripple-init
                       data-te-ripple-color="light"
                     >
-                      {loading ? <Loader /> : "Save Changes"}
+                      {loading ? (
+                        <div className="h-fit flex justify-center">
+                          <Loader />
+                        </div>
+                      ) : (
+                        "Save Changes"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -496,23 +607,21 @@ function Modal(props) {
 
       <div
         data-te-modal-init
-        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden"
         id="changePicture"
-        data-te-backdrop="static"
-        data-te-keyboard="false"
         tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
+        aria-labelledby="changePictureLabel"
         aria-hidden="true"
       >
         <div
           data-te-modal-dialog-ref
-          className="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
+          className="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px] "
         >
-          <div className="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none dark:bg-neutral-600">
-            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
+          <div className="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none ">
+            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-opacity-100 p-4 ">
               <h5
-                className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200"
-                id="editProfile"
+                className="text-xl font-semi-bold leading-normal "
+                id="changePicture"
               >
                 Change Picture
               </h5>
@@ -544,7 +653,7 @@ function Modal(props) {
                 onSubmit={handleSubmit(onSubmitPP)}
                 className="max-w-2xl mx-auto"
               >
-                <div className="form bg-gray-900 max-w-md mx-auto p-6 rounded-lg">
+                <div className="form bg-gray-600 max-w-md mx-auto p-6 rounded-lg">
                   <div className="flex justify-center">
                     <div className="mb-3 w-96">
                       <label
@@ -567,7 +676,7 @@ function Modal(props) {
                   <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
                     <button
                       type="button"
-                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal my-main transition duration-150 ease-in-out hover:bg-primary-accent-300 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
                       data-te-modal-dismiss
                       data-te-ripple-init
                       data-te-ripple-color="light"
@@ -576,11 +685,18 @@ function Modal(props) {
                     </button>
                     <button
                       type="submit"
-                      className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                      className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus::bg-emerald-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                       data-te-ripple-init
                       data-te-ripple-color="light"
+                      // data-te-modal-dismiss={closeModal}
                     >
-                      Save Changes
+                      {loading ? (
+                        <div className="h-fit w-full flex justify-center">
+                          <Loader />
+                        </div>
+                      ) : (
+                        "Save Changes"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -595,21 +711,19 @@ function Modal(props) {
         data-te-modal-init
         className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
         id="changePassword"
-        data-te-backdrop="static"
-        data-te-keyboard="false"
         tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
+        aria-labelledby="changePassword"
         aria-hidden="true"
       >
         <div
           data-te-modal-dialog-ref
           className="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
         >
-          <div className="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none dark:bg-neutral-600">
-            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
+          <div className="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none">
+            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2  border-opacity-100 p-4 ">
               <h5
-                className="text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200"
-                id="editProfile"
+                className="text-xl font-medium leading-normal "
+                id="changePassword"
               >
                 Change Password
               </h5>
@@ -641,7 +755,7 @@ function Modal(props) {
                 onSubmit={handleSubmit(changePassword)}
                 className="max-w-2xl mx-auto"
               >
-                <div className="form grid bg-gray-900 max-w-md mx-auto p-6 rounded-lg">
+                <div className="form grid bg-gray-600 max-w-md mx-auto p-6 rounded-lg">
                   {/* old password */}
                   <label
                     className="block mb-3 text-white font-medium"
@@ -710,12 +824,12 @@ function Modal(props) {
                         />
                       )}
                     </div>
-                    <div className=" text-red-700 text-sm font-semibold ">
+                    <div className=" text-sm font-semibold ">
                       {msg ? msg : null}
                     </div>
                   </div>
 
-                  <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
+                  <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
                     <button
                       type="button"
                       className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
@@ -730,11 +844,18 @@ function Modal(props) {
                     </button>
                     <button
                       type="submit"
-                      className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                      className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-emerald-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                       data-te-ripple-init
                       data-te-ripple-color="light"
+                      onClick={() => setModalOpen(true)}
                     >
-                      {loading ? <Loader /> : "Save Changes"}
+                      {loading ? (
+                        <div className="h-fit w-full flex justify-center">
+                          <Loader />
+                        </div>
+                      ) : (
+                        "Save Changes"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -763,7 +884,7 @@ function Modal(props) {
             <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-400 border-opacity-100 p-4 ">
               <h5
                 className="text-xl font-semibold leading-normal text-black"
-                id="editProfile"
+                id="transaction"
               >
                 Confirmation Booked
               </h5>
@@ -807,7 +928,10 @@ function Modal(props) {
                       <br />
                       {props?.details?.[0]?.property?.address},{" "}
                       {props?.details?.[0]?.property?.locations?.[0]?.name},{" "}
-                      {props?.details?.[0]?.property?.locations?.[0]?.city?.city}
+                      {
+                        props?.details?.[0]?.property?.locations?.[0]?.city
+                          ?.city
+                      }
                     </address>
                   </div>
                 </div>
@@ -831,7 +955,11 @@ function Modal(props) {
                     className="rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   >
                     Total Price Rp.{" "}
-                    {`${(props?.daysCheck * props?.newPrice * Math.ceil(props?.totalGuest/2)).toLocaleString()}`}
+                    {`${(
+                      props?.daysCheck *
+                      props?.details?.[0]?.price *
+                      Math.ceil(props?.totalGuest / 2)
+                    ).toLocaleString()}`}
                   </label>
                 </div>
                 <div
@@ -842,7 +970,7 @@ function Modal(props) {
                     for="exampleFormControlInput5"
                     className="rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   >
-                    Room Booked {Math.ceil(props?.totalGuest/2)}
+                    Room Booked {Math.ceil(props?.totalGuest / 2)}
                   </label>
                 </div>
               </div>
@@ -860,20 +988,98 @@ function Modal(props) {
               {/* <Link
                 to={`/transaction/${props?.placeId}/${props?.daysCheck}`}
               > */}
-                <button
-                  type="submit"
-                  className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                  data-te-ripple-init
-                  data-te-ripple-color="light"
-                  onClick={bookedRoom}
-                >
-                  {loading ? <Loader /> : "Checkout"}
-                </button>
+              <button
+                type="submit"
+                className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                onClick={bookedRoom}
+              >
+                {loading ? (
+                  <div className="h-fit flex justify-center">
+                    <Loader />
+                  </div>
+                ) : (
+                  "Checkout"
+                )}
+              </button>
               {/* </Link> */}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Cancel Order */}
+
+      <div
+        data-te-modal-init
+        class="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        id="cancelOrder"
+        tabindex="-1"
+        aria-labelledby="cancelOrder"
+        aria-hidden="true"
+      >
+        <div
+          data-te-modal-dialog-ref
+          class="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
+        >
+          <div class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none ">
+            <div class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 ">
+              <h5
+                class="text-xl font-medium leading-normal text-neutral-800 "
+                id="cancelOrder"
+              >
+                Canceling Order
+              </h5>
+              <button
+                type="button"
+                class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                data-te-modal-dismiss
+                aria-label="Close"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="h-6 w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="relative flex-auto p-4" data-te-modal-body-ref>
+              Are You Sure Want to Cancel The Order ?
+            </div>
+            <div class="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
+              <button
+                type="button"
+                class="inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-emerald-accent-700 focus:bg-emerald-accent-700focus:outline-none focus:ring-0 active:bg-emerald-accent-700"
+                data-te-modal-dismiss
+                data-te-ripple-init
+                data-te-ripple-color="light"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                class="ml-1 inline-block rounded my-bg-main px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-rose-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-rose-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-rose-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                onClick={() => cancelOrder()}
+              >
+                {loading ? <Loader /> : "Yes"} 
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Toaster />
     </>
   );
