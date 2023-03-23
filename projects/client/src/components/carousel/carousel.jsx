@@ -44,7 +44,7 @@ function Carousel() {
           location: form.location,
           ...searchData,
         });
-        toast.success("Get the Room");
+        toast.success("Get the Property");
         setTimeout(() => {
           const redirectUrl = `/search-results?${searchParams.toString()}`;
           window.location.href = redirectUrl;
@@ -118,23 +118,23 @@ function Carousel() {
     <>
       {location.pathname === "/" &&
       location.pathname === `/category/${id}` ? null : (
-        <div className="container my-10 px-6 mx-auto">
+        <div className="container my-12 px-6 mx-auto">
           <section className="mb-10 text-gray-800">
             <div
-              className="relative overflow-hidden bg-no-repeat bg-cover"
+              className="relative overflow-hidden bg-no-repeat bg-cover rounded-lg shadow-lg"
               style={{
                 backgroundPosition: "100%",
                 backgroundImage:
-                  "url('http://localhost:5000/Public/PROPERTY/logo.png')",
+                  "url('http://localhost:5000/Public/PROPERTY/guesthouse-surabaya-lakarsantri-cheerful-1-1.webp')",
                 height: "300px",
                 maxHeight: "50vh",
               }}
             ></div>
             <div className="container text-gray-800 px-4 md:px-12">
               <div
-                className="block rounded-lg shadow-lg py-10 md:py-12 px-4 md:px-6"
+                className="block rounded-lg shadow-lg py-3 md:py-3 px-4 md:px-6"
                 style={{
-                  marginTop: "-100px",
+                  marginTop: "-30px",
                   background: "hsla(0, 0%, 100%, 0.8)",
                   backdropFilter: "blur(30px)",
                 }}
@@ -144,7 +144,7 @@ function Carousel() {
                     <div className="grid lg:grid-cols-4 gap-x-6 items-center">
                       <div className="mb-10 lg:mb-0">
                         <div className="text-xl font-bold">
-                          Start Date
+                          <span className="mx-12"> Start Date</span>
                           <br />
                           <span className="text-blue-600">
                             <Date
@@ -153,26 +153,26 @@ function Carousel() {
                               name="startDate"
                             />
                           </span>
-                          <p className="text-lg my-main">{error.startDate}</p>
+                          {/* <p className="text-lg my-main">{error.startDate}</p> */}
                         </div>
                       </div>
-                      <div className="mb-10 lg:mb-0">
+                      <div className="mb-10 lg:mb-0 ">
                         <div className="text-xl font-bold">
-                          End Date
+                          <span className="mx-12 ">End Date</span> 
                           <br />
-                          <span className="text-blue-600">
+                          <span className="pt-5">
                             <Date
                               onChange={handleChange}
                               value={form.endDate}
                               name="endDate"
                             />
                           </span>
-                          <p className="text-lg my-main">{error.endDate}</p>
+                          {/* <p className="text-lg my-main">{error.endDate}</p> */}
                         </div>
                       </div>
                       <div className="mb-10 lg:mb-0">
                         <div className="text-xl font-bold">
-                          Select Location
+                          <span className="">Select Location</span> 
                           <br />
                           <span className="my-main">
                             <Location
@@ -196,7 +196,7 @@ function Carousel() {
                     /> */}
                           <button
                             type="submit"
-                            className="inline-block px-7 py-3 my-bg-main text-white font-medium text-sm leading-snug uppercase rounded shadow-md shadow-gray-300 hover:bg-[#e58786] hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                            className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md shadow-gray-300 hover:bg-emerald-700 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-lg transition duration-150 ease-in-out"
                             data-mdb-ripple="true"
                             data-mdb-ripple-color="light"
                             onClick={handleSubmit}

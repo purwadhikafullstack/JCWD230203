@@ -14,11 +14,23 @@ module.exports = {
   transaction: async (req, res) => {
     const t = await sequelize.transaction();
     const { check_in, check_out, total_guest, room_id } = req.body;
-    console.log(check_in);
-    console.log(check_out);
     const id = req.dataToken.id;
 
     try {
+
+      const user = await db.users.findOne({
+        where: {id}
+      })
+
+      if(user.dataValues.status === "unconfirmed"){
+        return res.status(400).send({
+          isError: true,
+          message: "Your Account is Not Active",
+          data: null
+        })
+      }
+
+
       const room = await db.room.findByPk(
         room_id,
         {
@@ -67,6 +79,7 @@ module.exports = {
           total_guest - i * maxGuest,
           maxGuest
         );
+
         const transaction = await transactions.findAll(
           {
             where: {
@@ -101,7 +114,6 @@ module.exports = {
           moment(check_out).diff(moment(check_in), "days") *
           room.dataValues.price;
 
-        console.log(room.dataValues.price);
 
         const _transaction = await transactions.create(
           {
@@ -140,6 +152,7 @@ module.exports = {
         });
         bookedRooms++;
       }
+
       await t.commit();
       if (transactionData.length > 0) {
         return res.status(200).json({
@@ -216,7 +229,47 @@ module.exports = {
         ],
       });
 
-      console.log(transaction);
+
+      return res.status(200).send({
+        isError: false,
+        message: "Success",
+        data: transaction,
+      });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  tenantDataTransaction: async (req, res) => {
+    try {
+      const {users_id, room_id, order_id1, order_id2 } = req.body;
+      const final_order2 = order_id2 || null;
+      const id = users_id;
+      const transaction = await transactions.findAll({
+        where: {
+          room_id: room_id,
+          [Op.or]: [
+            { order_id: order_id1 },
+            { order_id: { [Op.eq]: final_order2 } },
+          ],
+        },
+        include: [
+          {
+            model: db.room,
+            where: { id: room_id },
+            include: [{ model: db.room_image }, { model: db.property }],
+          },
+          {
+            model: db.users,
+            where: { id: id },
+          },
+        ],
+      });
+
 
       return res.status(200).send({
         isError: false,
@@ -234,7 +287,6 @@ module.exports = {
 
   paymentProof: async (req, res) => {
     const { room_id, order_id1, order_id2 } = req.body;
-    console.log(req.body);
     const final_order2 = order_id2 || null;
     const t = await sequelize.transaction();
     try {
@@ -250,7 +302,6 @@ module.exports = {
         },
         { transaction: t }
       );
-      console.log(data);
       await transactions.update(
         {
           image_path: req.files.images[0].path,
@@ -285,35 +336,67 @@ module.exports = {
 
   orderList: async (req, res) => {
     const id = req.dataToken.id;
-    console.log(id)
-    const page = 1
-    const page_size = 5
-    const offset = (page- 1) * page_size
-     const limit = page_size
-    // console.log(id);
+    const {
+      page = 1,
+      status_id,
+      start_date,
+      end_date,
+      order_id,
+      sort_by = "order_id",
+    } = req.query;
+    const page_size = 5;
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+
     try {
+      const where = { users_id: id };
+      if (start_date && end_date) {
+        where.check_in = { [Op.between]: [start_date, end_date] };
+      }
+      if (status_id) {
+        where.status_id = status_id;
+      }
+      if (order_id) {
+        where.order_id = order_id;
+      }
+
+      // order clause by sort params
+      let order = [["order_id", "DESC"]];
+      if (sort_by === "start_Date") {
+        order = [["createdAt", "ASC"]];
+      } else if (sort_by === "end_date") {
+        order = [["createdAt", "DESC"]];
+      }
+
       const transaction = await transactions.findAll({
-        where: { users_id: id },
-        include: {
-          model: db.room,
-          include: [
-            { model: db.room_image },
-            { model: db.property, include: { model: db.property_image } },
-          ],
-        },
+        where,
+        include: [
+          {
+            model: db.users,
+            include: { model: db.users_details },
+          },
+          {
+            model: db.room,
+            include: [
+              { model: db.room_image },
+              { model: db.property, include: { model: db.property_image } },
+            ],
+          },
+        ],
         offset,
-        limit
+        limit,
+        order,
       });
 
-      const total_count = await transactions.count({
-        where: {users_id: id}
-      })
-      console.log(transaction);
+      const total_count = await transactions.count({ where });
+      const total_pages = Math.ceil(total_count / page_size);
+
       return res.status(200).send({
         isError: false,
-        message: "Get all Order List",
+        message: "Get Order List By Status",
         data: transaction,
-        count: total_count
+        total_data: total_count,
+        total_pages,
       });
     } catch (error) {
       return res.status(400).send({
@@ -324,13 +407,61 @@ module.exports = {
     }
   },
 
-  allOrderList: async(req, res) => {
+  cancelOrder: async (req, res) => {
+    const { room_id, order_id1, order_id2 } = req.body;
+    const final_order2 = order_id2 || null;
+    const t = await sequelize.transaction();
+    try {
+      const data = await transactions.findAll(
+        {
+          where: {
+            room_id: room_id,
+            [Op.or]: [
+              { order_id: order_id1 },
+              { order_id: { [Op.eq]: final_order2 } },
+            ],
+          },
+        },
+        { transaction: t }
+      );
+
+      await transactions.update(
+        { status_id: 3 },
+        {
+          where: {
+            room_id: room_id,
+            [Op.or]: [
+              { order_id: order_id1 },
+              { order_id: { [Op.eq]: final_order2 } },
+            ],
+          },
+        },
+        { transaction: t }
+      );
+
+
+      await t.commit();
+      return res.status(200).send({
+        isError: false,
+        message: "Cancel Order Success",
+        data: data,
+      });
+    } catch (error) {
+      await t.rollback();
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  allOrderList: async (req, res) => {
     const id = req.dataToken.id;
-    console.log(id)
-    const page = 1
-    const page_size = 10
-    const offset = (page- 1) * page_size
-    const limit = page_size
+    const page = 10;
+    const page_size = 5;
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
     try {
       const transaction = await transactions.findAll({
         where: { users_id: id },
@@ -342,18 +473,17 @@ module.exports = {
           ],
         },
         offset,
-        limit
+        limit,
       });
 
       const total_count = await transactions.count({
-        where: {users_id: id}
-      })
-      console.log(transaction);
+        where: { users_id: id },
+      });
       return res.status(200).send({
         isError: false,
         message: "Get all Order List",
         data: transaction,
-        count: total_count
+        count: total_count,
       });
     } catch (error) {
       return res.status(400).send({
@@ -362,5 +492,261 @@ module.exports = {
         data: null,
       });
     }
-  }
+  },
+
+  getAllStatus: async (req, res) => {
+    try {
+      const status = await db.status.findAll({
+        where: { id: [2, 3, 4, 7, 8] },
+      });
+
+      return res.status(200).send({
+        isError: false,
+        message: "Get Status",
+        data: status,
+      });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  getOrderListFilter: async (req, res) => {
+    const id = req.dataToken.id;
+    const {
+      start_date,
+      end_date,
+      status_id,
+      order_id,
+      sort_by = "order_id",
+      page = 1,
+    } = req.query;
+    const page_size = 5;
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+
+    try {
+      // define where clause for the filters
+      const where = { users_id: id };
+      if (start_date && end_date) {
+        where.check_in = { [Op.between]: [start_date, end_date] };
+      }
+      if (status_id) {
+        where.status_id = status_id;
+      }
+      if (order_id) {
+        where.order_id = order_id;
+      }
+
+      // order clause by sort params
+      let order = [["order_id", "DESC"]];
+      if (sort_by === "start_Date") {
+        order = [["createdAt", "ASC"]];
+      } else if (sort_by === "end_date") {
+        order = [["createdAt", "DESC"]];
+      }
+
+      const transaction = await transactions.findAll({
+        where,
+        include: [
+          {
+            model: db.users,
+            include: { model: db.users_details },
+          },
+          {
+            model: db.room,
+            include: [
+              { model: db.room_image },
+              { model: db.property, include: { model: db.property_image } },
+            ],
+          },
+        ],
+        offset,
+        limit,
+        order,
+      });
+
+      const total_count = await transactions.count({ where });
+
+      return res.status(200).send({
+        isError: false,
+        message: "Get all Order List",
+        data: transaction,
+        count: total_count,
+      });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  tenantOrderList: async (req, res) => {
+    const id = req.dataToken.id;
+    const { page = 1, status_id, room_id } = req.body;
+    const page_size = 10;
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+    try {
+      // because the transactions doest record the tenant id, we should track the tenant id based on their relations
+
+      // first get the property which it available in transactions db
+      const properties = await db.property.findAll({
+        where: { tenant_id: id },
+        include: [
+          {
+            model: db.room,
+            include: [
+              { model: db.room_image },
+              {
+                model: transactions,
+                where: status_id ? { status_id } : {},
+                include: [
+                  {
+                    model: db.users,
+                    include: { model: db.users_details },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        offset,
+        limit,
+      });
+
+      
+      
+      // initialize an empty array to hold the transactions
+      let transaction = [];
+      
+      // iterate over the properties and rooms to find transactions
+      properties.forEach((property) => {
+        if (property.rooms) {
+          property.rooms.forEach((room) => {
+            if (room.transactions) {
+              transaction = [...transaction, ...room.transactions];
+            }
+          });
+        }
+      });
+      // console.log(transaction);
+
+      // Filter transactions by room_id if provided
+     if (room_id) {
+      transaction = transactions.filter(
+        (transaction) => transaction.room_id === room_id
+      );
+    }
+
+
+    const total_data = transaction.length;
+    const total_pages = Math.ceil(total_data / page_size)
+    transaction = transaction.slice(offset, offset + limit)
+
+      return res.status(200).send({
+        isError: false,
+        message: "Get Tenant Order List By Status",
+        data: transaction,
+        total_data,
+        total_pages
+
+      });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  acceptRejectOrder: async(req, res) => {
+    const {users_id, room_id, order_id1, order_id2, respond} = req.body;
+    const final_order2 = order_id2 || null;
+    const id = users_id;
+    console.log(req.body)
+    const t = await sequelize.transaction();
+    try {
+      const transaction = await transactions.findOne({
+        where: {
+          room_id,
+          [Op.or]: [
+            { order_id: order_id1 },
+            { order_id: { [Op.eq]: final_order2 } },
+          ]
+        },
+        include: [
+          {model: db.users, where: {id}}
+        ]
+      })
+
+      if(respond === "Accept"){
+        await transactions.update(
+          {status_id: 2},
+          {
+            where: {
+              room_id,
+              [Op.or]: [
+                { order_id: order_id1 },
+                { order_id: { [Op.eq]: final_order2 } },
+              ]
+            }
+          }, { transaction: t })
+        await db.transactions_history.update(
+          {status_id: 2},
+          {where: {transactions_id: transaction.dataValues.id}}, { transaction: t })
+
+          return res.status(200).send({
+            isError: false,
+            message: "Payment Accpeted",
+            data: transaction,
+          });
+
+      }
+
+      if(respond === "Reject"){
+        await transactions.update(
+          {status_id: 8},
+          {
+            where: {
+              room_id,
+              [Op.or]: [
+                { order_id: order_id1 },
+                { order_id: { [Op.eq]: final_order2 } },
+              ]
+            }
+          }, { transaction: t })
+
+        await db.transactions_history.update(
+          {status_id: 8},
+          {where: {transactions_id: transaction.dataValues.id}}, { transaction: t })
+
+          return res.status(200).send({
+            isError: false,
+            message: "Payment Rejected",
+            data: transaction,
+          });
+      }
+
+      await t.commit();
+      return res.status(200).send({
+        isError: false,
+        message: "Success",
+        data: transaction,
+      });
+    } catch (error) {
+      await t.rollback();
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
 };

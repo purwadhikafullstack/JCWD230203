@@ -22,10 +22,6 @@ function SearchRoom() {
   priceMax &&
   sortOrder;
 
-  console.log(propertyName)
-
-
-
   const [room, setRoom] = useState([]);
   const [property, setProperty] = useState([])
   const [currentPage, setCurrentPage] = useState(1);

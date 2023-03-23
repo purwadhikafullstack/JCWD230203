@@ -53,7 +53,7 @@ const Rentals = () => {
 
   return (
     <>
-      <div className="py-3 sm:py-5">
+      <div className="py-3 sm:py-5 sm:mx-6 md:mx-10 lg:mx-16 px-3">
         <Carousel />
         <Type />
         {location.pathname === `/category/${id}` ? (
@@ -122,13 +122,13 @@ const Rentals = () => {
               ? properties.map((value) => {
                   return (
                     <div className="">
-                      <Link to={`/details/${value.id}`}>
+                      <Link to={`/details/${value?.id}`}>
                         <div className="relative">
                           <div className="grad absolute w-full h-full rounded-b-[1.3rem]"></div>
                           <div className="flex  ">
                             {/* Background */}
                             <img
-                              src={`http://localhost:5000/Public/PROPERTY/${value.property_images[0].image_path}`}
+                              src={`http://localhost:5000/Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
                               alt=""
                               className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full pointer"
                             />
@@ -146,13 +146,13 @@ const Rentals = () => {
                           <div className="">
                             <p className="max-w-[17rem] font-bold text-[17px]">
                               {/* {title} */}
-                              {value.name}
+                              {value?.name}
                             </p>
                             <p className="max-w-[17rem]  text-[16px]-mt-1">
                               <span className="text-gray-500">Start from </span>{" "}
                               <span className="font-black">
                                 {" "}
-                                Rp. {value.rooms[1].price.toLocaleString()}
+                                Rp. {value?.rooms?.[1]?.price?.toLocaleString()}
                               </span>
                             </p>
                             <p className="max-w-[17rem] font-semibold text-[17px]">

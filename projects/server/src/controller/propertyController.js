@@ -1,9 +1,10 @@
-const { Op, where } = require("sequelize");
-const { Sequelize } = require("./../sequelize/models");
+const { Op } = require("sequelize");
+const { sequelize } = require("./../sequelize/models");
 const db = require("../sequelize/models");
 const { offset } = require("@popperjs/core");
 const { query } = require("express");
 const moment = require("moment");
+const deleteFiles = require("../helpers/deleteFilesProperty");
 const property = db.property;
 
 module.exports = {
@@ -316,7 +317,6 @@ module.exports = {
         subQuery: false,
       });
 
-      console.log(rooms)
     
       if (rooms.length === 0) {
         return res.status(400).send({
@@ -348,7 +348,6 @@ module.exports = {
 
   getRoomByDateAndLocation: async (req, res) => {
     const { check_in, check_out, city, page = 1 } = req.query;
-    console.log(req.query)
     let page_size = 10;
     const offset = (page - 1) * page_size;
     const limit = page_size;
@@ -403,7 +402,6 @@ module.exports = {
         limit,
       });
 
-      console.log(transaction)
 
       const total_count = await db.location.count();
       const total_pages = Math.ceil(total_count / page_size);
@@ -422,6 +420,78 @@ module.exports = {
         message: error.message,
         data: null,
       });
+    }
+  },
+
+
+  createProperty: async(req, res) => {
+    const {name, address, description, type_id, city_id, city_name, location, property_accommodation
+    } = req.body;
+    console.log(req.body)
+    const id = req.dataToken.id
+    const t = await sequelize.transaction();
+    try {
+
+      if(city_name !== ""){
+        let city = await db.city.findOne({ where: { city: city_name } });
+      if (!city) {
+        city = await db.city.create({ city: city_name }, { transaction: t });
+        }
+      }
+
+        let createProperty = await db.property.create({
+          name,
+          address,
+          description,
+          type_id,
+          tenant_id: id
+        }, {transaction: t})
+
+
+        let images = req.files.PROPERTY
+        for(let i = 0; i < images.length; i++){
+          let createPropertyImg = await db.property_image.create({
+            image_path: images[i].filename,
+            property_id: createProperty.dataValues.id
+          }, {transaction: t})
+          console.log(createPropertyImg)
+        }
+
+        let createLocation = await db.location.create({
+          name: location,
+          city_id,
+          property_id: createProperty.dataValues.id
+        }, {transaction: t})
+
+        // const propertyAccommodationArr = property_accommodation.split(',').map(Number);
+        // for(let i = 0; i < propertyAccommodationArr.length; i++){
+        //   let createConnector = await db.property_connector.create({
+        //     property_id: createProperty.dataValues.id,
+        //     property_accommodation_id: propertyAccommodationArr[i]
+        //   }, {transaction: t})
+        //   console.log(createConnector)
+        // }
+        
+
+        await t.commit();
+        return res.status(200).send({
+          isError: false,
+          message: "Create Property Successful",
+          data: 
+          {createProperty, 
+          // createPropertyImg,
+          createLocation,}
+          // createConnector}
+        })
+
+    } catch (error) {
+      await t.rollback()
+      deleteFiles(req.files)
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        datA: null
+      })
     }
   },
 

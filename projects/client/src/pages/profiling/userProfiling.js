@@ -14,7 +14,6 @@ import { useAuthValue } from "state/user-firebase/AuthContext";
 
 const Profiling = (props) => {
   const {cacheUserGoogle} = useAuthValue()
-  console.log(cacheUserGoogle)
 
 
   const location = useLocation()
@@ -76,7 +75,7 @@ const Profiling = (props) => {
   const getProfilePicture = (picturePath) => {
     if(picturePath && picturePath.includes("https")){
       return picturePath
-    }else if(picturePath && picturePath.includes("localhost")){
+    }else if(picturePath && picturePath.includes("Public")){
       return `http://localhost:5000/${profile?.picture_path}`
     }else{
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
@@ -546,22 +545,27 @@ const Profiling = (props) => {
                   <ul className="list-inside space-y-2">
                     {orderList &&
                       orderList.map((value, index) => {
+                        console.log(value)
                         return (
                           <li>
-                            <div className="text-[#df6e6c]">
+                            <Link  to={`/transaction/${value?.room_id}/${value?.order_id}`} >
+                            <div key={index} className="text-[#df6e6c]">
                               {value?.room?.property?.name}, {value?.room?.name} Room
                             </div>
                             <div className="text-gray-500 text-xs">
                               {value?.createdAt.split("T")[0]}
                             </div>
+                            </Link>
                           </li>
                         );
                       })}
                     <div className="">
                       <li>
+                        <Link to='/user-reservation'>
                         <button className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
                           Show More
                         </button>
+                        </Link>
                       </li>
                     </div>
                   </ul>
@@ -998,7 +1002,7 @@ const Profiling = (props) => {
             // handleCloseProfile={() => handleCloseProfile("editProfile")}
             profile={profile}
           />
-          <Modal
+          {/* <Modal
             showChangePicture={show.changePicture}
             // handleClosePicture={() => handleClosePicture("changePicture")}
           />
@@ -1007,7 +1011,7 @@ const Profiling = (props) => {
             // handleClosePassword={() =>
             //   handleClosePassword("changePassword")
             // }
-          />
+          /> */}
           {/* </button> */}
         </div>
         {/* <!-- End of about section --> */}

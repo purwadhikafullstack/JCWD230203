@@ -3,7 +3,7 @@ import person from "./../../supports/assets/stressed-person-using-computer-at-de
 import toast, { Toaster } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { FiTarget } from "react-icons/fi";
 import Loader from "components/loader/loader";
 
@@ -13,7 +13,7 @@ function Register(props) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const[selectedImages, setSelectedImages] = useState([]);
-
+  const navigate = useNavigate();
   // const [state, dispatch] = useReducer(reducer, InitialState);
 
   const firstName = useRef();
@@ -67,20 +67,23 @@ function Register(props) {
         dataToSend
       );
 
-
       localStorage.setItem("token", `${register.data.data.token}`)
       setTimeout(() => {
         toast.success("Register Success");
       }, 5500);
       // when its finish clear all input field
       setTimeout(() => {
-        // firstName.current.value = "";
-        // lastName.current.value = "";
-        // email.current.value = "";
-        // password.current.value = "";
-        // phoneNumber.current.value = "";
+        firstName.current.value = "";
+        lastName.current.value = "";
+        email.current.value = "";
+        password.current.value = "";
+        phoneNumber.current.value = "";
         toast.success("Check your email");
       }, 6000);
+
+      setTimeout(() => {
+        navigate(`/activation/${register?.data?.id}`)
+      }, 6500)
 
       
     } catch (error) {
@@ -151,7 +154,9 @@ let onImagesValidation = (e) => {
       
       localStorage.setItem("tokenTid", `${tenantRegister.data.data.token}`)
 
-      toast.success('Register Success')
+      setTimeout(() => {
+        toast.success("Register Success");
+      }, 5500);
       setTimeout(() => {
         tenantFirstName.current.value = "";
         tenantLastName.current.value = "";
@@ -159,19 +164,25 @@ let onImagesValidation = (e) => {
         tenantPassword.current.value = "";
         tenantPhoneNumber.current.value = "";
         toast.success("Check your email");
-      }, 2000);
-      setDisabledButton(false)
-      setLoading(false)
+      }, 6000);
+
+      setTimeout(() => {
+        navigate(`/tenant-activation/${tenantRegister?.data?.id}`)
+      }, 6500)
       
      } catch (error) {
+      setLoading(false)
+      setDisabledButton(false)
       if(error.message ===  "Request failed with status code 400" || error.message ===  "Request failed with status code 404"){
         toast.error(error.response.data.message)
       }else{
         toast.error(error.message)
       }
      }finally{
-      setDisabledButton(false)
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+        setDisabledButton(false)
+      }, 5000);
      }
   }
 
@@ -179,6 +190,7 @@ let onImagesValidation = (e) => {
   if((localStorage.getItem("token") && localStorage.getItem("tokenUid")) && location.pathname !== '/tenant-register') {
     return <Navigate to="/" />;
   }
+
 
   return (
     <>

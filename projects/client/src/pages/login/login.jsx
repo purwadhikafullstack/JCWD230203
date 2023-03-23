@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import person from "./../../supports/assets/administrator-working-at-desk.png";
 import { FcGoogle } from "react-icons/fc";
 import { Toaster } from "react-hot-toast";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Loader from "components/loader/loader";
 
@@ -10,6 +10,7 @@ function Login(props) {
   const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showTenantPassword, setShowTenantPassword] = useState(false)
+  const navigate = useNavigate()
 
   const emailOrPhone = useRef();
   const password = useRef();
@@ -31,7 +32,10 @@ function Login(props) {
     }
   }
 
-  console.log(props)
+  // if(localStorage.getItem("tokenTid")){
+  //   return <Navigate to='/dashboard' />
+  // }
+
   return (
     <>
       {location.pathname !== '/tenant-login' ? 
@@ -212,7 +216,7 @@ function Login(props) {
                       Remember me
                     </label>
                   </div>
-                  <a href="#!" className="text-gray-800">
+                  <a href="/tenant-forget-password" className="text-gray-800">
                     Forgot password?
                   </a>
                 </div>

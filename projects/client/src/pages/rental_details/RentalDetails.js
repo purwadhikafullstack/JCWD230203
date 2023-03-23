@@ -66,16 +66,27 @@ const Rental = () => {
                       className="single-page-main-pic cursor-pointer"
                     />
                   )}
+                  {/* {properties?.property_images?.length > 0 ? (
+                    <img
+                      src={
+                        activeImg
+                          ? defaultImage ||
+                            `http://localhost:5000/Public/PROPERTY/${defaultImage}`
+                          : `http://localhost:5000/Public/PROPERTY/${properties?.property_images?.[0]?.image_path}`
+                      }
+                      className="single-page-main-pic cursor-pointer"
+                    />
+                  ) : null} */}
 
-                  <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10">
+                  <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-2 lg:grid-cols-2 single-page-hold ">
                     {properties?.property_images?.map((value) => {
                       return (
                         <div
-                          className="absolute grid grid-cols-2 lg:grid-cols-2 single-page-hold"
+                          className=""
                           key={value.id}
                         >
                           <img
-                            src={`http://localhost:5000/Public/PROPERTY/${value.image_path}`}
+                            src={`http://localhost:5000/Public/PROPERTY/${value?.image_path}`}
                             className="w-40 rounded-xl cursor-pointer single-page-pic"
                             onMouseOver={getImageSrcHandler}
                             onMouseLeave={setDefaultImgHandler}
