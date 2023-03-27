@@ -95,7 +95,7 @@ const Rentals = () => {
                                 </span>{" "}
                                 <span className="font-black">
                                   {" "}
-                                  Rp. {value.rooms[1].price.toLocaleString()}
+                                  Rp. {value?.rooms?.[1]?.price?.toLocaleString() <= value?.rooms?.[0]?.price?.toLocaleString() ? value?.rooms?.[1]?.price?.toLocaleString() : value?.rooms?.[0]?.price?.toLocaleString()}
                                 </span>
                               </p>
                               <p className="font-semibold text-[17px]">
@@ -152,7 +152,7 @@ const Rentals = () => {
                               <span className="text-gray-500">Start from </span>{" "}
                               <span className="font-black">
                                 {" "}
-                                Rp. {value?.rooms?.[1]?.price?.toLocaleString()}
+                                Rp. {value?.rooms?.[1]?.price?.toLocaleString() <= value?.rooms?.[0]?.price?.toLocaleString() ? value?.rooms?.[1]?.price?.toLocaleString() : value?.rooms?.[0]?.price?.toLocaleString()}
                               </span>
                             </p>
                             <p className="max-w-[17rem] font-semibold text-[17px]">

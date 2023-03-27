@@ -1,25 +1,77 @@
-import React from 'react'
+import React , { useEffect, useState} from 'react'
 import "../../supports/styles/SinglePageMiddle.css"
 import section3 from "../../supports/styles/av.png"
 import { useParams } from 'react-router-dom'
-import { FaStar } from "react-icons/fa"
+import { FaStar, FaBath, FaShower,FaSmoking, FaSmokingBan } from "react-icons/fa"
 // import { placesStore } from './../../supports/assets/Store'
 import rev1 from "../../supports/styles/stars1.png"
 import rev2 from "../../supports/styles/stars2.png"
 import reviews from "../../supports/styles/rev.png";
 import modalPic from "../../supports/styles/pic.png"
-
+import {GiHeatHaze, GiRobe} from "react-icons/gi"
+import { BsPersonCircle , BsBoxSeamFill, BsWifi} from "react-icons/bs"
+import {MdRestaurantMenu, MdTv, MdBathtub, MdDry, MdDesk, MdCable} from "react-icons/md"
+import {CgSmartHomeRefrigerator} from "react-icons/cg"
+import {TbAirConditioning} from "react-icons/tb"
+import axios from "axios"
+import Review from 'components/review/review'
 
 
 
 const SinglePageMiddle = (props) => {
-
     const params = useParams();
     const { id } = params;
+    const [accommodation, setAccommodation] = useState([])
+
+    useEffect(() => {
+        roomConnector();
+    }, [])
+
+    const roomConnector = async () => {
+        try {
+          const res = await axios.get(
+            `http://localhost:5000/properties/room-connector?room_id=${id}`
+          );
+          setAccommodation(res.data.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+
+      const symbolReact = [
+          <BsPersonCircle />,
+          <MdRestaurantMenu />,
+          <CgSmartHomeRefrigerator />,
+          <TbAirConditioning />,
+          <MdTv />,
+          <FaBath />,
+          <FaShower />,
+          <GiHeatHaze />,
+          <MdBathtub />,
+          <MdDry />,
+          <BsBoxSeamFill />,
+          <GiRobe />,
+          <MdDesk />,
+          <BsWifi />,
+          <MdCable />,
+          <FaSmoking />,
+          <FaSmokingBan />
+      ]
+
+      const mappedData = accommodation.map((data) => {
+          const symbolIndex = data.id - 1;
+          const symbol = symbolReact[symbolIndex]
+          return {...data, symbol}
+      })
+
+
 
     // const placeClicked = placesStore.find((item) => item.id === id)
 
     // const { stars } = placeClicked || {}
+
+    console.log(props?.details.length > 0)
 
     return (<div>
 
@@ -36,125 +88,62 @@ const SinglePageMiddle = (props) => {
 
         <p className='spmLine2 text-gray-300'>__________________________________________________________________________________________________________</p>
 
-        <div className='section2-hold'>
-            <p>Your perfect little staycation in Bali is right here. We take relaxation seriously.</p>
-            <p>Hideout is a unique eco stay hidden in the mountains of Gunung Agung volcano
-                - far from the city life it acts as the perfect hideaway for all adventurous travellers.
-                We are honoured to be the number 4. most wished accommodation at Airbnb in the </p>
-
-            <p className="font-bold text-xl underline">Show more</p>
-
+        <div className='section2-hold capitalize mb-2'>
+            {props?.details?.[0]?.description}
         </div>
 
         <div className='section3'>
-            <img src={section3} className="c" />
+            {/* <img src={section3} className="c" /> */}
+            {mappedData.length === 0 ? null : <div className="container my-14 px-6 mx-auto">
+          <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">Accommodation Available in this Room</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {mappedData &&
+              mappedData.map((value, index) => {
+                return (
+                  <>
+                    <div className="flex items-center">
+                      <div className="p-4 text-2xl bg-transparent rounded-md shadow-md w-14 h-14 flex items-center justify-center">
+                        {value?.symbol}
+                      </div>
+                      <div className="grow ml-6">
+                        <p className="font-bold mb-1">{value?.name}</p>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+          </div>
+        </div>}
         </div>
 
         <p className='spmLine3 text-gray-300'>__________________________________________________________________________________________________________</p>
 
 
-        <div className='spm-star'>
-            <FaStar className='text-2xl st' />
+      {localStorage.getItem("token")  && props?.details.length > 0 ?
+      <>
+        <div className='spm-star flex '>
+            <span className='text-3xl pr-2 font-semibold leading-7 lg:leading-9 text-gray-800'>{props?.details?.[0]?.rating ? props?.details?.[0]?.rating : 5 }</span> <FaStar className='text-2xl mt-1 my-rating' /> 
         </div>
 
         {/* <p className='spm-rev text-2xl'>{stars}</p> */}
 
-        <div className='star-calc-hold'>
+        {/* <div className='star-calc-hold'>
 
             <img src={rev1} className="spm-pic" />
             <img src={rev2} className="spm-pic" />
 
-        </div>
+        </div> */}
 
         <div className='review-hold'>
-
-            <img src={reviews} className="spm-review" />
-
+            <Review className="spm-review" details={props?.details} />
         </div>
+      </>
+      :
+       null
+       }
 
         <button className='' onClick={(e) => e.preventDefault()}></button>
 
-        {/* <div className='agg'>
-
-            <label htmlFor="my-modal-5" className="modal-button spm-rev-btn rounded-2xl btn">Show 15 More Reviews</label>
-
-            <input type="checkbox" id="my-modal-5" className="modal-toggle" />
-            <label htmlFor="my-modal-5" className="modal cursor-pointer">
-                <label className="modal-box relative" for="">
-                    <FaStar className='modal-star' />
-                    <p className='modal-review font-semibold'>{stars}, 15 reviews</p>
-
-
-
-                    <img src={modalPic} className="modal-pic" />
-
-                    <div className='modal-hold'>
-
-                        <h3 className="text-lg font-bold uppercase">~ Great stay</h3>
-                        <p className="py-4">We stayed in Horizon and in Hideout,
-                            and for me this one is one with more soul, river sound is stunning,
-                            chilling all day next to it is something special. It's more closed
-                            upstairs. But still lots of animals around you, so be prepared!
-                            Definitely nice experience. In quiet village, very nice to go
-                            with scooter around,
-                            to see real Bali, culture and people.</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Fantastic</h3>
-                        <p className="py-4">My partner and I had an amazing time here, such a pleasant retreat :)
-                            thank you! We loved the nature, the bamboo living life, and the epic shower in the jungle.
-                            They provided yoga mats on request which were really nice.</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Supperb experience</h3>
-                        <p className="py-4">The place was absolutely wonderful and everything we hoped it would be.
-                            Being outside with nature was so special to us. The staff were wonderful and friendly.
-                            The food was amazing!</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Great experience</h3>
-                        <p className="py-4">Our stay at Hideout Bali was amazing. We were thrilled with the cleanliness and beauty of the property.
-                            We were greeted on our first day by some monitor lizards and they were fantastic. Food was great.
-                            Thanks for an amazing stay!</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Awe Struck</h3>
-                        <p className="py-4">It was an exceptional experience, I brought my husband for a surprise trip on our honeymoon
-                            and he loved it. We did see a snake in the stream outside on our last day and
-                            I am happy about that if he witnessed anything of the sort on our first day we would
-                            have to leave with immediate effect!</p>
-
-
-                        <h3 className="text-lg font-bold uppercase">~ Great stay</h3>
-                        <p className="py-4">We stayed in Horizon and in Hideout,
-                            and for me this one is one with more soul, river sound is stunning,
-                            chilling all day next to it is something special. It's more closed
-                            upstairs. But still lots of animals around you, so be prepared!
-                            Definitely nice experience. In quiet village, very nice to go
-                            with scooter around,
-                            to see real Bali, culture and people.</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Fantastic</h3>
-                        <p className="py-4">My partner and I had an amazing time here, such a pleasant retreat :)
-                            thank you! We loved the nature, the bamboo living life, and the epic shower in the jungle.
-                            They provided yoga mats on request which were really nice.</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Supperb experience</h3>
-                        <p className="py-4">The place was absolutely wonderful and everything we hoped it would be.
-                            Being outside with nature was so special to us. The staff were wonderful and friendly.
-                            The food was amazing!</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Great experience</h3>
-                        <p className="py-4">Our stay at Hideout Bali was amazing. We were thrilled with the cleanliness and beauty of the property.
-                            We were greeted on our first day by some monitor lizards and they were fantastic. Food was great.
-                            Thanks for an amazing stay!</p>
-
-                        <h3 className="text-lg font-bold uppercase">~ Awe Struck</h3>
-                        <p className="py-4">It was an exceptional experience, I brought my husband for a surprise trip on our honeymoon
-                            and he loved it. We did see a snake in the stream outside on our last day and
-                            I am happy about that if he witnessed anything of the sort on our first day we would
-                            have to leave with immediate effect!</p>
-
-                    </div>
-                </label>
-            </label>
-        </div> */}
     </div>)
 
 }

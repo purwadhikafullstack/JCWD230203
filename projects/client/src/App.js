@@ -301,8 +301,6 @@ function App() {
     {/* myFunc={{onLogout}} */}
     <Navbar data={{username}} myFunc={{onLogout}}/>
 
-    
-
     <AuthProvider value={{cacheUserGoogle}} >       
     <Routes>
     {location.pathname !== '/' ? null :

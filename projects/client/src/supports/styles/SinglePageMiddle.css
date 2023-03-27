@@ -7,7 +7,7 @@ left: 5rem;
 
 .spmLine2{
     position: absolute;
-    top: 100rem;
+    top: 90rem;
     left: 5rem;
 
 }
@@ -25,7 +25,7 @@ left: 5rem;
 
 .section2-hold{
     position: absolute;
-    top: 86rem;
+    top: 85rem;
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
@@ -37,19 +37,19 @@ left: 5rem;
 
 .section3{
     position: absolute;
-    top: 103rem;
+    top: 90rem;
 }
 
 .spmLine3{
     position: absolute;
-    top: 125rem;
+    top: 115rem;
     left: 5rem;
 }
 
 .spm-star{
     position: absolute;
-    top: 128rem;
-    left: 5.5rem;
+    top: 120.2rem;
+    left: 16rem;
 }
 
 .spm-rev{
@@ -75,8 +75,10 @@ left: 5rem;
 
 .review-hold{
     position: absolute;
-    top: 140rem;
-    left: 10rem;
+    top: 117rem;
+    /* margin: auto; */
+    right: 10rem;
+    left: 5rem;
 }
 
 .spm-review{

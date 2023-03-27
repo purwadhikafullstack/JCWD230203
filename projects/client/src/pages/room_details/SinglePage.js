@@ -97,13 +97,13 @@ const SinglePage = (props) => {
                       />
                     )}
 
-                    <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2">
+                    <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-2 lg:grid-cols-2 single-page-hold ">
                       {details?.map((value) => {
                         {
                           return value.room_images.map((val) => {
                             return (
                               <div
-                                className="absolute grid grid-cols-1 lg:grid-cols-2 single-page-hold"
+                                className=""
                                 key={val.id}
                               >
                                 <img

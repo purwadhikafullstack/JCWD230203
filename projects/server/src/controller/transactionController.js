@@ -17,19 +17,17 @@ module.exports = {
     const id = req.dataToken.id;
 
     try {
-
       const user = await db.users.findOne({
-        where: {id}
-      })
+        where: { id },
+      });
 
-      if(user.dataValues.status === "unconfirmed"){
+      if (user.dataValues.status === "unconfirmed") {
         return res.status(400).send({
           isError: true,
           message: "Your Account is Not Active",
-          data: null
-        })
+          data: null,
+        });
       }
-
 
       const room = await db.room.findByPk(
         room_id,
@@ -113,7 +111,6 @@ module.exports = {
         const price =
           moment(check_out).diff(moment(check_in), "days") *
           room.dataValues.price;
-
 
         const _transaction = await transactions.create(
           {
@@ -229,7 +226,6 @@ module.exports = {
         ],
       });
 
-
       return res.status(200).send({
         isError: false,
         message: "Success",
@@ -246,7 +242,7 @@ module.exports = {
 
   tenantDataTransaction: async (req, res) => {
     try {
-      const {users_id, room_id, order_id1, order_id2 } = req.body;
+      const { users_id, room_id, order_id1, order_id2 } = req.body;
       const final_order2 = order_id2 || null;
       const id = users_id;
       const transaction = await transactions.findAll({
@@ -269,7 +265,6 @@ module.exports = {
           },
         ],
       });
-
 
       return res.status(200).send({
         isError: false,
@@ -439,7 +434,6 @@ module.exports = {
         { transaction: t }
       );
 
-
       await t.commit();
       return res.status(200).send({
         isError: false,
@@ -458,7 +452,7 @@ module.exports = {
 
   allOrderList: async (req, res) => {
     const id = req.dataToken.id;
-    const page = 10;
+    const page = 1;
     const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
@@ -589,7 +583,8 @@ module.exports = {
   tenantOrderList: async (req, res) => {
     const id = req.dataToken.id;
     const { page = 1, status_id, room_id } = req.body;
-    const page_size = 10;
+    console.log(req.body)
+    const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
     try {
@@ -602,6 +597,7 @@ module.exports = {
           {
             model: db.room,
             include: [
+              { model: db.property },
               { model: db.room_image },
               {
                 model: transactions,
@@ -620,43 +616,47 @@ module.exports = {
         limit,
       });
 
-      
-      
       // initialize an empty array to hold the transactions
       let transaction = [];
-      
-      // iterate over the properties and rooms to find transactions
+
+
+
       properties.forEach((property) => {
         if (property.rooms) {
           property.rooms.forEach((room) => {
             if (room.transactions) {
-              transaction = [...transaction, ...room.transactions];
+              transaction = transaction.concat(room.transactions.map((transaction) => {
+                return {
+                  property: property.dataValues,
+                  room: room.dataValues,
+                  transaction: transaction.dataValues,
+                };
+              }));
             }
           });
         }
       });
-      // console.log(transaction);
+
+      const total_data = transaction.length;
+      const total_pages = Math.ceil(total_data / page_size);
 
       // Filter transactions by room_id if provided
-     if (room_id) {
-      transaction = transactions.filter(
-        (transaction) => transaction.room_id === room_id
-      );
-    }
+      if (room_id) {
+        transaction = transactions.filter(
+          (transaction) => transaction.room_id === room_id
+        );
+      }
 
 
-    const total_data = transaction.length;
-    const total_pages = Math.ceil(total_data / page_size)
-    transaction = transaction.slice(offset, offset + limit)
+      transaction = transaction.slice(offset, limit);
 
-      return res.status(200).send({
-        isError: false,
-        message: "Get Tenant Order List By Status",
-        data: transaction,
-        total_data,
-        total_pages
-
-      });
+    return res.status(200).send({
+      isError: false,
+      message: "Get Tenant Order List By Status",
+      data: transaction,
+      total_data: total_data,
+      total_pages: total_pages,
+     });
     } catch (error) {
       return res.status(400).send({
         isError: true,
@@ -666,11 +666,11 @@ module.exports = {
     }
   },
 
-  acceptRejectOrder: async(req, res) => {
-    const {users_id, room_id, order_id1, order_id2, respond} = req.body;
+  acceptRejectOrder: async (req, res) => {
+    const { users_id, room_id, order_id1, order_id2, respond } = req.body;
     const final_order2 = order_id2 || null;
     const id = users_id;
-    console.log(req.body)
+    console.log(req.body);
     const t = await sequelize.transaction();
     try {
       const transaction = await transactions.findOne({
@@ -679,59 +679,76 @@ module.exports = {
           [Op.or]: [
             { order_id: order_id1 },
             { order_id: { [Op.eq]: final_order2 } },
-          ]
+          ],
         },
-        include: [
-          {model: db.users, where: {id}}
-        ]
-      })
+        include: [{ model: db.users, where: { id } }],
+      });
 
-      if(respond === "Accept"){
+      if (respond === "Accept") {
         await transactions.update(
-          {status_id: 2},
+          { status_id: 2 },
           {
             where: {
               room_id,
               [Op.or]: [
                 { order_id: order_id1 },
                 { order_id: { [Op.eq]: final_order2 } },
-              ]
-            }
-          }, { transaction: t })
+              ],
+            },
+          },
+          { transaction: t }
+        );
+
         await db.transactions_history.update(
-          {status_id: 2},
-          {where: {transactions_id: transaction.dataValues.id}}, { transaction: t })
+          { status_id: 2 },
+          { where: { transactions_id: transaction.dataValues.id } },
+          { transaction: t }
+        );
 
-          return res.status(200).send({
-            isError: false,
-            message: "Payment Accpeted",
-            data: transaction,
-          });
+        const template = await fs.readFile("./template/rules.html", "utf-8");
 
+        const templateCompile = await handlebars.compile(template);
+
+        await transporter.sendMail({
+          from: "Vcation",
+          to: email,
+          subject: "Rules and Room Details",
+          html: templateCompile,
+        });
+
+        return res.status(200).send({
+          isError: false,
+          message: "Payment Accpeted",
+          data: transaction,
+        });
       }
 
-      if(respond === "Reject"){
+      if (respond === "Reject") {
         await transactions.update(
-          {status_id: 8},
+          { status_id: 8 },
           {
             where: {
               room_id,
               [Op.or]: [
                 { order_id: order_id1 },
                 { order_id: { [Op.eq]: final_order2 } },
-              ]
-            }
-          }, { transaction: t })
+              ],
+            },
+          },
+          { transaction: t }
+        );
 
         await db.transactions_history.update(
-          {status_id: 8},
-          {where: {transactions_id: transaction.dataValues.id}}, { transaction: t })
+          { status_id: 8 },
+          { where: { transactions_id: transaction.dataValues.id } },
+          { transaction: t }
+        );
 
-          return res.status(200).send({
-            isError: false,
-            message: "Payment Rejected",
-            data: transaction,
-          });
+        return res.status(200).send({
+          isError: false,
+          message: "Payment Rejected",
+          data: transaction,
+        });
       }
 
       await t.commit();
