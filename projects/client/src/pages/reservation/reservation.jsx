@@ -9,6 +9,7 @@ import { BsHouseAddFill, BsFillHousesFill } from "react-icons/bs";
 import NavbarDashboard from "components/tenant/navbar/NavbarTentBoard";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
+import Modal from "components/modal/modal";
 
 const Reservation = () => {
   const [status, setStatus] = useState([]);
@@ -19,8 +20,6 @@ const Reservation = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const location = useLocation();
-  const getTokenId =
-    localStorage.getItem("token") || localStorage.getItem("tokenTid");
   const tenant = location.pathname === "/dashboard-reservation";
   const user = location.pathname === "/user-reservation";
 
@@ -42,15 +41,15 @@ const Reservation = () => {
     });
   };
 
-  const getProfilePicture = (picturePath) => {
-    if (picturePath && picturePath.includes("https")) {
-      return picturePath;
-    } else if (picturePath && picturePath.includes("localhost")) {
-      return `http://localhost:5000/${orderList?.user?.users_details?.picture_path}`;
-    } else {
-      return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`;
-    }
-  };
+  // const getProfilePicture = (picturePath) => {
+  //   if (picturePath && picturePath.includes("https")) {
+  //     return picturePath;
+  //   } else if (picturePath && picturePath.includes("localhost")) {
+  //     return `http://localhost:5000/${orderList?.user?.users_details?.picture_path}`;
+  //   } else {
+  //     return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`;
+  //   }
+  // };
 
   const getStatus = async () => {
     try {
@@ -73,13 +72,13 @@ const Reservation = () => {
 
   const userTransaction = async () => {
     try {
-      if (localStorage.getItem("token")) {
+      if (localStorage.getItem("token") && user) {
         const res = await axios.post(
           `http://localhost:5000/transaction/order-list?start_date=${form?.startDate}&end_date=${form?.endDate}&status_id=${form?.status_id}&page=${currentPage}`,
           {},
           {
             headers: {
-              auth: getTokenId,
+              auth: localStorage.getItem("token"),
               Accept: "application/json",
               "Content-Type": "application/json",
             },
@@ -87,7 +86,15 @@ const Reservation = () => {
         );
         setTotalPages(res.data.total_pages);
         setOrderList(res.data.data);
-      } if (localStorage.getItem("tokenTid")) {
+      } 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const tenantOrderList = async() => {
+    try {
+      if (localStorage.getItem("tokenTid") && tenant) {
         const res = await axios.post(
           "http://localhost:5000/transaction/tenant-orderList",
           {
@@ -107,47 +114,22 @@ const Reservation = () => {
         setOrderList(res.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
-
-  // const tenantOrderList = async() => {
-  //   try {
-  //       if(getTokenTid){
-
-  //         const res = await axios.post('http://localhost:5000/transaction/tenant-orderList',
-  //         {
-  //           page: currentPage,
-  //           status_id: form?.status_id
-  //         },
-  //         {
-  //           headers: {
-  //             auth: getTokenId,
-  //             Accept: "application/json",
-  //             "Content-Type": "application/json",
-  //           },
-  //         })
-  //         console.log(res)
-  //         setTotalPages(res.data.total_pages)
-  //         setOrderList(res.data.data);
-  //       }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+  }
 
   useEffect(() => {
     getStatus();
     userTransaction();
-    // tenantOrderList();
+    tenantOrderList();
   }, [currentPage, form]);
 
   // console.log(orderList)
   return (
     <>
-      {getTokenId ? (
+      {tenant ? (
         <>
-          {tenant && (
+          {localStorage.getItem("tokenTid") && (
             <>
               {/* <NavbarDashboard /> */}
 
@@ -225,35 +207,6 @@ const Reservation = () => {
                             </div>
                           </div>
                           {/* Calendar */}
-                          <div className="relative">
-                            <div className="flex">
-                              {/* start date */}
-                              <input
-                                type="date"
-                                placeholder="Start Date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
-                                value={form.startDate}
-                                name="startDate"
-                                onChange={handleChange}
-                              />
-                              {/* endDate */}
-                              <input
-                                type="date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
-                                value={form.endDate}
-                                name="endDate"
-                                onChange={handleChange}
-                              />
-                              {form?.startDate && (
-                                <button
-                                  className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
-                                  onClick={handleClearForm}
-                                >
-                                  Clear Dates
-                                </button>
-                              )}
-                            </div>
-                          </div>
                         </div>
                       </div>
 
@@ -263,7 +216,7 @@ const Reservation = () => {
                             <thead>
                               <tr>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                  USERNAME
+                                Property Name
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                   ORDER ID
@@ -289,28 +242,25 @@ const Reservation = () => {
                             <tbody>
                               {orderList &&
                                 orderList?.map((value, index) => {
-                                  console.log(value);
                                   return (
                                     <>
                                       <tr key={index}>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <Link
-                                            to={`/tenant-transaction/${value?.room_id}/${value?.order_id}`} state={value?.user?.id}
+                                            to={`/tenant-transaction/${value?.transaction?.room_id}/${value?.transaction?.order_id}`} state={value?.transaction?.users_id}
                                           >
                                             <div className="flex items-center">
                                               <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                                 <img
-                                                  src={getProfilePicture(
-                                                    value?.user?.users_detail
-                                                      ?.picture_path
-                                                  )}
+                                                  src={`http://localhost:5000/Public/PROPERTY/${value?.room?.room_images?.[0]
+                                                  ?.image_path}`}
                                                   alt=""
                                                 />
                                               </div>
                                               <div className="ml-3">
                                                 <p className="text-gray-900 whitespace-no-wrap capitalize">
-                                                  {value?.user?.first_name}{" "}
-                                                  {value?.user?.last_name}
+                                                  {value?.property?.name}{" "}
+                                                  {value?.room?.name}
                                                 </p>
                                               </div>
                                             </div>
@@ -318,26 +268,26 @@ const Reservation = () => {
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <p className="text-gray-900 whitespace-no-wrap">
-                                            {value?.order_id}
+                                            {value?.transaction?.order_id}
                                           </p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <p className="text-gray-900 whitespace-no-wrap">
-                                            {value?.createdAt?.split("T")[0]}
+                                            {value?.transaction?.createdAt?.split("T")[0]}
                                           </p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <p className="text-gray-900 whitespace-no-wrap">
-                                            {value?.check_in?.split("T")[0]}
+                                            {value?.transaction?.check_in?.split("T")[0]}
                                           </p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <p className="text-gray-900 whitespace-no-wrap">
-                                            {value?.check_out?.split("T")[0]}
+                                            {value?.transaction?.check_out?.split("T")[0]}
                                           </p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                          {value?.status_id === 4 && (
+                                          {value?.transaction?.status_id === 4 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
                                               // style={{ backgroundColor: "#FEF3C7" }}
@@ -351,7 +301,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 7 && (
+                                          {value?.transaction?.status_id === 7 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
                                               // style={{ backgroundColor: "#FEF3C7" }}
@@ -365,7 +315,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 2 && (
+                                          {value?.transaction?.status_id === 2 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
                                               // style={{ backgroundColor: "#D1FAE5" }}
@@ -379,7 +329,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 3 && (
+                                          {value?.transaction?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
                                               // style={{ backgroundColor: "#FEE2E2" }}
@@ -393,7 +343,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 8 && (
+                                          {value?.transaction?.status_id === 8 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
                                               // style={{ backgroundColor: "#FEE2E2" }}
@@ -409,7 +359,7 @@ const Reservation = () => {
                                           )}
                                         </td>
                                         <td className="px-1 py-5 border-b border-gray-200 bg-white text-sm">
-                                          {value?.status_id === 2 && (
+                                          {value?.transaction?.status_id === 2 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
                                               // style={{ backgroundColor: "#D1FAE5" }}
@@ -423,7 +373,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 3 && (
+                                          {value?.transaction?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
                                               // style={{ backgroundColor: "#FEE2E2" }}
@@ -437,7 +387,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 8 && (
+                                          {value?.transaction?.status_id === 8 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
                                               // style={{ backgroundColor: "#FEE2E2" }}
@@ -451,7 +401,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 4 && (
+                                          {value?.transaction?.status_id === 4 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
                                               // style={{ backgroundColor: "#FEF3C7" }}
@@ -465,9 +415,9 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 7 && (
+                                          {value?.transaction?.status_id === 7 && (
                                             <span
-                                              className="relative inline-block px-3 py-1 font-semibold text-purple-900 leading-tight"
+                                              className="relative inline-block px-5 pr-7 py-1 font-semibold text-purple-900 leading-tight"
                                               // style={{ backgroundColor: "#EDE9FE" }}
                                             >
                                               <span
@@ -524,9 +474,11 @@ const Reservation = () => {
         </>
       ) : null}
 
-      {getTokenId ? (
+   
+
+      {user ? (
         <>
-          {user && (
+          {localStorage.getItem("token") && (
             <>
               {/* <NavbarDashboard /> */}
 
@@ -671,6 +623,7 @@ const Reservation = () => {
                                 orderList.map((value, index) => {
                                   return (
                                     <>
+                                    <Modal />
                                       <tr key={index}>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                           <Link
@@ -684,7 +637,7 @@ const Reservation = () => {
                                                 />
                                               </div>
                                               <div className="ml-3">
-                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                <p className="text-gray-900 whitespace-pre-wrap font-semibold">
                                                   {value?.room?.property?.name},{" "}
                                                   {value?.room?.name} Type
                                                 </p>
@@ -755,7 +708,7 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
-                                          {value?.status_id === 3 || value?.status_id === 8 && (
+                                          {value?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
                                               // style={{ backgroundColor: "#FEE2E2" }}
@@ -769,9 +722,32 @@ const Reservation = () => {
                                               </span>
                                             </span>
                                           )}
+                                          {value?.status_id === 8 && (
+                                            <span
+                                            className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
+                                            // style={{ backgroundColor: "#FEE2E2" }}
+                                          >
+                                            <span
+                                              aria-hidden
+                                              className="absolute inset-0 opacity-50 rounded-full bg-red-200"
+                                            ></span>
+                                            <span className="relative">
+                                              Canceled
+                                            </span>
+                                          </span>
+                                          )}
                                         </td>
                                         <td className="px-1 py-5 border-b border-gray-200 bg-white text-sm">
                                           {value?.status_id === 2 && (
+                                            <>{value?.check_out?.split("T")[0] >= value?.check_out?.split("T")[0] ? 
+                                            <Link to={`/room-details/${value?.room_id}`}>
+                                            <span
+                                              className="inline-block px-3 py-1 font-bold "
+                                            >
+                                               Leave a Review
+                                            </span>
+                                            </Link>
+                                            :
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
                                               // style={{ backgroundColor: "#D1FAE5" }}
@@ -781,9 +757,10 @@ const Reservation = () => {
                                                 className="absolute inset-0 opacity-50 rounded-full bg-green-200"
                                               ></span>
                                               <span className="relative">
-                                                Paid
+                                               Paid
                                               </span>
-                                            </span>
+                                            </span>}
+                                            </>
                                           )}
                                           {value?.status_id === 3 && (
                                             <span
@@ -815,28 +792,28 @@ const Reservation = () => {
                                           )}
                                           {value?.status_id === 4 && (
                                             <span
-                                              className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
+                                              className="relative inline-block px-2 overflow-x-auto py-3 font-semibold text-yellow-900 leading-tight"
                                               // style={{ backgroundColor: "#FEF3C7" }}
                                             >
                                               <span
                                                 aria-hidden
                                                 className="absolute inset-0 opacity-50 rounded-full bg-yellow-200"
                                               ></span>
-                                              <span className="relative">
+                                              <span className="relative whitespace-nowrap">
                                                 Waiting Payment
                                               </span>
                                             </span>
                                           )}
                                           {value?.status_id === 7 && (
                                             <span
-                                              className="relative inline-block px-3 py-1 font-semibold text-purple-900 leading-tight"
+                                              className="relative inline-block px-2 overflow-x-auto py-3 mr-2 font-semibold text-purple-900 leading-tight"
                                               // style={{ backgroundColor: "#EDE9FE" }}
                                             >
                                               <span
                                                 aria-hidden
                                                 className="absolute inset-0 opacity-50 rounded-full bg-purple-200"
                                               ></span>
-                                              <span className="relative">
+                                              <span className="relative whitespace-nowrap">
                                                 Waiting Approval
                                               </span>
                                             </span>

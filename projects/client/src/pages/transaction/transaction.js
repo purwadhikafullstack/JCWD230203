@@ -8,9 +8,9 @@ import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "components/loader/loader";
 import Modal from "./../../components/modal/modal";
+import { Link } from "react-router-dom";
 
 const Transaction = () => {
-  const getTokenId = localStorage.getItem("token") || localStorage.getItem("tokenTid");
   const [details, setDetails] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [respond, setRespond] = useState("")
@@ -20,7 +20,7 @@ const Transaction = () => {
   const [role, setRole] = useState("")
   const data = useParams();
   const location = useLocation()
-  const users_id = location?.state?.users_id;
+  const users_id = location?.state;
   const navigate = useNavigate();
   const tenant = location.pathname === `/tenant-transaction/${data?.id}/${data?.order_id}`
   const user = location.pathname === `/transaction/${data?.id}/${data?.order_id}` || location.pathname ===`/transaction/${data?.id}/${data?.order_id1}/${data?.order_id2}`
@@ -44,12 +44,13 @@ const Transaction = () => {
 
   useEffect(() => {
     transaction();
+    tenantTransaction();
     paymentDue();
   }, [timer]);
 
-  const transaction = async () => {
+    const transaction = async () => {
     try {
-      if (localStorage.getItem("token")) {
+      if (localStorage.getItem("token") && user) {
         const res = await axios.post(
           `http://localhost:5000/transaction/data`,
           {
@@ -59,7 +60,7 @@ const Transaction = () => {
           },
           {
             headers: {
-              auth: getTokenId,
+              auth: localStorage.getItem("token"),
               Accept: "application/json",
               "Content-Type": "application/json",
             },
@@ -67,7 +68,17 @@ const Transaction = () => {
         );
         setRole(res?.data?.data?.[0]?.user?.role)
         setDetails(res?.data?.data);
-      }else{
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+
+
+  const tenantTransaction = async() => {
+    try {
+      if(localStorage.getItem("tokenTid") && tenant){
         const res = await axios.post('http://localhost:5000/transaction/tenant-data',
         {
           users_id,
@@ -80,7 +91,7 @@ const Transaction = () => {
     } catch (error) {
       console.log(error.message);
     }
-  };
+  }
 
 
   let onImagesValidation = (e) => {
@@ -248,7 +259,6 @@ const Transaction = () => {
 //   }, 1000);
 // }
 
-console.log(details?.[0]?.users_id)
 
 
   // if (payment) {
@@ -256,6 +266,7 @@ console.log(details?.[0]?.users_id)
   //     navigate("/user-profile");
   //   }, 5000);
   // }
+  console.log(details)
 
   return (
     <>
@@ -311,9 +322,11 @@ console.log(details?.[0]?.users_id)
                     </div>
                     <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                        <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
                           src={`http://localhost:5000/Public/PROPERTY/${details?.[0].room?.room_images?.[0]?.image_path}`}
                         />
+                        </Link>
                       </div>
                       <div className="flex-grow pl-3">
                         <h7 className="font-bold uppercase">
@@ -344,9 +357,11 @@ console.log(details?.[0]?.users_id)
                     <div className="pb-3"></div>
                     <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                      <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
                           src={`http://localhost:5000/Public/PROPERTY/${details?.[1].room?.room_images?.[0]?.image_path}`}
                         />
+                        </Link>
                       </div>
                       <div className="flex-grow pl-3">
                         <h7 className="font-bold uppercase">
@@ -384,9 +399,11 @@ console.log(details?.[0]?.users_id)
                     </div>
                     <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                      <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
                           src={`http://localhost:5000/Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
                         />
+                        </Link>
                       </div>
                       <div className="flex-grow pl-3">
                         <h7 className="font-bold uppercase">
@@ -837,9 +854,11 @@ console.log(details?.[0]?.users_id)
                     </div>
                     <div className="w-full mx-auto flex items-center rounded-lg p-3 bg-white border border-gray-200">
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
+                      <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
                           src={`http://localhost:5000/Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
                         />
+                      </Link>
                       </div>
                       <div className="flex-grow pl-3">
                         <h7 className="font-bold uppercase">

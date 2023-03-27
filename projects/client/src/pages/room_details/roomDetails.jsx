@@ -12,8 +12,6 @@ function RoomDetails() {
     onGetData();
   }, []);
 
-  
-
   const onGetData = async () => {
     try {
       const res = await axios.get(
