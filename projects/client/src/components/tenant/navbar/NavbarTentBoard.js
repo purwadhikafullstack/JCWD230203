@@ -41,6 +41,8 @@ const NavbarDashboard = () => {
             <span class="ml-3 flex-1 whitespace-nowrap">Profile</span>
           </a>
           <div class="flex justify-center">
+
+
             <div>
               <div class="relative  " data-te-dropdown-ref>
                 <button
@@ -103,6 +105,8 @@ const NavbarDashboard = () => {
                   </li>
                 </ul>
               </div>
+
+              
             </div>
           </div>
           <a
