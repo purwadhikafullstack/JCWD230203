@@ -69,6 +69,7 @@ const SinglePage = (props) => {
     setButtonOpen(false);
   };
 
+
   return (
     <>
       <div>
@@ -96,13 +97,13 @@ const SinglePage = (props) => {
                       />
                     )}
 
-                    <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2">
+                    <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-2 lg:grid-cols-2 single-page-hold ">
                       {details?.map((value) => {
                         {
                           return value.room_images.map((val) => {
                             return (
                               <div
-                                className="absolute grid grid-cols-1 lg:grid-cols-2 single-page-hold"
+                                className=""
                                 key={val.id}
                               >
                                 <img
@@ -125,14 +126,14 @@ const SinglePage = (props) => {
         </div>
 
         <p className="features-text text-2xl font-semibold uppercase">
-          Entire rental unit hosted by {details?.[0]?.property?.name}{" "}
+          Entire rental unit hosted by {details?.[0]?.property?.tenant?.first_name} {details?.[0]?.property?.tenant?.last_name}{" "}
         </p>
 
         <p className="actual-features text-xl">
-          {Math.floor(Math.random() * 6) + 3} guests .{" "}
-          {Math.floor(Math.random() * 6) + 1} . bedrooms{" "}
+          Max guests per room is 2.{" "}
+          {/* {Math.floor(Math.random() * 6) + 1} . bedrooms{" "}
           {Math.floor(Math.random() * 5) + 3} beds .{" "}
-          {Math.floor(Math.random() * 2) + 3} bathrooms
+          {Math.floor(Math.random() * 2) + 3} bathrooms */}
         </p>
 
         <p className="line1 text-gray-300">

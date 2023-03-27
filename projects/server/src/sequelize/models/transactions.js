@@ -62,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
     order_id: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,

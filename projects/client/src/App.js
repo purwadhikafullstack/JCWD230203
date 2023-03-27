@@ -30,7 +30,7 @@ import ResetPassword from "pages/reset_password/reset_password";
 import NotFound from "pages/not_found/notFound";
 import { AuthProvider } from "state/user-firebase/AuthContext";
 import { useAuthValue } from "state/user-firebase/AuthContext";
-import DashboardTenant from "pages/tenant/dashboardTenant";
+import Reservation from "pages/reservation/reservation";
 
 const provider = new GoogleAuthProvider();
 
@@ -301,23 +301,25 @@ function App() {
     {/* myFunc={{onLogout}} */}
     <Navbar data={{username}} myFunc={{onLogout}}/>
 
-    <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
-
     <AuthProvider value={{cacheUserGoogle}} >       
     <Routes>
     {location.pathname !== '/' ? null :
             <>
+            {/* <div className="sm:mx-6 md:mx-10 lg:mx-16 px-3"> */}
             <Route path='/' element={<Rentals />} />
+            {/* </div> */}
             </>
             }
 
-      {/* User */}
+
+      {/* Users*/}
       <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} /> {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/activation/:id' element={<Activation />} />
       <Route path='/login' element={<Login myFunc={{onLogin}} isRedirect={{redirect}} isLoading={{loading}} myGoogle={{onLoginWithGoogle}}/>}  /> {/*myGoogle={{onLoginWithGoogle}} */}
       <Route path='/forget-password' element={<ForgotPassword />} />
       <Route path='/reset-password/:id' element={<ResetPassword />} />
       <Route path='/user-profile' element={<Profiling />}/>
+      <Route path='/user-reservation' element={<Reservation />} />
 
       {/* Tenant */}
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
@@ -329,6 +331,7 @@ function App() {
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} isLoading={{loading}} />} />
+      <Route path='/tenant-forget-password' element={<ForgotPassword />} />
       
       
       
@@ -343,11 +346,11 @@ function App() {
       {/* transaction */}
       <Route path='/transaction/:id/:order_id' element={<Transaction />} />
       <Route path='/transaction/:id/:order_id1/:order_id2' element={<Transaction />} />
+      <Route path='/tenant-transaction/:id/:order_id' element={<Transaction />} />
       <Route path='*' element={<NotFound />} />
       {/* <Route path="/calendar" element={<Calendars/>} /> */}
     </Routes>
     </AuthProvider>
-    </div>
     <Footer/>
     </>
   );

@@ -52,14 +52,25 @@ const Navbar = (props) => {
 
           {/* Right */}
           <div className="flex items-center pr-3 font-semibold text-gray-600">
+            {localStorage.getItem("tokenTid") && 
             <div className="flex rounded-full px-4 py-2 hover:bg-[#c7c7c743] duration-100 ease-out">
-              <Link to="/dashboard" className="hidden md:flex ">
-                <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
-                  Vcation your
-                </p>
-                <MdOutlineHomeWork className="text-[22px]" />
-              </Link>
-            </div>
+            <Link to="/dashboard" className="hidden md:flex ">
+              <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
+                Vcation your
+              </p>
+              <MdOutlineHomeWork className="text-[22px]" />
+            </Link>
+          </div>}
+
+          {!localStorage.getItem("tokenTid") &&
+          <div className="flex rounded-full px-4 py-2 hover:bg-[#c7c7c743] duration-100 ease-out">
+          <Link to="/tenant-login" className="hidden md:flex ">
+            <p className="items-center mx-1 gap-1 text-[14px] font-semibold">
+              Vcation your
+            </p>
+            <MdOutlineHomeWork className="text-[22px]" />
+          </Link>
+        </div>}
 
           
             <div className="flex items-center border px-4 py-2 rounded-full gap-3 bg-[#c9403e] text-white font-bold shadow-sm shadow-gray-300 hover:bg-[#e58786] cursor-pointer"

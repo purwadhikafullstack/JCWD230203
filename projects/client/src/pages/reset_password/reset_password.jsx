@@ -22,7 +22,7 @@ function ResetPassword() {
     if (e === "") {
       setMsg("Field Cannot Blank ");
     } else if (e.length < 8) {
-      setMsg("Password Cannot les than 8 Char");
+      setMsg("Password Cannot less than 8 Char");
     } else if (!/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/.test(e)) {
       setMsg("Password must contains letter and any number");
     } else {
@@ -47,7 +47,6 @@ function ResetPassword() {
   };
 
   const inputNewPassword = async(data) => {
-    console.log(data)
       try {
           setLoading(true)
           const res = await axios.post(`http://localhost:5000/users/reset-password/${id}`, {
@@ -97,7 +96,7 @@ function ResetPassword() {
                           onChange={(e) => validatePassword(e.target.value)}
                           placeholder="Input your Password"
                         />
-                        <div className="password-icon text-2xl right-5 top-12 my-main">
+                        <div className="absolute password-icon text-2xl right-5 top-3.5 my-main">
                         {showPassword ? (
                           <AiFillEye
                             onClick={() =>
@@ -133,7 +132,7 @@ function ResetPassword() {
                       <div className=" text-red-700 text-sm font-semibold ">
                         {msg ? msg : null}
                       </div>
-                      <div className="password-icon my-main text-2xl right-5 top-12">
+                      <div className="absolute password-icon text-2xl right-5 top-3.5 my-main">
                         {showNewPassword ? (
                           <AiFillEye
                             onClick={() =>
@@ -162,7 +161,7 @@ function ResetPassword() {
                         </button>
                         <button
                           type="submit"
-                          className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                          className="ml-5 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-emerald-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           data-te-ripple-init
                           data-te-ripple-color="light"
                             // onClick={() => props.handleClosePassword("changePassword")

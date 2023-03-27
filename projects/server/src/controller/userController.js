@@ -204,7 +204,8 @@ module.exports = {
       return res.status(200).send({
         isError: false,
         message: "Register Success",
-        data: {token: createToken({ id: createUsers.dataValues.id })}
+        data: {token: createToken({ id: createUsers.dataValues.id })},
+        id: createUsers.dataValues.id
       });
 
     } catch (error) {
@@ -334,7 +335,7 @@ module.exports = {
         html: newTemplate,
       });
 
-      t.commit();
+      await t.commit();
 
       return res.status(200).send({
         isError: false,
@@ -343,7 +344,7 @@ module.exports = {
       });
 
     } catch (error) {
-      t.rollback();
+      await t.rollback();
       return res.status(400).send({
         isError: false,
         message: error.message,
@@ -470,6 +471,14 @@ module.exports = {
     const t = await sequelize.transaction();
     try {
 
+      if(!first_name || !last_name || !email || !gender || ! phone_number || !address || !birth_date){
+        return res.status(400).send({
+          isError: true,
+          message: "Field cannot Empty, check one by one",
+          data: null
+        })
+      }
+
       // const match = await users.findOne({
       //   where: { phone_number },
       // });
@@ -483,12 +492,12 @@ module.exports = {
       // }
 
 
-       await db.users.update(
+       const updateUser = await db.users.update(
          {first_name, last_name, email, phone_number},
          {where: {id: req.dataToken.id}, transaction: t}
        )
 
-       await db.users_details.update(
+      const updateDetails =  await db.users_details.update(
         {gender, address, birth_date},
         {where: {users_id: req.dataToken.id}, transaction: t}
       )
@@ -499,7 +508,7 @@ module.exports = {
        return res.status(200).send({
          isError: false,
          message: "Update Success",
-         data: {}
+         data: {updateUser, updateDetails}
        })
 
 
@@ -557,7 +566,7 @@ module.exports = {
   changedPassword: async(req, res) => {
 
     const {old_password, new_password} = req.body;
-
+    const t = await sequelize.transaction();
     try {
         const data = await users.findOne({
           where: {id: req.dataToken.id}
@@ -577,14 +586,16 @@ module.exports = {
 
         await users.update(
           {password: await hashPassword(new_password)},
-          {where: {id: req.dataToken.id}}
+          {where: {id: req.dataToken.id}, transaction: t}
         );
+        await t.commit()
         return res.status(200).send({
           isError: false,
           message: "Password update Success",
           data: null
         })
     } catch (error) {
+      await t.rollback();
       return res.status(400).send({
         isError: true,
         message: error.message,
