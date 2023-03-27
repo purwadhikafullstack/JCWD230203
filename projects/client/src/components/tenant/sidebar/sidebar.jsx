@@ -1,8 +1,13 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import NotificationDropdown from "./../notification/notification";
 import UserDropdown from "./../userDropdown/userDropdown";
+import { BsHouseAdd, BsHouses, BsHouseGear, BsPerson } from "react-icons/bs";
+import { MdLogin, MdAppRegistration } from "react-icons/md";
+import { RiPagesLine } from "react-icons/ri";
+import { GrTransaction } from "react-icons/gr";
+import { RxDashboard } from "react-icons/rx";
 
 export default function Sidebar() {
   const [collapseShow, setCollapseShow] = useState("hidden");
@@ -36,7 +41,6 @@ export default function Sidebar() {
               <UserDropdown />
             </li>
           </ul>
-
 
           {/* Collapse */}
           <div
@@ -78,91 +82,128 @@ export default function Sidebar() {
               </div>
             </form>
             {/* Navigation */}
-            {localStorage.getItem("tokenTid") ?
-             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/dashboard"
-                >
-                  <i className="fas fa-tv opacity-75 mr-2 text-sm"></i> Main Dashboard
-                </Link>
-              </li>
+            {localStorage.getItem("tokenTid") ? (
+              <ul className="md:flex-col md:min-w-full flex flex-col list-none">
+                {/* sidebar Dashboard */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/dashboard"
+                  >
+                    <RxDashboard className="text-[23px] mr-1 text-black" /> Main
+                    Dashboard
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/"
-                >
-                  <i className="fas fa-newspaper text-blueGray-400 mr-2 text-sm"></i> Landing Page
-                </Link>
-              </li>
+                {/* sidebar Landing Page */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/"
+                  >
+                    <RiPagesLine className="text-[23px] mr-1 text-black" />
+                    Landing Page
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/dashboard-profile"
-                >
-                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Profile Page
-                </Link>
-              </li>
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/dashboard-reservation"
-                >
-                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Reservation
-                </Link>
-              </li>
-            </ul> 
-            : 
-            <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/dashboard"
-                >
-                  <i className="fas fa-tv opacity-75 mr-2 text-sm"></i> Dashboard
-                </Link>
-              </li>
+                {/* sidebar Profile Page */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/dashboard-profile"
+                  >
+                    <BsPerson className="text-[23px] mr-1 text-black" />
+                    Profile Page
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/"
-                >
-                  <i className="fas fa-newspaper text-blueGray-400 mr-2 text-sm"></i> Landing Page
-                </Link>
-              </li>
+                {/* sidebar Reservation */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/dashboard-reservation"
+                  >
+                    <GrTransaction className="text-[23px] mr-1 text-black" />
+                    Reservation
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/"
-                >
-                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Profile Page
-                </Link>
-              </li>
+                {/* sidebar Property List */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/dashboard-propertylist"
+                  >
+                    <BsHouses className="text-[23px] mr-1 text-black" />
+                    Property List
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/tenant-login"
-                >
-                  <i className="fas fa-fingerprint text-blueGray-400 mr-2 text-sm"></i> Login
-                </Link>
-              </li>
+                {/* sidebar create property */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/dashboard-createlisting"
+                  >
+                    <BsHouseAdd className="text-[23px] mr-1 text-black" />
+                    Create a new listing
+                  </Link>
+                </li>
+              </ul>
+            ) : (
+              <ul className="md:flex-col md:min-w-full flex flex-col list-none">
+                {/* tenant dashboard non-login */}
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/"
+                  >
+                    <RxDashboard className="text-[23px] mr-1 text-black" />
+                    Dashboard
+                  </Link>
+                </li>
 
-              <li className="items-center">
-                <Link
-                  className="text-black hover:shadow-lg text-xs uppercase py-3 font-bold block rounded-full"
-                  to="/tenant-register"
-                >
-                  <i className="fas fa-fingerprint text-blueGray-400 mr-2 text-sm"></i> Register
-                </Link>
-              </li>
-            </ul>      
-            }
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/"
+                  >
+                    <RiPagesLine className="text-[23px] mr-1 text-black" />
+                    Landing Page
+                  </Link>
+                </li>
+
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/user-profile"
+                  >
+                    <BsPerson className="text-[23px] mr-1 text-black" />
+                    Profile Page
+                  </Link>
+                </li>
+
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/tenant-login"
+                  >
+                    <MdLogin className="text-[23px] mr-1 text-black" />
+                    Login
+                  </Link>
+                </li>
+
+                <li className="items-center">
+                  <Link
+                    className="text-sm text-black rounded-lg font-bold uppercase hover:bg-gray-100 flex items-center p-3 py-3 group"
+                    to="/tenant-register"
+                  >
+                    <MdAppRegistration className="text-[23px] mr-1 text-black" />
+                    Register
+                  </Link>
+                </li>
+              </ul>
+            )}
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
           </div>

@@ -311,6 +311,7 @@ function App() {
             </>
             }
 
+
       {/* Users*/}
       <Route path='/register' element={<Register myGoogle={{onLoginWithGoogle}} />} /> {/* myGoogle={{onLoginWithGoogle}} */}
       <Route path='/activation/:id' element={<Activation />} />
@@ -323,11 +324,15 @@ function App() {
       {/* Tenant */}
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
       <Route path='/dashboard-reservation' element={<Dashboard />} />
-      <Route path="/dashboard-profile" element={<Dashboard />} />
+      <Route path='/dashboard-profile' element={<Dashboard />} />
+      <Route path='/dashboard-createlisting' element={<Dashboard />} />
+      <Route path='/dashboard-createroom' element={<Dashboard />} />
+      <Route path='/dashboard-propertylist' element={<Dashboard />} />
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} isLoading={{loading}} />} />
       <Route path='/tenant-forget-password' element={<ForgotPassword />} />
+      
       
       
 
