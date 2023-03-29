@@ -15,7 +15,7 @@ Router.get('/search-rooms', propertyController.getRoomByQuery)
 Router.get('/search-date', propertyController.getRoomByDateAndLocation)
 Router.get('/city', propertyController.getCity)
 Router.post('/create-property', jwtVerify, upload, propertyController.createProperty)
-Router.patch('/edit-property', propertyController.editProperty)
+Router.patch('/edit-property',jwtVerify, propertyController.editProperty)
 Router.patch('/edit-propertyPicture', upload, propertyController.editPropertyPicture)
 Router.delete('/delete-property', jwtVerify, propertyController.deleteProperty)
 Router.post('/create-room', jwtVerify, upload, propertyController.createRoom)
@@ -28,6 +28,9 @@ Router.get('/property-connector', propertyController.getPropertyConnector)
 Router.get('/room-connector', propertyController.getRoomConnector)
 Router.post('/create-review', jwtVerify, propertyController.roomReview)
 Router.get('/reviews', propertyController.getRoomReview)
+Router.get('/type', propertyController.getType)
+Router.get('/property-accommodation', propertyController.getPropertyAccommodation)
+Router.get('/room-accommodation', propertyController.getRoomAccommodation)
 
 
 

@@ -29,16 +29,15 @@ const Transaction = () => {
   // const paymentDueTime = expiredTime + (2 * 60 * 60 * 1000); // 2 hours in milliseconds
   // const remainingTime = paymentDueTime - currentTime
 
-  const startDate = details?.[0]?.check_in?.split("T")[0]
-  const endDate = details?.[0]?.check_out?.split("T")[0]
-  const format1 = new Date(startDate)
+  const startDate = details?.[0]?.check_in?.split("T")[0].split("-")[2]
+  const endDate = details?.[0]?.check_out?.split("T")[0].split("-")[2]
+  const checkIn = details?.[0]?.check_in?.split("T")[0]
+  const checkOut = details?.[0]?.check_out?.split("T")[0]
+  const format1 = new Date(checkIn)
   const newStartDate = format1.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
-  const format2 = new Date(endDate)
+  const format2 = new Date(checkOut)
   const newEndDate = format2.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-
-
-
 
   var daysCheck = endDate - startDate;
 
@@ -73,6 +72,8 @@ const Transaction = () => {
       console.log(error.message);
     }
   };
+
+  console.log(details)
 
 
 
@@ -414,7 +415,7 @@ const Transaction = () => {
                             {details?.[0]?.room?.name}
                           </h7>
                         </div>
-                        <p className="text-gray-500 font-medium">1x </p>
+                        <p className="text-gray-500 font-medium">{daysCheck}x{" "} </p>
                         <p className="text-gray-500 font-medium">Night </p>
                       </div>
                       <div>

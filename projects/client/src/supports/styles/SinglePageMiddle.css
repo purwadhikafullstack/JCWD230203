@@ -170,9 +170,9 @@ left: 5rem;
     font-weight: 600;
     font-size: 18px;
     color: white;
-    top: 0rem;
+    top: 26rem;
     position: relative;
-    left: 19.5rem;
+    left: -18.5rem;
 }
 
 .checkout-btn{
@@ -190,7 +190,7 @@ left: 5rem;
 }
 
 .checkout-btn-after{
-    top: 21.3rem;
+    top: 25.8rem;
     position: absolute;
     background-color: #c9403e;
     height: 3.8rem;
@@ -199,7 +199,7 @@ left: 5rem;
     font-weight: 600;
     font-size: 18px;
     color: white;
-    left: 19.5rem !important;
+    left: 6.5rem !important;
     border-radius: 14px;
 }
 

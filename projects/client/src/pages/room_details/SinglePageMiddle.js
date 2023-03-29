@@ -15,6 +15,7 @@ import {CgSmartHomeRefrigerator} from "react-icons/cg"
 import {TbAirConditioning} from "react-icons/tb"
 import axios from "axios"
 import Review from 'components/review/review'
+import TextArea from 'components/textarea/textarea'
 
 
 
@@ -119,7 +120,7 @@ const SinglePageMiddle = (props) => {
         <p className='spmLine3 text-gray-300'>__________________________________________________________________________________________________________</p>
 
 
-      {localStorage.getItem("token")  && props?.details.length > 0 ?
+      {props?.details.length > 0 ?
       <>
         <div className='spm-star flex '>
             <span className='text-3xl pr-2 font-semibold leading-7 lg:leading-9 text-gray-800'>{props?.details?.[0]?.rating ? props?.details?.[0]?.rating : 5 }</span> <FaStar className='text-2xl mt-1 my-rating' /> 
@@ -136,6 +137,8 @@ const SinglePageMiddle = (props) => {
 
         <div className='review-hold'>
             <Review className="spm-review" details={props?.details} />
+
+            <TextArea details={props?.details}/>
         </div>
       </>
       :

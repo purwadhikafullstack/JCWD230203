@@ -13,7 +13,7 @@ const fs = require("fs").promises;
 module.exports = {
   transaction: async (req, res) => {
     const t = await sequelize.transaction();
-    const { check_in, check_out, total_guest, room_id } = req.body;
+    const { check_in, check_out, total_guest, room_id, price } = req.body;
     const id = req.dataToken.id;
 
     try {
@@ -108,9 +108,9 @@ module.exports = {
         const order_id =
           moment().format("YYYYMMDDHH") + Math.floor(Math.random() * 10000);
 
-        const price =
-          moment(check_out).diff(moment(check_in), "days") *
-          room.dataValues.price;
+        // const price =
+        //   moment(check_out).diff(moment(check_in), "days") *
+        //   room.dataValues.price;
 
         const _transaction = await transactions.create(
           {

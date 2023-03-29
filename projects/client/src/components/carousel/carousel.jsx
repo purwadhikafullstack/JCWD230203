@@ -75,18 +75,6 @@ function Carousel() {
 
     setForm(_form);
     console.log(_form);
-
-    // let _error = {...error}
-
-    // for(const key in _form){
-    //   if(!_form[key]){
-    //     _error = {
-    //       ..._error,
-    //       [key]: "gaboleh kosong"
-    //     }
-    //   }
-    // }
-    // setError(_error)
   };
 
   let handleSubmit = async (event) => {

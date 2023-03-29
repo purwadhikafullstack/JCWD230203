@@ -23,14 +23,8 @@ function Modal(props) {
     last_name: "",
   });
 
-console.log(props?.endDate?.date)
-
   const navigate = useNavigate();
-  // const [triggerClose, setTriggerClose] = useState({
-  //   editProfile: false,
-  //   changePicture: false,
-  //   changePassword: false,
-  // });
+
 
   const bookedRoom = async () => {
     const date1 = new Date(props?.endDate);
@@ -74,8 +68,9 @@ console.log(props?.endDate?.date)
           {
             check_in: startDate,
             check_out: endDate,
-            total_guest: props.totalGuest,
-            room_id: props.placeId,
+            total_guest: props?.totalGuest,
+            room_id: props?.placeId,
+            price: props?.price
           },
           {
             headers: {
@@ -943,7 +938,7 @@ console.log(props?.endDate?.date)
                     for="exampleFormControlInput5"
                     className="rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   >
-                    You stayed for {props?.daysCheck} day(s)
+                    You stayed for {props?.daysCheck} Night(s)
                   </label>
                 </div>
                 <div
@@ -956,8 +951,7 @@ console.log(props?.endDate?.date)
                   >
                     Total Price Rp.{" "}
                     {`${(
-                      props?.daysCheck *
-                      props?.details?.[0]?.price *
+                      props?.price *
                       Math.ceil(props?.totalGuest / 2)
                     ).toLocaleString()}`}
                   </label>

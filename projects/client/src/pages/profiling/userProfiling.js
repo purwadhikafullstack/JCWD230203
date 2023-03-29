@@ -52,25 +52,6 @@ const Profiling = (props) => {
     picture_path: "",
   });
 
-  // const handleShowProfile = (editProfile) => {
-  //   setShow((prevState) => ({ ...prevState, [editProfile]: true }));
-  // };
-  // const handleShowPicture = (changePicture) => {
-  //   setShow((prevState) => ({ ...prevState, [changePicture]: true }));
-  // };
-  // const handleShowPassword = (changePassword) => {
-  //   setShow((prevState) => ({ ...prevState, [changePassword]: true }));
-  // };
-
-  // const handleCloseProfile = (editProfile) => {
-  //   setShow((prevState) => ({ ...prevState, [editProfile]: false }));
-  // };
-  // const handleClosePicture = (changePicture) => {
-  //   setShow((prevState) => ({ ...prevState, [changePicture]: false }));
-  // };
-  // const handleClosePassword = (changePassword) => {
-  //   setShow((prevState) => ({ ...prevState, [changePassword]: false }));
-  // };
 
   const getProfilePicture = (picturePath) => {
     if(picturePath && picturePath.includes("https")){
