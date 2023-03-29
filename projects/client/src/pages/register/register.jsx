@@ -134,6 +134,8 @@ let onImagesValidation = (e) => {
       let inputPassword = tenantPassword.current.value;
       let inputPhoneNumber = tenantPhoneNumber.current.value;
 
+      console.log(inputFirstName)
+
       setDisabledButton(true)
       setLoading(true)
       let fd = new FormData();
@@ -372,8 +374,6 @@ let onImagesValidation = (e) => {
                       type="button"
                       className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
                       onClick={() => onSubmitTenant()}
-                      // disabled={disabledButton}
-                      // disabled={state.disabledButton}
                     >
                       {loading ? <Loader /> : "Create Account"}
                     </button>

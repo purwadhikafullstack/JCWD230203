@@ -25,6 +25,7 @@ module.exports = {
     try {
 
       let { first_name, last_name, email, password, phone_number } = req.body;
+      console.log(req.body)
 
       // input Validation if its not have a length
       if (
@@ -108,8 +109,8 @@ module.exports = {
       });
       
     } catch (error) {
-
       await t.rollback();
+      deleteFiles(req.files)
       return res.status(404).send({
         isError: true,
         message: error.message,

@@ -74,7 +74,7 @@ const Rental = () => {
   ];
 
   const mappedData = accommodation.map((data) => {
-    const symbolIndex = data.id - 1;
+    const symbolIndex = data?.id - 1;
     const symbol = symbolReact[symbolIndex];
     return { ...data, symbol };
   });

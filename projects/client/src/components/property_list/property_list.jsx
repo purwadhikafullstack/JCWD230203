@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function PropertyList() {
   const [type, setType] = useState(0);
@@ -8,6 +8,8 @@ function PropertyList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [property, setProperty] = useState([]);
+
+  const navigate = useNavigate()
 
   const getTokenId = localStorage.getItem("tokenTid");
 
@@ -74,6 +76,10 @@ function PropertyList() {
     getCity();
     getType();
   }, [currentPage, form]);
+
+  if (!getTokenId) {
+    navigate("/tenant-login");
+  }
 
   return (
     <>
@@ -253,6 +259,9 @@ function PropertyList() {
                                           Room 1 Not Available
                                         </p>
                                       ) : (
+                                        <Link
+                                        to={`/room-details/${value?.rooms?.[0]?.id}`}
+                                      >
                                         <div className="flex flex-col items-center">
                                           <p className="text-gray-900 text-center font-semibold mb-2">
                                             {value?.rooms?.[0]?.name} Type Room
@@ -264,6 +273,7 @@ function PropertyList() {
                                             />
                                           </div>
                                         </div>
+                                        </Link>
                                       )}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -279,11 +289,13 @@ function PropertyList() {
                                           </Link>
                                         </div>
                                       ) : (
+                                        <Link to={'/dashboard-edit-room'} state={[value?.rooms?.[0]]}>
                                         <div className="flex justify-center items-center h-full">
                                           <button className="text-gray-900 my-bg-rating px-3 py-3 rounded-lg shadow-md text-center font-semibold">
                                             Edit Room 1
                                           </button>
                                         </div>
+                                        </Link>
                                       )}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -292,6 +304,9 @@ function PropertyList() {
                                           Room 2 Not Available
                                         </p>
                                       ) : (
+                                        <Link
+                                        to={`/room-details/${value?.rooms?.[1]?.id}`}
+                                      >
                                         <div className="flex flex-col items-center">
                                           <p className="text-gray-900 text-center font-semibold mb-2">
                                             {value?.rooms?.[1]?.name} Type Room
@@ -303,6 +318,7 @@ function PropertyList() {
                                             />
                                           </div>
                                         </div>
+                                        </Link>
                                       )}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -318,11 +334,13 @@ function PropertyList() {
                                           </Link>
                                         </div>
                                       ) : (
+                                        <Link to={'/dashboard-edit-room'} state={[value?.rooms?.[1]]}>
                                         <div className="flex justify-center items-center h-full">
                                           <button className="text-gray-900 my-bg-rating px-3 py-3 rounded-lg shadow-md text-center font-semibold">
                                             Edit Room 2
                                           </button>
                                         </div>
+                                        </Link>
                                       )}
                                     </td>
                                   </tr>

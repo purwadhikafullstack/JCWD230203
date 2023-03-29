@@ -3,7 +3,7 @@ const Router = express.Router();
 
 const {tenantController} = require('../controller')
 
-const upload = require('./../middleware/upload')
+const upload = require('../middleware/upload')
 const jwtVerify = require('./../middleware/decrypt')
 
 Router.post('/register', upload, tenantController.register)

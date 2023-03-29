@@ -4,7 +4,8 @@ import Location from "components/location/location";
 import PropertyType from "components/property_type/type";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "components/loader/loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 
 function CreateProperty(){
@@ -15,6 +16,7 @@ function CreateProperty(){
   const [selectedImages, setSelectedImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [propertyId, setPropertyId] = useState([])
+  const navigate = useNavigate()
 
   const getTokenId = localStorage.getItem("tokenTid")
 
@@ -61,6 +63,10 @@ function CreateProperty(){
         setTimeout(() => {
           toast.success(property?.data?.message)
         }, 4500);
+        setTimeout(() => {
+          navigate('/dashboard-propertylist')
+        }, 4500);
+
 
     } catch (error) {
       setLoading(false)
@@ -75,7 +81,7 @@ function CreateProperty(){
     }finally{
       setTimeout(() => {
         setLoading(false);
-      }, 5000);
+      }, 4000);
     }
   }
 
@@ -158,6 +164,11 @@ function CreateProperty(){
     getType();
     getPropertyAccommodation()
   }, []);
+
+  if (!getTokenId) {
+    navigate("/tenant-login");
+  }
+
 
 
     return(
@@ -361,7 +372,7 @@ function CreateProperty(){
                               >
                                 EDIT
                               </button>
-                              <Link to={'/dashboard-createroom'} state={propertyId} >
+                              {/* <Link to={'/dashboard-createroom'} state={propertyId} > */}
                               <button
                                 type="button"
                                 className="inline-block rounded bg-success px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-success-600"
@@ -369,7 +380,7 @@ function CreateProperty(){
                               >
                                 {loading ? <Loader /> : "SAVE"}
                               </button>
-                              </Link>
+                              {/* </Link> */}
                             </div>
                           </div>
                         </form>

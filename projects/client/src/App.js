@@ -326,10 +326,6 @@ function App() {
       <Route path='/dashboard' element={<Dashboard name={{tenantName}} />} />
       <Route path='/dashboard-reservation' element={<Dashboard />} />
       <Route path='/dashboard-profile' element={<Dashboard />} />
-      <Route path='/dashboard-createlisting' element={<Dashboard />} />
-      <Route path='/dashboard-createroom' element={<Dashboard />} />
-      <Route path='/dashboard-propertylist' element={<Dashboard />} />
-      <Route path='/dashboard-edit-property' element={<Dashboard />} />
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} isLoading={{loading}} />} />
@@ -344,6 +340,11 @@ function App() {
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/search-results' element={<SearchRoom />} />
       <Route path='/edit-profile' element={<EditProfile />} />
+      <Route path='/dashboard-createlisting' element={<Dashboard />} />
+      <Route path='/dashboard-createroom' element={<Dashboard />} />
+      <Route path='/dashboard-propertylist' element={<Dashboard />} />
+      <Route path='/dashboard-edit-property' element={<Dashboard />} />
+      <Route path='/dashboard-edit-room' element={<Dashboard />} />
       
 
       {/* transaction */}

@@ -4,18 +4,18 @@ import Location from "../location/location";
 import PropertyType from "../property_type/type";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "components/loader/loader";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Modal from "./../tenant/modal/modalTenant"
 
 function EditProperty() {
   const location = useLocation();
   const data = location?.state;
+  const navigate = useNavigate()
   console.log(data);
 
   const [city, setCity] = useState([]);
   const [type, setType] = useState([]);
   const [accommodation, setAccommodation] = useState([]);
-  const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [propertyId, setPropertyId] = useState([]);
 
@@ -32,7 +32,8 @@ function EditProperty() {
     accommodation: data?.[0]?.property_connectors,
   });
 
-  console.log(data)
+  console.log(form)
+
 
   const editProperty = async () => {
     try {
@@ -74,6 +75,9 @@ function EditProperty() {
       setTimeout(() => {
         toast.success(property?.data?.message);
       }, 4500);
+      setTimeout(() => {
+        navigate('/dashboard-propertylist')
+      },5500)
     } catch (error) {
       setLoading(false);
       if (
@@ -135,18 +139,16 @@ function EditProperty() {
     }
   };
 
-  const handleClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-  };
 
   useEffect(() => {
     getCity();
     getType();
     getPropertyAccommodation();
-  }, []);
+  }, [form]);
+
+  if (!getTokenId) {
+    navigate("/tenant-login");
+  }
 
   return (
     <>
@@ -175,7 +177,6 @@ function EditProperty() {
                         </label>
                         <PropertyType
                           onChange={handleChange}
-                          defaultValue={data?.[0]?.type}
                           type={type}
                           value={form.type}
                           name="type"
@@ -196,7 +197,6 @@ function EditProperty() {
                         </label>
                         <Location
                           onChange={handleChange}
-                          defaultValue={data?.[0]?.locations?.[0]?.city}
                           city={city}
                           value={form.city}
                           name="city"
@@ -217,7 +217,6 @@ function EditProperty() {
                           className="py-4 px-4 border mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-md border-gray-300 rounded-md"
                           onChange={handleChange}
                           value={form.location}
-                          defaultValue={data?.[0]?.locations?.[0]?.name}
                           name="location"
                         />
                       </div>
@@ -238,7 +237,6 @@ function EditProperty() {
                           className="py-4 px-4 border mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-md border-gray-300 rounded-md"
                           onChange={handleChange}
                           value={form.address}
-                          defaultValue={data?.[0]?.address}
                         />
                       </div>
                       <div className="col-span-10 sm:col-span-10">
@@ -264,7 +262,6 @@ function EditProperty() {
                           className="py-4 px-4 border mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-md border-gray-300 rounded-md"
                           onChange={handleChange}
                           value={form.name}
-                          defaultValue={data?.[0]?.name}
                         />
                       </div>
 
@@ -290,7 +287,6 @@ function EditProperty() {
                           className="py-10 px-4 border mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-md border-gray-300 rounded-md"
                           onChange={handleChange}
                           value={form.description}
-                          defaultValue={data?.[0]?.description}
                         />
                       </div>
                     </div>
@@ -306,8 +302,8 @@ function EditProperty() {
                               const isChecked =
                                 data?.[0]?.property_connectors?.some(
                                   (connector) =>
-                                    connector.property_accommodation_id ===
-                                    value.id
+                                    Number(connector.property_accommodation_id) ===
+                                    Number(value.id)
                                 );
                               return (
                                 <>

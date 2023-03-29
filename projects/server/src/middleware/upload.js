@@ -1,5 +1,5 @@
 // Import Multer
-const {multerUpload} = require('./../lib/multer')
+const {multerUpload} = require('./../lib/multerUser')
 
 const {sequelize} = require('./../sequelize/models/index')
 // import DeleteFiles
@@ -18,7 +18,6 @@ const uploadImages = async(req, res, next) => {
             }
             req.files.images.forEach((value) => {
                 if(value.size > 10000000) throw {message: `${value.originalname} size is to large`, fileToDelete: req.files}
-
             })
 
             next()

@@ -1,70 +1,78 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios"
+import axios from "axios";
 import Loader from "components/loader/loader";
+import Modal from "./../tenant/modal/modalTenant"
 
-
-function CreateRoom() {
+function EditRoom() {
   const location = useLocation();
-  const property_id = location?.state;
-  const [value, setValue] = useState(0)
-  const [accommodation, setAccommodation] = useState([])
+  const data = location?.state;
+  console.log(data);
+
+  
+  const [value, setValue] = useState(0);
+  const [accommodation, setAccommodation] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [room, setRoom] = useState([])
+  const [room, setRoom] = useState([]);
   const navigate = useNavigate();
+
   const getTokenId = localStorage.getItem("tokenTid");
 
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    room: "",
-    accommodation: [],
-    price: "",
-    property_id: property_id,
+    name: data?.[0]?.name,
+    description: data?.[0]?.description,
+    room: data?.[0]?.available_room,
+    accommodation: data?.[0]?.room_connectors,
+    price: data?.[0]?.price,
   });
 
-  console.log(form)
+  console.log(form);
 
-  const createRoom = async() => {
+  const editRoom = async () => {
     try {
-      setLoading(true)
-      let fd = new FormData();
-      if (!selectedImages) throw { message: "please Upload Your Image" };
-      selectedImages.forEach((value) => {
-        fd.append("PROPERTY", value);
-      });
-  
-      fd.append('name', form?.name)
-      fd.append('description', form?.description)
-      fd.append('available_room', form?.room)
-      fd.append('room_accommodation', form?.accommodation)
-      fd.append('price', form?.price)
-      fd.append('property_id', form?.property_id)
-  
-      
-  
-        const room = await axios.post('http://localhost:5000/properties/create-room', fd ,
+      setLoading(true);
+      if (form?.name === 0) throw { message: "Please Choose Property name" };
+      if (form?.description.length <= 10 )
+        throw { message: "Please Describe more than 10 words" };
+      if (form?.room === 0)
+        throw { message: "Please Fill Your Total Room" };
+      if (form?.price === 0)
+        throw { message: "Please Fill Room Price" };
+      if (form?.accommodation === 0) throw { message: "Select Accommodation" };
+
+
+      const room = await axios.patch(
+        "http://localhost:5000/properties/edit-room",
+        {
+            name: form?.name,
+            description: form?.description,
+            available_room: form?.room,
+            room_accommodation: form?.accommodation,
+            price: form?.price,
+            room_id: data?.[0].id
+        },
         {
           headers: {
             auth: getTokenId,
             Accept: "application/json",
             "Content-Type": "application/json",
-          }
-        })
-  
-        setRoom(room?.data?.data)
-        setTimeout(() => {
-          toast.success(room?.data?.message)
-        }, 4500);
+          },
+        }
+      );
 
-        setTimeout(() => {
-          navigate('/dashboard-propertylist')
-        }, 4500);
-  
+      setRoom(room?.data?.data);
+      setTimeout(() => {
+        toast.success(room?.data?.message);
+      }, 4500);
+
+      setTimeout(() => {
+        navigate('/dashboard-propertylist')
+      },5000)
+
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       if (
         error.message === "Request failed with status code 400" ||
         error.message === "Request failed with status code 404"
@@ -73,13 +81,13 @@ function CreateRoom() {
       } else {
         toast.error(error.message);
       }
-    }finally{
+    } finally {
       setTimeout(() => {
         setLoading(false);
-      }, 5000);
+      }, 5500);
     }
-  }
-  
+  };
+
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     let _form = { ...form };
@@ -100,14 +108,16 @@ function CreateRoom() {
     setForm({ ...form, room: newValue });
   };
 
-  let getRoomAccommodation = async() => {
+  let getRoomAccommodation = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/properties/room-accommodation')
-      setAccommodation(res.data.data)
+      const res = await axios.get(
+        "http://localhost:5000/properties/room-accommodation"
+      );
+      setAccommodation(res.data.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   let onImagesValidation = (e) => {
     try {
@@ -136,8 +146,11 @@ function CreateRoom() {
 
   useEffect(() => {
     getRoomAccommodation();
-  }, [])
+  }, [form]);
 
+  if (!getTokenId) {
+    navigate("/tenant-login");
+  }
 
 
   return (
@@ -145,7 +158,7 @@ function CreateRoom() {
       <div className="relative my-bg-light md:pt-20 pb-32 mt-5 shadow-lg rounded-lg">
         <div className="px-4 md:px-10 mx-auto w-full">
           <div className="w-full h-14 pt-2 text-center  bg-gray-700  shadow overflow-hidden sm:rounded-t-lg font-bold text-3xl text-white ">
-            Create a new room
+            Edit Room
           </div>
           <div className="border rounded-b-lg border-gray-300 mx-auto">
             <div className="mt-10 md:mt-0 md:col-span-2">
@@ -197,7 +210,7 @@ function CreateRoom() {
                           type="number"
                           placeholder="280000"
                           name="price"
-                          value={form.price.toLocaleString()}
+                          value={form.price}
                           onChange={handleChange}
                           className="flex-shrink flex-grow flex-auto leading-normal w-px border h-14 border-gray-300 px-3 relative"
                         />
@@ -244,7 +257,7 @@ function CreateRoom() {
                             type="button"
                             className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer"
                             onClick={() => {
-                              if (value < 100 ) {
+                              if (value < 100) {
                                 handleClick(value + 1);
                               }
                             }}
@@ -285,15 +298,23 @@ function CreateRoom() {
                         Room Accommodation
                       </legend>
                       <div className="grid grid-cols-4 mt-2 space-y-2">
-                                  {accommodation ? accommodation.map((value, idx) => {
-                                    return(
-                                      <>
-                                      <div className="flex place-items-center">
+                      {accommodation
+                          ? accommodation.map((value, idx) => {
+                              const isChecked =
+                                data?.[0]?.room_connectors?.some(
+                                  (connector) =>
+                                    Number(connector.room_accommodation_id) ===
+                                    Number(value.id)
+                                );
+                              return (
+                                <>
+                                  <div className="flex place-items-center">
                                     <div className="flex items-center h-5">
                                       <input
                                         id={idx}
                                         name="accommodation"
                                         value={value.id}
+                                        defaultChecked={isChecked}
                                         type="checkbox"
                                         className="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300 rounded"
                                         onChange={handleChange}
@@ -308,55 +329,54 @@ function CreateRoom() {
                                       </label>
                                     </div>
                                   </div>
-                                      </>
-                                    )
-                                  }) : null}
-                                </div>
-                      <div>
-                                  <div className="pt-8">
-                                    <h7 className="font-medium text-s">
-                                      Choose at least 4 photos
-                                    </h7>
-                                  </div>
-                                  <input
-                                    className="w-full px-3 py-2 mb-1 border bg-white border-gray-200 rounded-lg focus:outline-none focus:border-[#c9403e] transition-colors"
-                                    type="file"
-                                    id="formFile"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={(e) => onImagesValidation(e)}
-                                  />
-                                  <label className="text-gray-600 font-normal text-md mb-2 ml-1">
-                                    * Multiple file max 2MB (.jpg or .png only)
-                                  </label>
-                                </div>
+                                </>
+                              );
+                            })
+                          : null}
+                      </div>
                     </fieldset>
                   </div>
 
-                  <div className="mx-4 my-4 py-3 bg-white text-right sm:px-6">
-                    {/* <button
-                      type="button"
-                      className="inline-block mr-6 rounded bg-[#c9403e] px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-danger-700 "
-                    >
-                      EDIT
-                    </button> */}
-                    <button
-                      type="button"
-                      className="inline-block rounded bg-success px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-success-600"
-                      onClick={() => createRoom()}
-                    >
-                      {loading ? <Loader /> : "SAVE"}
-                    </button>
+                  <div className="mx-4 my-4 py-3 bg-white flex justify-between sm:px-6">
+                    <div className="">
+                      <button
+                        type="button"
+                        className="inline-block mr-6 rounded my-bg-light px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal my-main shadow-lg transition duration-150 ease-in-out hover:bg-slate-200 "
+                        data-te-target="#deleteRoom"
+                        data-te-toggle="modal"
+                      >
+                        DELETE ROOM
+                      </button>
+                    </div>
+
+                    <div className="">
+                      <button
+                        type="button"
+                        className="inline-block mr-6 rounded bg-[#c9403e] px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-danger-700 "
+                        data-te-target="#editRoomPicture"
+                        data-te-toggle="modal"
+                      >
+                        EDIT ROOM PICTURE
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-block rounded bg-success px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-success-600"
+                        onClick={() => editRoom()}
+                      >
+                        {loading ? <Loader /> : "SAVE"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </form>
             </div>
           </div>
         </div>
+        <Modal roomId={data?.[0]?.id}/>
         <Toaster />
       </div>
     </>
   );
 }
 
-export default CreateRoom;
+export default EditRoom;
