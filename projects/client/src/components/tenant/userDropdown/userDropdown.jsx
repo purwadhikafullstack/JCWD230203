@@ -16,6 +16,9 @@ const UserDropdown = (props) => {
 
   const dashboard = location.pathname === '/dashboard' 
   const reservation = location.pathname === '/dashboard-reservation'
+  const createProperty = location.pathname === '/dashboard-createlisting'
+  const propertyList = location.pathname === '/dashboard-propertylist'
+  const createRoom = location.pathname === '/dashboard-createroom'
   const profile = location.pathname === '/dashboard-profile'
   
 
@@ -113,7 +116,7 @@ const UserDropdown = (props) => {
       
 
       {/* reservation */}
-      {reservation &&
+      {reservation || createProperty || createRoom || propertyList ?
       <>
       <a
           className="text-blueGray-500 block"
@@ -144,44 +147,17 @@ const UserDropdown = (props) => {
           }
           style={{ minWidth: "12rem" }}
         >
-          <a
-            href="/dashboard-profile"
-            className={
-              "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-            }
-            onClick={e => e.preventDefault()}
-          >
-            profile
-          </a>
-          <a
-            href="#"
-            className={
-              "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-            }
-            onClick={e => e.preventDefault()}
-          >
-            Another action
-          </a>
-          <a
-            href="#"
-            className={
-              "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-            }
-            onClick={e => e.preventDefault()}
-          >
-            Something else here
-          </a>
-          <div className="h-0 my-2 border border-solid border-blueGray-100" />
+          <div className="h-0 my-2  border-blueGray-100" />
           <button
             className={
               "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
             }
-            onClick={() => props?.myFunc?.onLogout()}
+            onClick={() => onLogout()}
           >
             Sign Out
           </button>
         </div>
-      </>  }
+      </>  : null }
 
       {/* Profile */}
       {profile && 
@@ -256,7 +232,7 @@ const UserDropdown = (props) => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           }
-          onClick={() => props.myFunc.onLogout()}
+          onClick={() => onLogout()}
         >
           Sign Out
         </button>

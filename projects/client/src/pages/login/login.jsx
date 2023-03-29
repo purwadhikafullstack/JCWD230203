@@ -17,6 +17,9 @@ function Login(props) {
 
   const location = useLocation();
 
+  const user = location.pathname === '/login'
+  const tenant = location.pathname === '/tenant-login'
+
 
 
   const onCheckbox = (event) => {
@@ -24,12 +27,11 @@ function Login(props) {
 
   }
 
-  if(props?.isRedirect?.redirect || props?.isRedirect?.tenantRedirect){
-    if(location.pathname === '/login'){
+  if(user && localStorage.getItem('token')){
       return <Navigate to='/' />
-    }else{
-      return <Navigate to='/dashboard' />
     }
+  if(tenant && localStorage.getItem("tokenTid")){
+    return <Navigate to='/dashboard' />
   }
 
   // if(localStorage.getItem("tokenTid")){
@@ -38,8 +40,7 @@ function Login(props) {
 
   return (
     <>
-      {location.pathname !== '/tenant-login' ? 
-      <section className="h-screen">
+      {user && <section className="h-screen">
       <div className="px-6 h-full text-gray-800">
         <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
           <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
@@ -148,10 +149,10 @@ function Login(props) {
         </div>
       </div>
       <Toaster />
-    </section>
-    :
-    // tenant Login
-    <section className="h-screen">
+    </section>}
+      
+      
+    {tenant && <section className="h-screen">
         <div className="px-6 h-full text-gray-800">
           <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
             <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
@@ -245,7 +246,8 @@ function Login(props) {
         </div>
         <Toaster />
       </section>
-    }
+}
+    
     </>
   );
 }

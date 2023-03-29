@@ -14,6 +14,7 @@ import CreateRoom from "components/create_room/create_room";
 import PropertyList from "components/property_list/property_list";
 import Profile from "components/tenant/profile/profile";
 import EditProperty from "components/edit_property/edit_property";
+import EditRoom from "components/edit_room/edit_room";
 
 export default function Dashboard(props) {
   const [redirect, setRedirect] = useState(false);
@@ -32,6 +33,7 @@ export default function Dashboard(props) {
   const createlisting = location.pathname === "/dashboard-createlisting";
   const createroom = location.pathname === "/dashboard-createroom";
   const editProperty = location.pathname === "/dashboard-edit-property"
+  const editRoom = location.pathname === "/dashboard-edit-room"
   const getTokenId = localStorage.getItem("tokenTid");
 
   useEffect(() => {
@@ -91,7 +93,6 @@ export default function Dashboard(props) {
   };
 
   if (!getTokenId) {
-    console.log("masuk");
     navigate("/tenant-login");
   }
 
@@ -826,6 +827,17 @@ export default function Dashboard(props) {
             {editProperty && (
               <>
                 <EditProperty />
+              </>
+            )}
+          </>
+        ) : null}
+
+        {/* Edit Room */}
+        {localStorage.getItem("tokenTid") ? (
+          <>
+            {editRoom && (
+              <>
+                <EditRoom />
               </>
             )}
           </>

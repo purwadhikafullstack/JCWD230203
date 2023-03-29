@@ -33,7 +33,7 @@ const Navbar = (props) => {
   return (
     <>
       {location.pathname === "/dashboard" || location.pathname === "/dashboard-reservation" ||
-      location.pathname === "/dashboard-register" || location.pathname === "/dashboard-profile" ||
+      location.pathname === "/dashboard-register" || location.pathname === "/dashboard-profile" || location.pathname === "/dashboard-propertylist" || location.pathname === "/dashboard-createlisting" || location.pathname === "/dashboard-createroom" ||
       location.pathname === `/tenant-activation/${id}` ? null : (
         <div className="flex justify-between items-center ml-2 mr-2 border-b top-0  ">
           {/* Left */}
