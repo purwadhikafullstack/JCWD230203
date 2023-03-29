@@ -6,18 +6,18 @@
 // // import "@fullcalendar/timegrid/main.css";
 
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { DateContext } from "pages/room_details/Calendar";
 
 export default function Calendars(props){
+  // console.log(props??rates?..details?.details?.[0]?.price)
   const params = useParams();
   const { id } = params;
 
-  const { dates, setDates } = useContext(DateContext);
-
-
+  // const price = [
+  //   {"date": "2023-03-10", "price": 100000}
+  // ]
   
   const [now, setNow] = useState({
     date: 0,
@@ -43,10 +43,9 @@ export default function Calendars(props){
   ]);
   const [days, setDays] = useState(0);
 
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
 
-  
+  // const [startDate, setStartDate] = useState(null)
+  // const [endDate, setEndDate] = useState(null)
 
   /*
     Function onCreateCalendar digunakan untuk men-generate suatu tanggal dalam 1 bulan, 
@@ -103,14 +102,14 @@ export default function Calendars(props){
                 useGrouping: false
               })}`).getTime() <= new Date(value?.end_date).getTime())){
                 isDiscount = true
-                dates.push({date: i, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
+                dates.push({date: i, month: curMonth, year: curYear, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
               
               }
             })
 
-            if(!isDiscount) dates.push({date: i, discount: 0, markup: 0 })
+            if(!isDiscount) dates.push({date: i, month: curMonth, year: curYear, discount: 0, markup: 0 })
           }else{
-            dates.push({date: i, discount: 0, markup: 0 })
+            dates.push({date: i, month: curMonth, year: curYear, discount: 0, markup: 0 })
           }
         }
         setYear(curYear)
@@ -153,14 +152,14 @@ export default function Calendars(props){
                 useGrouping: false
               })}`).getTime() <= new Date(value?.end_date).getTime())){
                 isDiscount = true
-                dates.push({date: i, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
+                dates.push({date: i, month: curMonth, year: curYear, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
               
               }
             })
 
-            if(!isDiscount) dates.push({date: i, discount: 0, markup: 0 })
+            if(!isDiscount) dates.push({date: i, month: curMonth, year: curYear, discount: 0, markup: 0 })
           }else{
-            dates.push({date: i, discount: 0, markup: 0 })
+            dates.push({date: i, month: curMonth, year: curYear, discount: 0, markup: 0 })
           }
         }
         setYear(curYear)
@@ -192,16 +191,17 @@ export default function Calendars(props){
                   useGrouping: false
                 })}`).getTime() <= new Date(value?.end_date).getTime())){
                   isDiscount = true
-                  dates.push({date: i, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
+                  dates.push({date: i, month: month1, year: year1, discount: value?.event_rate?.discount, markup: value?.event_rate?.markup})
               }
             })
 
-            if(!isDiscount) dates.push({date: i, discount: 0, markup: 0 })
+            if(!isDiscount) dates.push({date: i, month: month1, year: year1, discount: 0, markup: 0 })
           }else{
             console.log('<<<')
-            dates.push({date: i, discount: 0, markup: 0 })
+            dates.push({date: i, month: month1, year: year1, discount: 0, markup: 0 })
           }
         }
+
         setYear(year1)
         setMonth(month1)
         setDays(dates)
@@ -216,24 +216,22 @@ export default function Calendars(props){
     }
 }
 
-
-
-let onSelectedDate = (value, month, year, discount, markup) => {
-  if(startDate === null){
-      console.log('Masuk1')
-      setStartDate({ date: value, month: month, year: year })
-      setDates({ startDate: { date: value, month: month, year: year, discount: discount, markup: markup }, endDate: null });
-  }else if(startDate !== null && endDate === null){
-      console.log('Masuk2')
-      setEndDate({ date: value, month: month, year: year })
-      setDates({ startDate: dates.startDate, endDate: { date: value, month: month, year: year, discount: discount, markup: markup  } });
-  }else if(startDate !== null && endDate !== null){
-      console.log('Masuk3')
-      setStartDate({ date: value, month: month, year: year })
-      setDates({ startDate: { date: value, month: month, year: year, discount: discount, markup: markup  }, endDate: null });
-      setEndDate(null);
-  }
-}
+// let onSelectedDate = (value, month, year) => {
+//   console.log(value)
+//   console.log(month)
+//   console.log(year)
+//   if(startDate === null){
+//       console.log('Masuk1')
+//       setStartDate({ date: value, month: month, year: year })
+//   }else if(startDate !== null && endDate === null){
+//       console.log('Masuk2')
+//       setEndDate({ date: value, month: month, year: year })
+//   }else if(startDate !== null && endDate !== null){
+//       console.log('Masuk3')
+//       setStartDate({ date: value, month: month, year: year })
+//       setEndDate(null)
+//   }
+// }
 
 useEffect(() => {
     onCreateCalendar()
@@ -241,6 +239,7 @@ useEffect(() => {
 
   return (
     <div className="side-box-card bg-red-300 w-[300px] ">
+      {console.log(props?.details)}
       <h1 className="text-3xl font-bold mb-3">Calendar</h1>
       <h5 className="text-lg font-medium mb-3">
         {year} - {listMonth[month]}
@@ -259,60 +258,40 @@ useEffect(() => {
                           new Date(`${year}-${month}-${value.date}`).getTime() /
                             86400000 >=
                             new Date(
-                              `${startDate?.year}-${startDate?.month}-${startDate?.date}`
+                              `${props?.startDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`
                             ).getTime() /
                               86400000 &&
                           new Date(`${year}-${month}-${value.date}`).getTime() /
                             86400000 <=
                             new Date(
-                              `${endDate?.year}-${endDate?.month}-${endDate?.date}`
+                              `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`
                             ).getTime() /
                               86400000
                             ? "border-b-2 border-red-700 cursor-pointer"
-                            : value.date < startDate?.date &&
-                              month <= startDate?.month &&
-                              year <= startDate?.year
+                            : value.date < props?.startDate?.date &&
+                              month <= props?.startDate?.month &&
+                              year <= props?.startDate?.year
                             ? "text-gray-500 cursor-pointer"
                             : null
                         }
                         onClick={
-                          (value.date < startDate?.date &&
-                          month <= startDate?.month &&
-                          year <= startDate?.year ) && (endDate === null)? 
+                          (value.date < props?.startDate?.date &&
+                          month <= props?.startDate?.month &&
+                          year <= props?.startDate?.year ) && (props?.endDate?.endDate === null)? 
                               null
                             : 
                               value.date < now.date && month <= now.month && year <= now.year?
                                 null
                               :
-                                () => onSelectedDate(value.date, month, year, value.discount, value.markup)
+                                () => props.funct(value.date, month, year, days)
                         }
-                        // onChange={() => onSelectedDate(value.date, month, year, value.discount)}
                       >
-                        <div className={value?.date < now.date && month <= now?.month && year <= now?.year? "text-sm text-center text-gray-200" : "text-sm text-center"}>
+                        <div className={value.date < now.date && month <= now.month && year <= now.year? "text-sm text-center text-gray-200" : "text-sm text-center"}>
                         {value?.date}
                         </div>
-                        <div className="text-xs">
-                          {value?.discount ? (
-                            <div className={value?.date < now?.date && month <= now?.month && year <= now?.year? "text-gray-200" : "text-green-500"}>
-                              {(props?.details?.details?.[0]?.price - (props?.details?.details?.[0]?.price * (value?.discount/100))).toString().slice(0, 3)}
-                            </div>
-                          ) : value?.markup ? (
-                            <div className={value?.date < now?.date && month <= now?.month && year <= now?.year? "text-gray-200" : "text-green-500"}>
-                              {(props?.details?.details?.[0]?.price + (props?.details?.details?.[0]?.price * (value?.markup/100))).toString().slice(0, 3)}
-                            </div>
-                          ) : (
-                            <div className={value?.date < now?.date && month <= now?.month && year <= now?.year? "text-gray-200" : ""}>
-                              {props?.details?.details?.[0]?.price.toString().slice(0, 3)}
-                            </div>
-                          )}
+                        <div className={value.date < now.date && month <= now.month && year <= now.year? "text-xs text-gray-200" : value?.discount? "text-xs text-green-500" : value?.markup? "text-xs text-red-500" : "text-xs"}>
+                          {value?.discount? (props.details[0].price - (props.details[0].price * (value?.discount/100))).toString().slice(0, 3) : value?.markup? (props.details[0].price + (props.details[0].price * (value?.markup/100))).toString().slice(0, 3) : props.details[0].price.toString().slice(0, 3)  }
                         </div>
-
-                        {/* <div className={value?.date < now?.date && month <= now?.month && year <= now?.year? "text-xs text-gray-200" : value?.discount? "text-xs text-green-500" : "text-xs"}>
-                          {value?.discount? (props?.details?.details?.[0]?.price - (props?.details?.details?.[0]?.price * (value?.discount/100))).toString().slice(0, 3):props?.details?.details?.[0]?.price.toString().slice(0, 3)  }
-                        </div>
-                        <div className={value?.date < now?.date && month <= now?.month && year <= now?.year? "text-xs text-gray-200" : value?.markup? "text-xs text-green-500" : "text-xs"}>
-                          {value?.markup? (props?.details?.details?.[0]?.price + (props?.details?.details?.[0]?.price * (value?.markup/100))).toString().slice(0, 3):props?.details?.details?.[0]?.price.toString().slice(0, 3)  }
-                        </div> */}
                       </div>
                     </div>
                   </>

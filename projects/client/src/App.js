@@ -31,6 +31,7 @@ import NotFound from "pages/not_found/notFound";
 import { AuthProvider } from "state/user-firebase/AuthContext";
 import { useAuthValue } from "state/user-firebase/AuthContext";
 import Reservation from "pages/reservation/reservation";
+import EditProperty from "components/edit_property/edit_property";
 
 const provider = new GoogleAuthProvider();
 
@@ -328,6 +329,7 @@ function App() {
       <Route path='/dashboard-createlisting' element={<Dashboard />} />
       <Route path='/dashboard-createroom' element={<Dashboard />} />
       <Route path='/dashboard-propertylist' element={<Dashboard />} />
+      <Route path='/dashboard-edit-property' element={<Dashboard />} />
       <Route path='/tenant-register' element={<Register />} />
       <Route path='/tenant-activation/:id' element={<TenantActivation />} />
       <Route path='/tenant-login' element={<Login myFunc={{tenantLogin}} isRedirect={{tenantRedirect}} isLoading={{loading}} />} />
@@ -342,6 +344,7 @@ function App() {
       <Route path='/room-details/:id' element={<RoomDetails />} />
       <Route path='/search-results' element={<SearchRoom />} />
       <Route path='/edit-profile' element={<EditProfile />} />
+      
 
       {/* transaction */}
       <Route path='/transaction/:id/:order_id' element={<Transaction />} />

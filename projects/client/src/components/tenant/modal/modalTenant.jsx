@@ -15,7 +15,7 @@ function ModalTenant(props) {
   const [msg, setMsg] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
 
-  console.log(props.details)
+  console.log(props?.propertyId)
 
   const navigate = useNavigate();
 
@@ -228,6 +228,123 @@ function ModalTenant(props) {
       }, 4000);
     }
   };
+
+  let onImagesValidationProperty = (e) => {
+    try {
+      let files = [...e.target.files];
+
+      if (files.length < 4) throw { message: "Select 4 Image!" };
+
+      files.forEach((value) => {
+        if (value.size > 2000000)
+          throw { message: `${value.name} more than 2Mb` };
+      });
+
+      setSelectedImages(files);
+      toast.success("Upload success!");
+    } catch (error) {
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  let onSubmitProperty = async () => {
+    try {
+      setLoading(true);
+      let fd = new FormData();
+      if (!selectedImages) throw { message: "please Upload Your Image" };
+      selectedImages.forEach((value) => {
+        fd.append("PROPERTY", value);
+      });
+
+      fd.append('property_id', props?.propertyId)
+
+      if (getTokenId) {
+        let res = await axios.patch(
+          `http://localhost:5000/properties/edit-propertyPicture`,
+          fd,
+          {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setTimeout(() => {
+          toast.success(res.data.message);
+        }, 5000);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 6000)
+      }
+    } catch (error) {
+      setLoading(false);
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
+  };
+
+  const ondDeleteProperty = async() => {
+    try {
+      setLoading(true);
+      const res = await axios.delete(
+        'http://localhost:5000/properties/delete-property',
+        {
+          headers: {
+            auth: getTokenId,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: {
+            property_id: props?.propertyId
+          }
+        }
+      );
+      
+      setTimeout(() => {
+        toast.success(res.data.message);
+      }, 5000);
+
+      setTimeout(() => {
+        navigate('/dashboard-propertylist')
+        window.location.reload();
+      }, 6000)
+
+    } catch (error) {
+      setLoading(false);
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
+  }
 
   useEffect(() => {
     if (loading) {
@@ -698,6 +815,186 @@ function ModalTenant(props) {
                   </div>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* edit Property Picture Modal */}
+
+      <div
+        data-te-modal-init
+        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden"
+        id="editPropertyPicture"
+        tabindex="-1"
+        aria-labelledby="editPropertyPicture"
+        aria-hidden="true"
+      >
+        <div
+          data-te-modal-dialog-ref
+          className="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px] "
+        >
+          <div className="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none ">
+            <div className="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-opacity-100 p-4 ">
+              <h5
+                className="text-xl font-semi-bold leading-normal "
+                id="editPropertyPicture"
+              >
+                Upload your New Property Picture
+              </h5>
+              <button
+                type="button"
+                className="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                data-te-modal-dismiss
+                aria-label="Close"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div data-te-modal-body-ref className="relative p-4">
+              <form
+                onSubmit={handleSubmit(onSubmitProperty)}
+                className="max-w-2xl mx-auto"
+              >
+                <div className="form bg-gray-600 max-w-md mx-auto p-6 rounded-lg">
+                  <div className="flex justify-center">
+                    <div className=" w-96">
+                      <label
+                        htmlFor="formFile"
+                        className="mb-2 inline-block text-neutral-700 dark:text-neutral-200"
+                      >
+                        Choose at least 4 photos
+                      </label>
+                      <input
+                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-300 ease-in-out file:-mx-3 file:-my-1.5 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-1.5 file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[margin-inline-end:0.75rem] file:[border-inline-end-width:1px] hover:file:bg-neutral-200 focus:border-primary focus:bg-white focus:text-neutral-700 focus:shadow-[0_0_0_1px] focus:shadow-primary focus:outline-none dark:bg-transparent dark:text-neutral-200 dark:focus:bg-transparent"
+                        type="file"
+                        id="formFile"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => onImagesValidationProperty(e)}
+                      />
+                      <div className="mt-2 text-right">
+                      <label className="font-normal text-neutral-700 dark:text-neutral-200">
+                          * Multiple file max 2MB (.jpg or .png only)
+                      </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
+                    <button
+                      type="button"
+                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal my-main transition duration-150 ease-in-out hover:bg-primary-accent-300 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                      data-te-modal-dismiss
+                      data-te-ripple-init
+                      data-te-ripple-color="light"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus::bg-emerald-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                      data-te-ripple-init
+                      data-te-ripple-color="light"
+                      // data-te-modal-dismiss={closeModal}
+                    >
+                      {loading ? (
+                        <div className="h-fit w-full flex justify-center">
+                          <Loader />
+                        </div>
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Property */}
+
+      <div
+        data-te-modal-init
+        class="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        id="deleteProperty"
+        tabindex="-1"
+        aria-labelledby="deleteProperty"
+        aria-hidden="true"
+      >
+        <div
+          data-te-modal-dialog-ref
+          class="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
+        >
+          <div class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none ">
+            <div class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 ">
+              <div
+                class="text-xl font-medium leading-normal text-neutral-800 "
+                id="deleteProperty"
+              >
+                Deleting Property
+              </div>
+              <button
+                type="button"
+                class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                data-te-modal-dismiss
+                aria-label="Close"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="h-6 w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="relative flex-auto p-4" data-te-modal-body-ref>
+              <span className="my-main font-semibold">CAUTION !</span> After you deleting this Property it can not be undone ! {" "}
+              <span className="text-slate-400">*if you deleting a property, room will be deleted too</span>
+            </div>
+            <div class="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
+              <button
+                type="button"
+                class="inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-emerald-accent-700 focus:bg-emerald-accent-700focus:outline-none focus:ring-0 active:bg-emerald-accent-700"
+                data-te-modal-dismiss
+                data-te-ripple-init
+                data-te-ripple-color="light"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                class="ml-1 inline-block rounded my-bg-main px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-rose-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-rose-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-rose-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                onClick={() => ondDeleteProperty()}
+              >
+                {loading ? <Loader /> : "Yes"} 
+              </button>
             </div>
           </div>
         </div>

@@ -472,7 +472,7 @@ module.exports = {
           console.log(createConnector)
         }
 
-        // await t.commit();
+        await t.commit();
         return res.status(200).send({
           isError: false,
           message: "Create Property Successful",
@@ -505,9 +505,9 @@ module.exports = {
       property_id,
       property_accommodation,
     } = req.body;
-    console.log(req.body);
     const id = req.dataToken.id;
     const t = await sequelize.transaction();
+    console.log(req.body)
     try {
       // if (city_name !== "") {
       //   let city = await db.city.findOne({ where: { city: city_name } });
@@ -515,6 +515,14 @@ module.exports = {
       //     city = await db.city.create({ city: city_name }, { transaction: t });
       //   }
       // }
+
+      if(!name || !address || !description || !type_id || !city_id || !location || !property_id || !property_accommodation){
+        return res.status(400).send({
+          isError: true,
+          message: "Field Cannot blank",
+          data: null
+        })
+      }
   
       // Find the property to be edited
       let property = await db.property.findOne({where: {id: property_id}}, { transaction: t });
@@ -563,7 +571,7 @@ module.exports = {
       propertyLocation.city_id = city_id;
       await propertyLocation.save({ transaction: t });
 
-      const propertyAccommodationArr = property_accommodation.split(',').map(Number);
+      const propertyAccommodationArr = property_accommodation.map(value => (value.property_accommodation_id));
       await db.property_connector.destroy({ where: { property_id } }, { transaction: t });
       await db.property_connector.bulkCreate(propertyAccommodationArr.map(property_accommodation_id => ({
         property_id,
@@ -581,7 +589,6 @@ module.exports = {
       });
     } catch (error) {
       await t.rollback();
-      deleteFiles(req.files);
       return res.status(400).send({
         isError: true,
         message: error.message,
@@ -640,32 +647,63 @@ module.exports = {
   
     const t = await sequelize.transaction();
     try {
+
+      const locations = await db.location.findOne({
+        where: {
+          property_id
+        }
+      }, {transaction: t})
+
+      console.log(locations)
+
+      await db.location.destroy({
+        where: {
+          property_id: locations.dataValues.id
+        }
+      }, {transaction: t})
+
+        const room = await db.room.findOne({
+          where: {
+            property_id
+          }
+        }, {transaction: t});
+  
+       if(room){
+        await db.room_image.destroy({
+          where: {
+            room_id: room.dataValues.id
+          }
+        }, {transaction: t});
+    
+        await db.room.destroy({
+          where: {
+            id: room.dataValues.id
+          }
+        }, {transaction: t});
+
+       }
+
       // delete associated property images
       await db.property_image.destroy({
         where: {
           property_id
         },
-        transaction: t,
-      });
+      }, { transaction: t});
   
       // delete location associated with property
       await db.location.destroy({
         where: {
           property_id
-        },
-        transaction: t,
-      });
+        }
+      }, { transaction: t});
   
       // delete property
       const deletedProperty = await db.property.destroy({
         where: {
           id: property_id,
         },
-        transaction: t,
-      });
+      }, { transaction: t});
       
-
-
       await t.commit();
   
       if (deletedProperty > 0) {
@@ -685,7 +723,7 @@ module.exports = {
       await t.rollback();
       return res.status(500).send({
         isError: true,
-        message: "Error deleting property",
+        message: error.message,
         data: null,
       });
     }
@@ -912,11 +950,12 @@ module.exports = {
   },
   
   getTenantProperty: async(req, res) => {
-    const {city_id, type_id, page = 5 } = req.body
+    const {city_id, type_id, page = 1 } = req.body
     const id = req.dataToken.id
-    const page_size = 10
+    const page_size = 5
     const offset = (page - 1) * page_size;
     const limit = page_size 
+    console.log(req.body)
 
     try {
       const where = {tenant_id: id}
@@ -933,12 +972,13 @@ module.exports = {
       const properties = await property.findAll({
         where,
         include: [
+          {model: db.property_connector},
           {model: db.type},
           {model: db.location,
           include: {model: db.city, where: cityWhere }},
           {model: db.property_image},
           {model: db.room,
-          include: {model: db.room_image}},
+          include: [{model: db.room_image}, {model: db.room_connector}]},
         ],
         offset,
         limit
@@ -1011,8 +1051,8 @@ module.exports = {
 
   roomReview: async(req, res) => {
     const {room_id, rating, comment} = req.body
+    console.log(req.body)
     const users_id = req.dataToken.id
-    console.log(users_id)
     const t = await sequelize.transaction()
     try {
       const room = await db.transactions.findOne({where: {users_id, room_id}})
@@ -1020,6 +1060,15 @@ module.exports = {
         return res.status(400).send({
           isError: true,
           message: 'You have not rented this property',
+          data: null
+        })
+      }
+
+      const check = await db.review.findOne({where: {users_id, room_id}})
+      if(check){
+        return res.status(400).send({
+          isError: false,
+          message: "You already gave review",
           data: null
         })
       }
@@ -1037,12 +1086,17 @@ module.exports = {
         transactions_history_id: history.dataValues.id
       }, {transaction: t})
 
+      
       const reviews = await db.review.findAll({ where: { room_id }});
+      console.log(reviews)
       let totalRating = 0
-      reviews.forEach(review => {totalRating += review.rating})
-      const avgRating = totalRating / reviews.length
-
-      findRoom.rating = avgRating
+      if(reviews.length > 0){
+        reviews.forEach(review => {totalRating += review.rating})
+        const avgRating = totalRating / reviews.length
+        findRoom.rating = avgRating
+      }else{
+        findRoom.rating = rating;
+      }
       await findRoom.save({transaction: t})
 
 
@@ -1065,7 +1119,7 @@ module.exports = {
 
   getRoomReview: async(req, res) => {
     const {room_id, page = 1} = req.query
-    const page_size = 5
+    const page_size = 2
     const offset = (page - 1) * page_size
     const limit = page_size
 
@@ -1076,10 +1130,16 @@ module.exports = {
           {model: db.users, include: {model: db.users_details}}
         ]
         , offset, limit})
+
+        const total_count = await db.review.count({where: {room_id}});
+        const total_pages = Math.ceil(total_count / page_size);
+        console.log(total_count)
       return res.status(200).send({
         isError: false,
         message: "Get Room Review Success",
-        data: reviews
+        data: reviews,
+        total_data: total_count,
+        total_pages
       })
     } catch (error) {
       return res.status(400).send({
@@ -1089,6 +1149,33 @@ module.exports = {
       })
     }
   },
+
+  getType: async(req, res) => {
+    const type = await db.type.findAll({})
+    return res.status(200).send({
+      isError: false,
+      message: "Get City Success",
+      data: type,
+    });
+  },
+
+  getPropertyAccommodation: async(req, res) =>{
+    const propertyAcc = await db.property_accommodation.findAll({})
+    return res.status(200).send({
+      isError: false,
+      message: "Get Property Accommodation Success",
+      data: propertyAcc,
+    });
+  },
+
+  getRoomAccommodation: async(req, res) => {
+    const roomAcc = await db.room_accommodation.findAll({})
+    return res.status(200).send({
+      isError: false,
+      message: "Get Room Accommodation Success",
+      data: roomAcc,
+    });
+  }
 
   // getStarAverage: async(req, res) => {
   //   const 
