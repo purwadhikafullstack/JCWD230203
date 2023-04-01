@@ -20,6 +20,7 @@ const Transaction = () => {
   const [role, setRole] = useState("")
   const data = useParams();
   const location = useLocation()
+  console.log(location)
   const users_id = location?.state;
   const navigate = useNavigate();
   const tenant = location.pathname === `/tenant-transaction/${data?.id}/${data?.order_id}`
@@ -31,15 +32,18 @@ const Transaction = () => {
 
   const startDate = details?.[0]?.check_in?.split("T")[0].split("-")[2]
   const endDate = details?.[0]?.check_out?.split("T")[0].split("-")[2]
-  const checkIn = details?.[0]?.check_in?.split("T")[0]
-  const checkOut = details?.[0]?.check_out?.split("T")[0]
+  const checkIn = new Date(details?.[0]?.check_in?.split("T")[0])
+  const checkOut = new Date (details?.[0]?.check_out?.split("T")[0])
   const format1 = new Date(checkIn)
   const newStartDate = format1.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
   const format2 = new Date(checkOut)
   const newEndDate = format2.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+  const oneDay = 1000 * 60 * 60 * 24; 
 
-  var daysCheck = endDate - startDate;
+  const daysCheck = Math.ceil((checkOut?.getTime() -  checkIn?.getTime()) / 86400000);
+  console.log(endDate)
+  console.log(startDate)
 
   useEffect(() => {
     transaction();
@@ -72,9 +76,6 @@ const Transaction = () => {
       console.log(error.message);
     }
   };
-
-  console.log(details)
-
 
 
   const tenantTransaction = async() => {

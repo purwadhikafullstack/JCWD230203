@@ -8,8 +8,6 @@ const UserDropdown = (props) => {
   const btnDropdownRef = useRef();
   const popoverDropdownRef = useRef();
 
-  console.log(props)
-
   const location = useLocation()
   const navigate = useNavigate()
 

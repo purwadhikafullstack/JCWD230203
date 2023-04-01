@@ -16,6 +16,10 @@ Router.post('/filter', jwtVerify, transactionController.getOrderListFilter)
 Router.patch('/cancel', transactionController.cancelOrder)
 Router.post('/tenant-orderList', jwtVerify, transactionController.tenantOrderList)
 Router.post('/confirmation', transactionController.acceptRejectOrder)
+Router.post('/sales-report', jwtVerify, transactionController.salesReport)
+Router.post('/sales-reportRoom', transactionController.salesReportByRoom)
+Router.post('/blocked-date', transactionController.blockedDate)
+Router.get('/get-blockedDate', transactionController.getBlockedDate)
 
 
 module.exports = Router;

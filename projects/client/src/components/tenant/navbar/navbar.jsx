@@ -9,8 +9,6 @@ export default function Navbar(props) {
   const dashboard = location.pathname === '/dashboard'
   const reservation = location.pathname === '/dashboard-reservation'
 
-  console.log(props)
-
   let onLogout = () => {
         localStorage.removeItem("tokenTid");
   }

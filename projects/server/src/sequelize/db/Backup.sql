@@ -1,6 +1,6 @@
 use property_renting_web_app;
 
-SELECT * FROM property_renting_web_app.room;
+SELECT * FROM property_renting_web_app.room_blocked_dates;
 
 SELECT * FROM transactions WHERE status_id = 4 AND transactions.createdAt BETWEEN '2023-03-18' AND '2023-03-31';
 

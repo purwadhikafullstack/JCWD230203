@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import Chart from "chart.js";
 
 
-export default function BarChart() {
+export default function BarChart(props) {
+  console.log(props)
   useEffect(() => {
     let config = {
       type: "bar",

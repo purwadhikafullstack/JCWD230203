@@ -25,36 +25,38 @@ function Modal(props) {
 
   const navigate = useNavigate();
 
+  console.log(props)
+
 
   const bookedRoom = async () => {
-    const date1 = new Date(props?.endDate);
-    const setDate1 = date1
-      .toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      .replace(/\//g, "-");
-    const dateStr = setDate1;
-    const dateParts = dateStr.split("-");
-    const year = dateParts[2];
-    const month = dateParts[0];
-    const day = dateParts[1];
+    // const date1 = new Date(props?.endDate);
+    // const setDate1 = date1
+    //   .toLocaleDateString("en-US", {
+    //     year: "numeric",
+    //     month: "2-digit",
+    //     day: "2-digit",
+    //   })
+    //   .replace(/\//g, "-");
+    // const dateStr = setDate1;
+    // const dateParts = dateStr.split("-");
+    // const year = dateParts[2];
+    // const month = dateParts[0];
+    // const day = dateParts[1];
     const endDate = `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`;
 
-    const date2 = new Date(props?.startDate);
-    const setDate2 = date2
-      .toLocaleDateString(`en-US`, {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      .replace(/\//g, "-");
-    const dateStr2 = setDate2;
-    const dateParts2 = dateStr2.split("-");
-    const year2 = dateParts2[2];
-    const month2 = dateParts2[0];
-    const day2 = dateParts2[1];
+    // const date2 = new Date(props?.startDate);
+    // const setDate2 = date2
+    //   .toLocaleDateString(`en-US`, {
+    //     year: "numeric",
+    //     month: "2-digit",
+    //     day: "2-digit",
+    //   })
+    //   .replace(/\//g, "-");
+    // const dateStr2 = setDate2;
+    // const dateParts2 = dateStr2.split("-");
+    // const year2 = dateParts2[2];
+    // const month2 = dateParts2[0];
+    // const day2 = dateParts2[1];
     const startDate = `${props?.endDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`;
 
     try {
@@ -86,11 +88,11 @@ function Modal(props) {
         setTimeout(() => {
           if (booking?.data?.data?.length <= 2) {
             navigate(
-              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}`
+              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}`, {state: props?.price}
             );
           } else {
             navigate(
-              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}/${booking?.data?.data?.[2]?.order_id}`
+              `/transaction/${props?.placeId}/${booking?.data?.data?.[0]?.order_id}/${booking?.data?.data?.[2]?.order_id}`, {state: props?.price}
             );
           }
         }, 2000);
@@ -972,7 +974,7 @@ function Modal(props) {
             <div className="flex flex-shrink-0 flex-wrap items-center justify-evenly rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
               <button
                 type="button"
-                className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                className="inline-block rounded my-bg-main px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-rose-accent-100 focus:bg-rose-accent-100 focus:outline-none focus:ring-0 active:bg-rose-accent-200"
                 data-te-modal-dismiss
                 data-te-ripple-init
                 data-te-ripple-color="light"
@@ -984,7 +986,7 @@ function Modal(props) {
               > */}
               <button
                 type="submit"
-                className="ml-1 inline-block rounded bg-primary px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-emerald-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                 data-te-ripple-init
                 data-te-ripple-color="light"
                 onClick={bookedRoom}

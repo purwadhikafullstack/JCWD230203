@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import Chart from "chart.js";
 
 
-export default function LineChart() {
+export default function LineChart(props) {
+  console.log(props)
   useEffect(() => {
     var config = {
       type: "line",
@@ -14,7 +15,12 @@ export default function LineChart() {
           "April",
           "May",
           "June",
-          "July"
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
         ],
         datasets: [
           {
@@ -107,6 +113,7 @@ export default function LineChart() {
     var ctx = document.getElementById("line-chart").getContext("2d");
     window.myLine = new Chart(ctx, config);
   }, []);
+  
   return (
     <>
       <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
