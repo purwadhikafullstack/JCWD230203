@@ -67,7 +67,6 @@ const Reservation = () => {
       [name]: value,
     };
     setForm(_form);
-    console.log(_form);
   };
 
   const userTransaction = async () => {
@@ -438,7 +437,7 @@ const Reservation = () => {
                           </table>
                           <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                             <span className="text-xs xs:text-sm text-gray-900">
-                              {/* Showing 1 to {orderList?.length} data of {totalPages} Pages */}
+                             Page {currentPage}, Showing 1 to {orderList?.length} data of {totalPages} Pages
                             </span>
                             <div className="inline-flex mt-2 xs:mt-0">
                               <button
@@ -827,7 +826,7 @@ const Reservation = () => {
                           </table>
                           <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                             <span className="text-xs xs:text-sm text-gray-900">
-                              Showing 1 to {orderList?.length} data of{" "}
+                            Page {currentPage}, Showing 1 to {orderList?.length} data of{" "}
                               {totalPages} Pages
                             </span>
                             <div className="inline-flex mt-2 xs:mt-0">

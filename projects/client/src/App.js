@@ -345,12 +345,15 @@ function App() {
       <Route path='/dashboard-propertylist' element={<Dashboard />} />
       <Route path='/dashboard-edit-property' element={<Dashboard />} />
       <Route path='/dashboard-edit-room' element={<Dashboard />} />
+      <Route path='/dashboard-edit-price' element={<Dashboard />} />
       
 
       {/* transaction */}
       <Route path='/transaction/:id/:order_id' element={<Transaction />} />
       <Route path='/transaction/:id/:order_id1/:order_id2' element={<Transaction />} />
       <Route path='/tenant-transaction/:id/:order_id' element={<Transaction />} />
+      <Route path='/dashboard-sales-report' element={<Dashboard />} />
+      <Route path='/dashboard-sales-report-room/:id' element={<Dashboard />} />
       <Route path='*' element={<NotFound />} />
       {/* <Route path="/calendar" element={<Calendars/>} /> */}
     </Routes>

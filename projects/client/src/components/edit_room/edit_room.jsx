@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link} from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import Loader from "components/loader/loader";
@@ -192,13 +192,16 @@ function EditRoom() {
                         for="price"
                         className="block text-xl font-medium text-gray-700"
                       >
-                        Now, set your price
+                        Now, set your base price
                       </label>
                       <label
                         for="price"
-                        className="block text-md font-medium text-gray-400"
+                        className="block flex justify-between text-md font-medium "
                       >
-                        You can change it anytime.
+                        <span className="text-gray-400">You can change it anytime.</span>
+                        <Link to="/dashboard-edit-price" state={data}>
+                        <span className="pointer my-main hover:text-rose-800 capitalize" role="button">Click Here for setting Special Price </span>
+                        </Link>
                       </label>
                       <div className="flex flex-wrap items-stretch w-full mb-4 relative">
                         <div className="flex -mr-px">
@@ -213,6 +216,7 @@ function EditRoom() {
                           value={form.price}
                           onChange={handleChange}
                           className="flex-shrink flex-grow flex-auto leading-normal w-px border h-14 border-gray-300 px-3 relative"
+                          required
                         />
                         <div className="flex -mr-px">
                           <span className="flex items-center leading-normal rounded rounded-l-none border border-l-0 font-regular text-gray-700 border-gray-300 px-4 whitespace-no-wrap text-md">

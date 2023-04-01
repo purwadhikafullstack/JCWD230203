@@ -612,13 +612,10 @@ module.exports = {
             ],
           },
         ],
-        offset,
-        limit,
       });
 
       // initialize an empty array to hold the transactions
       let transaction = [];
-
 
 
       properties.forEach((property) => {
@@ -647,8 +644,7 @@ module.exports = {
         );
       }
 
-
-      transaction = transaction.slice(offset, limit);
+      transaction = transaction.slice(offset, offset + limit);
 
     return res.status(200).send({
       isError: false,
@@ -766,4 +762,229 @@ module.exports = {
       });
     }
   },
+
+  salesReport: async(req, res) =>{
+    const {status_id = 2 , page = 1 , sort='desc'} = req.body
+    const id = req.dataToken.id
+    const page_size = 5
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+    try {
+      
+      const properties = await db.property.findAll({
+        where: {tenant_id: id},
+        include: [
+          {model: db.room,
+          include: [
+            {model: db.property, include: {model: db.property_image}},
+            {model: db.room_image},
+            {model: transactions, where: {status_id}, 
+            include: {model: db.users, include: {model: db.users_details}}
+          }
+          ]},
+        ],
+      })
+
+      let transaction = []
+
+      properties.forEach((property) => {
+        if(property.rooms){
+          property.rooms.forEach((room) => {
+            if(room.transactions){
+              transaction = transaction.concat(room.transactions.map(
+                (transaction) => {
+                  return{
+                    property: property.dataValues,
+                    room: room.dataValues,
+                    transaction: transaction.dataValues,
+                  }
+                }
+              ))
+            }
+          })
+        }
+      })
+
+
+      if (sort === 'asc') {
+        transaction.sort((a, b) => a.transaction.total_price - b.transaction.total_price);
+      } else {
+        transaction.sort((a, b) => b.transaction.total_price - a.transaction.total_price);
+      }
+
+      
+      transaction = transaction
+      .slice(offset, offset + limit)
+      .reduce((acc, curr) => {
+        // Find existing entry in the accumulator that matches the current property and room
+        const existingEntry = acc.find(
+          (entry) =>
+            entry.property.id === curr.property.id && entry.room.id === curr.room.id
+        );
+
+      
+        // If an existing entry is found, update its revenue and booking count
+        if (existingEntry) {
+          existingEntry.revenue += curr.transaction.total_price;
+          existingEntry.bookings_count += 1;
+        } 
+        // Otherwise, create a new entry with the current property, room, and transaction info
+        else {
+          const newEntry = {
+            property: curr.property,
+            room: curr.room,
+            revenue: curr.transaction.total_price,
+            bookings_count: 1,
+          };
+          acc.push(newEntry);
+        }
+      
+        return acc;
+      }, []);
+      
+
+
+      const total_data = transaction.length;
+      const total_pages = Math.ceil(total_data / page_size)
+
+      return res.status(200).send({
+        isError: false,
+        message: "Get Sales Report success",
+        data: transaction,
+        total_data: total_data,
+        total_pages: total_pages,
+       });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  salesReportByRoom: async(req, res) =>{
+    const {status_id = 2 , page = 1 , start_date, end_date, room_id, sort} = req.body
+    console.log(req.body)
+    // const id = req.dataToken.id
+    const page_size = 5
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+    try {
+
+
+
+      const where = {room_id, status_id}
+      if (start_date && end_date) {
+        where.check_in = { [Op.between]: [start_date, end_date] };
+      }
+
+      let sortOrder = [['total_price', sort]];
+      if (sort === 'asc') {
+        sortOrder = [['total_price', 'asc']];
+      }else{
+        sortOrder = [['total_price', 'desc']];
+      }
+
+      const report = await transactions.findAll({
+        where,
+        include: [
+          {model: db.room, include: {model: db.room_image}},
+          {model: db.users, include: {model: db.users_details}}
+        ],
+        order: sortOrder,
+        offset,
+        limit
+        })
+
+      const total_data = report.length;
+      const total_pages = Math.ceil(total_data / page_size)
+
+      return res.status(200).send({
+        isError: false,
+        message: "Get Sales Report success",
+        data: report,
+        total_data: total_data,
+        total_pages: total_pages,
+       });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  blockedDate: async (req, res) => {
+    const { room_id, start_date, end_date, reason } = req.body;
+    const t = await sequelize.transaction()
+    try {
+      // Check if the specified room exists
+      const room = await db.room.findOne({where: {id: room_id}});
+      if (!room) {
+        return res.status(400).send({
+          isError: true,
+          message: "Room not found",
+          data: null,
+        });
+      }
+  
+      // Check if the specified date range is valid
+      if (!start_date || !end_date || start_date >= end_date) {
+        return res.status(400).send({
+          isError: true,
+          message: "Invalid date range",
+          data: null,
+        });
+      }
+  
+      // Check if there is an existing blocked date for the specified room and date range
+      const existingBlockedDate = await db.room_blocked_dates.findOne({
+        where: { room_id, start_blocked_date: { [Op.lte]: end_date }, end_blocked_date: { [Op.gte]: start_date } },
+      });
+      if (existingBlockedDate) {
+        return res.status(400).send({
+          isError: true,
+          message: "The specified date range has already been blocked for this room",
+          data: null,
+        });
+      }
+  
+      // Create a new blocked date entry
+      const newBlockedDate = await db.room_blocked_dates.create({
+        room_id,
+        start_blocked_date: start_date,
+        end_blocked_date: end_date,
+        reason,
+      }, {transaction: t});
+
+      await t.commit()
+  
+      return res.status(200).send({
+        isError: false,
+        message: "Blocked date added successfully",
+        data: newBlockedDate,
+      });
+    } catch (error) {
+      await t.rollback()
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+  getBlockedDate: async(req, res) => {
+    const{room_id} = req.query
+
+    const blocked = await db.room_blocked_dates.findAll({where: {room_id}})
+    return res.status(200).send({
+      isError: false,
+      message: "Get Data Success",
+      data: blocked
+    })
+  }
+  
 };

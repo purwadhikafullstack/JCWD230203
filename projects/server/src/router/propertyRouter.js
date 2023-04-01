@@ -31,6 +31,7 @@ Router.get('/reviews', propertyController.getRoomReview)
 Router.get('/type', propertyController.getType)
 Router.get('/property-accommodation', propertyController.getPropertyAccommodation)
 Router.get('/room-accommodation', propertyController.getRoomAccommodation)
+Router.post('/room-price', propertyController.createSpecialPrice)
 
 
 

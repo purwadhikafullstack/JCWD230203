@@ -57,7 +57,7 @@ const Profiling = (props) => {
     if(picturePath && picturePath.includes("https")){
       return picturePath
     }else if(picturePath && picturePath.includes("Public")){
-      return `http://localhost:5000/${profile?.picture_path}`
+      return `http://localhost:5000/${picturePath}`
     }else{
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
     }

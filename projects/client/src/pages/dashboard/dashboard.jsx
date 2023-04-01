@@ -7,14 +7,18 @@ import Sidebar from "./../../components/tenant/sidebar/sidebar";
 import LineChart from "./../../components/tenant/chart/lineChart";
 import BarChart from "./../../components/tenant/chart/barChart";
 import Reservation from "pages/reservation/reservation";
-import { useLocation, useNavigate } from "react-router-dom";
-import Modal from "./../../components/tenant/modal/modalTenant";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import CreateProperty from "components/create_propeerty/create_property";
 import CreateRoom from "components/create_room/create_room";
 import PropertyList from "components/property_list/property_list";
 import Profile from "components/tenant/profile/profile";
 import EditProperty from "components/edit_property/edit_property";
 import EditRoom from "components/edit_room/edit_room";
+import SpecialPrice from "components/special_price/special_price";
+import SalesReport from "components/sales_report/sales_report";
+import { FaStar } from "react-icons/fa";
+import SalesReportRoom from "components/sales_report_room/sales_report_room";
+
 
 export default function Dashboard(props) {
   const [redirect, setRedirect] = useState(false);
@@ -22,11 +26,13 @@ export default function Dashboard(props) {
   const [username, setUsername] = useState("");
   const [picture, setPicture] = useState("");
   const [details, setDetails] = useState("");
+  const [report, setReport] = useState([])
 
   const location = useLocation();
+  const id = location.pathname.split("/")[2]
   const navigate = useNavigate();
 
-  const dashboard = location.pathname === "/dashboard";
+  const dashboard = location.pathname === "/dashboard"
   const reservation = location.pathname === "/dashboard-reservation";
   const profile = location.pathname === "/dashboard-profile";
   const propertylist = location.pathname === "/dashboard-propertylist";
@@ -34,11 +40,15 @@ export default function Dashboard(props) {
   const createroom = location.pathname === "/dashboard-createroom";
   const editProperty = location.pathname === "/dashboard-edit-property"
   const editRoom = location.pathname === "/dashboard-edit-room"
+  const setSpecialPrice = location.pathname === '/dashboard-edit-price'
+  const salesReport = location.pathname === "/dashboard-sales-report"
+  const salesReportRoom = location.pathname === `/dashboard-sales-report-room/${id}`
   const getTokenId = localStorage.getItem("tokenTid");
 
   useEffect(() => {
     checkIsLogin();
     getTenantProfile();
+    getSalesReport()
   }, []);
 
   let checkIsLogin = async () => {
@@ -92,6 +102,38 @@ export default function Dashboard(props) {
     }
   };
 
+  const getSalesReport = async() => {
+    try {
+      const res = await axios.post("http://localhost:5000/transaction/sales-report", 
+      {},
+        {
+            headers: {
+              auth: getTokenId,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+        })
+        setReport(res.data.data) 
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const result = report.reduce((acc, curr) => {
+    return acc + curr.bookings_count
+  }, 0)
+
+  const stars = report.reduce((acc,curr) => {
+    return acc + curr.room?.rating
+  }, 0)
+
+  const revenueTotal = report.reduce((acc, curr) => {
+    return acc + curr.revenue
+  }, 0)
+
+  console.log(details)
+
+
   if (!getTokenId) {
     navigate("/tenant-login");
   }
@@ -118,10 +160,10 @@ export default function Dashboard(props) {
                               <div className="flex flex-wrap">
                                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
                                   <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Traffic
+                                   Total Booked
                                   </h5>
                                   <span className="font-semibold text-xl text-blueGray-700">
-                                    350,897
+                                    {result ?? 0} Time's
                                   </span>
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
@@ -130,14 +172,14 @@ export default function Dashboard(props) {
                                   </div>
                                 </div>
                               </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
+                              {/* <p className="text-sm text-blueGray-400 mt-4">
                                 <span className="text-emerald-500 mr-2">
                                   <i className="fas fa-arrow-up"></i> 3.48%
                                 </span>
                                 <span className="whitespace-nowrap">
                                   Since last month
                                 </span>
-                              </p>
+                              </p> */}
                             </div>
                           </div>
                         </div>
@@ -147,11 +189,14 @@ export default function Dashboard(props) {
                               <div className="flex flex-wrap">
                                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
                                   <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    New users
+                                    Stars Average
                                   </h5>
+                                  <div className="flex items-center">
                                   <span className="font-semibold text-xl text-blueGray-700">
-                                    2,356
+                                  {(stars ? (stars / report?.length) : 0).toFixed(1)} 
                                   </span>
+                                  <span className="my-rating ml-1"><FaStar /></span>
+                                  </div>
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
                                   <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-orange-500">
@@ -159,14 +204,14 @@ export default function Dashboard(props) {
                                   </div>
                                 </div>
                               </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
+                              {/* <p className="text-sm text-blueGray-400 mt-4">
                                 <span className="text-red-500 mr-2">
                                   <i className="fas fa-arrow-down"></i> 3.48%
                                 </span>
                                 <span className="whitespace-nowrap">
                                   Since last week
                                 </span>
-                              </p>
+                              </p> */}
                             </div>
                           </div>
                         </div>
@@ -176,10 +221,10 @@ export default function Dashboard(props) {
                               <div className="flex flex-wrap">
                                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
                                   <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Sales
+                                    Total Sales
                                   </h5>
                                   <span className="font-semibold text-xl text-blueGray-700">
-                                    924
+                                   Rp. {revenueTotal.toLocaleString() ?? 0}
                                   </span>
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
@@ -188,14 +233,14 @@ export default function Dashboard(props) {
                                   </div>
                                 </div>
                               </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
+                              {/* <p className="text-sm text-blueGray-400 mt-4">
                                 <span className="text-orange-500 mr-2">
                                   <i className="fas fa-arrow-down"></i> 1.10%
                                 </span>
                                 <span className="whitespace-nowrap">
                                   Since yesterday
                                 </span>
-                              </p>
+                              </p> */}
                             </div>
                           </div>
                         </div>
@@ -235,8 +280,8 @@ export default function Dashboard(props) {
                 {/* Chart */}
                 <div className="px-4 md:px-10 mx-auto w-full -m-24">
                   <div className="flex flex-wrap">
-                    <LineChart />
-                    <BarChart />
+                    <LineChart report={report} />
+                    <BarChart report={report} />
                   </div>
                   <div className="flex flex-wrap mt-4">
                     <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
@@ -245,10 +290,11 @@ export default function Dashboard(props) {
                           <div className="flex flex-wrap items-center">
                             <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                               <h3 className="font-semibold text-base text-blueGray-700">
-                                Page visits
+                                Property Bookings
                               </h3>
                             </div>
                             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                            <Link to={'/dashboard-sales-report'} >
                               <button
                                 className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1"
                                 type="button"
@@ -256,22 +302,25 @@ export default function Dashboard(props) {
                               >
                                 See all
                               </button>
+                              </Link>
                             </div>
                           </div>
                         </div>
+                        
+                        {/*Reports review  */}
                         <div className="block w-full overflow-x-auto">
                           {/* Projects table */}
                           <table className="items-center w-full bg-transparent border-collapse">
                             <thead>
                               <tr>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Page name
+                                  Property Name
                                 </th>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Visitors
+                                  Booked
                                 </th>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Unique users
+                                 Revenue
                                 </th>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                   Bounce rate
@@ -279,81 +328,28 @@ export default function Dashboard(props) {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  /argon/
+                              {report? report.map((value, idx) => {
+                                console.log(value)
+                                return(
+                                  <>
+                                  <tr key={idx}> 
+                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left capitalize">
+                                  {value?.property.name}
                                 </th>
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  4,569
+                                  {value?.bookings_count} Time's
                                 </td>
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  340
+                                  Rp. {value?.revenue?.toLocaleString()}
                                 </td>
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                   <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
                                   46,53%
                                 </td>
                               </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  /argon/index.html
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  3,985
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  319
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <i className="fas fa-arrow-down text-orange-500 mr-4"></i>
-                                  46,53%
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  /argon/charts.html
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  3,513
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  294
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <i className="fas fa-arrow-down text-orange-500 mr-4"></i>
-                                  36,49%
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  /argon/tables.html
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  2,050
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  147
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                                  50,87%
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  /argon/profile.html
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  1,795
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  190
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <i className="fas fa-arrow-down text-red-500 mr-4"></i>
-                                  46,53%
-                                </td>
-                              </tr>
+                                  </>
+                                )
+                              }): null}
                             </tbody>
                           </table>
                         </div>
@@ -512,136 +508,7 @@ export default function Dashboard(props) {
               </>
             )}
           </>
-        ) : (
-          <>
-            <Navbar />
-            <div className="relative my-bg-main md:pt-32 pb-32 pt-12">
-              <div className="px-4 md:px-10 mx-auto w-full">
-                <div>
-                  {/* Card stats */}
-                  <div className="flex flex-wrap">
-                    <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                      <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                        <div className="flex-auto p-4">
-                          <div className="flex flex-wrap">
-                            <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                              <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                Traffic
-                              </h5>
-                              <span className="font-semibold text-xl text-blueGray-700">
-                                350,897
-                              </span>
-                            </div>
-                            <div className="relative w-auto pl-4 flex-initial">
-                              <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-red-500">
-                                <i className="far fa-chart-bar"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-sm text-blueGray-400 mt-4">
-                            <span className="text-emerald-500 mr-2">
-                              <i className="fas fa-arrow-up"></i> 3.48%
-                            </span>
-                            <span className="whitespace-nowrap">
-                              Since last month
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                      <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                        <div className="flex-auto p-4">
-                          <div className="flex flex-wrap">
-                            <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                              <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                New users
-                              </h5>
-                              <span className="font-semibold text-xl text-blueGray-700">
-                                2,356
-                              </span>
-                            </div>
-                            <div className="relative w-auto pl-4 flex-initial">
-                              <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-orange-500">
-                                <i className="fas fa-chart-pie"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-sm text-blueGray-400 mt-4">
-                            <span className="text-red-500 mr-2">
-                              <i className="fas fa-arrow-down"></i> 3.48%
-                            </span>
-                            <span className="whitespace-nowrap">
-                              Since last week
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                      <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                        <div className="flex-auto p-4">
-                          <div className="flex flex-wrap">
-                            <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                              <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                Sales
-                              </h5>
-                              <span className="font-semibold text-xl text-blueGray-700">
-                                924
-                              </span>
-                            </div>
-                            <div className="relative w-auto pl-4 flex-initial">
-                              <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-pink-500">
-                                <i className="fas fa-users"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-sm text-blueGray-400 mt-4">
-                            <span className="text-orange-500 mr-2">
-                              <i className="fas fa-arrow-down"></i> 1.10%
-                            </span>
-                            <span className="whitespace-nowrap">
-                              Since yesterday
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                      <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                        <div className="flex-auto p-4">
-                          <div className="flex flex-wrap">
-                            <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                              <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                Performance
-                              </h5>
-                              <span className="font-semibold text-xl text-blueGray-700">
-                                49,65%
-                              </span>
-                            </div>
-                            <div className="relative w-auto pl-4 flex-initial">
-                              <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-lightBlue-500">
-                                <i className="fas fa-percent"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-sm text-blueGray-400 mt-4">
-                            <span className="text-emerald-500 mr-2">
-                              <i className="fas fa-arrow-up"></i> 12%
-                            </span>
-                            <span className="whitespace-nowrap">
-                              Since last month
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        ) : null}
 
         {/* Reservation */}
         {localStorage.getItem("tokenTid") ? (
@@ -842,6 +709,40 @@ export default function Dashboard(props) {
             )}
           </>
         ) : null}
+
+        {/* set Special Price */}
+        {localStorage.getItem("tokenTid") ? (
+          <>
+            {setSpecialPrice && (
+              <>
+                <SpecialPrice />
+              </>
+            )}
+          </>
+        ) : null}
+
+        {/* Sales Report */}
+        {localStorage.getItem("tokenTid") ? (
+          <>
+            {salesReport && (
+              <>
+                <SalesReport />
+              </>
+            )}
+          </>
+        ) : null}
+
+        {/* Sales Report Room */}
+        {localStorage.getItem("tokenTid") ? (
+          <>
+            {salesReportRoom && (
+              <>
+                <SalesReportRoom />
+              </>
+            )}
+          </>
+        ) : null}
+
 
         <Toaster />
       </div>

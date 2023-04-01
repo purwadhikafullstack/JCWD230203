@@ -520,7 +520,6 @@ module.exports = {
     const t = await sequelize.transaction();
     console.log(req.body);
     try {
-
       if (
         !name ||
         !address ||
@@ -569,7 +568,7 @@ module.exports = {
       await propertyLocation.save({ transaction: t });
 
       const propertyAccommodationArr = property_accommodation
-        .filter(value => !isNaN(Number(value)))
+        .filter((value) => !isNaN(Number(value)))
         .map((value) => Number(value));
 
       if (propertyAccommodationArr.length > 0) {
@@ -844,11 +843,12 @@ module.exports = {
       room_id,
     } = req.body;
 
-
     const t = await sequelize.transaction();
     try {
-
-      const room = await db.room.findOne({ where: { id: room_id }, transaction: t });
+      const room = await db.room.findOne({
+        where: { id: room_id },
+        transaction: t,
+      });
 
       if (!room) {
         return res.status(404).send({
@@ -862,36 +862,33 @@ module.exports = {
       room.description = description;
       room.available_room = available_room;
       room.price = price;
-      room.room_id = room_id
-      await room.save({transaction: t})
-      
+      room.room_id = room_id;
+      await room.save({ transaction: t });
 
       const roomAccommodationArr = room_accommodation
-        .filter(value => !isNaN(Number(value)))
+        .filter((value) => !isNaN(Number(value)))
         .map((value) => Number(value));
 
-
-      if(roomAccommodationArr.length > 0){
+      if (roomAccommodationArr.length > 0) {
         await db.room_connector.destroy(
           { where: { room_id } },
           { transaction: t }
         );
         await db.room_connector.bulkCreate(
-          roomAccommodationArr.map((room_accommodation_id) => 
-          ({
+          roomAccommodationArr.map((room_accommodation_id) => ({
             room_id,
             room_accommodation_id,
           })),
           { transaction: t }
         );
-      }else if(room_accommodation.length > 0){
+      } else if (room_accommodation.length > 0) {
         await db.room_connector.destroy(
           { where: { room_id, room_accommodation_id: null } },
           { transaction: t }
         );
       }
 
-      console.log(roomAccommodationArr)
+      console.log(roomAccommodationArr);
 
       await t.commit();
       return res.status(200).send({
@@ -1166,7 +1163,42 @@ module.exports = {
         });
       }
 
-      const check = await db.review.findOne({ where: { users_id, room_id } });
+      if(rating === 0){
+          return res.status(400).send({
+            isError: true,
+            message: "Please Give a Rating",
+            data: null
+          })
+      }
+
+
+      const history = await db.transactions_history.findOne({
+        where: { id: room.dataValues.id },
+      });
+
+      const findRoom = await db.room.findOne({ where: { id: room_id } });
+
+      console.log(room)
+      // Add validation for checkout date
+    if (!room.dataValues.check_out || room.dataValues.check_out > new Date()) {
+      return res.status(400).send({
+        isError: true,
+        message: "You can only give a review after checkout",
+        data: null,
+      });
+    }
+
+
+      // Check transaction status
+    if (room.dataValues.status_id !== 2) {
+      return res.status(400).send({
+        isError: true,
+        message: "You can only give a review when the transaction has been paid",
+        data: null,
+      });
+    }
+
+    const check = await db.review.findOne({ where: { users_id, room_id } });
       if (check) {
         return res.status(400).send({
           isError: false,
@@ -1174,11 +1206,6 @@ module.exports = {
           data: null,
         });
       }
-
-      const history = await db.transactions_history.findOne({
-        where: { id: room.dataValues.id },
-      });
-      const findRoom = await db.room.findOne({ where: { id: room_id } });
 
       // create Review
       const review = await db.review.create(
@@ -1288,154 +1315,136 @@ module.exports = {
     });
   },
 
-  // getStarAverage: async(req, res) => {
-  //   const
-  // }
+  createSpecialPrice: async (req, res) => {
+    const {
+      name,
+      start_date,
+      end_date,
+      room_id,
+      status_id = 5,
+      total_rooms = 0,
+    } = req.body;
+    const t = await sequelize.transaction();
+    try {
+      const discount = req.body.discount === '' ? 0 : parseInt(req.body.discount);
+      const markup = req.body.markup === '' ? 0 : parseInt(req.body.markup)
+      // check availability of rooms
+      const room = await db.room.findOne({ where: { id: room_id } });
+      if (!room) {
+        throw new Error(`Room with id ${room_id} not found`);
+      }
+      if (room.dataValues.available_room < total_rooms) {
+        throw new Error(
+          `Only ${room.dataValues.available_room } rooms available for this event`
+        );
+      }
+
+       // Check if the room is available during the specified time period
+    const events = await db.event.findAll({
+      where: {
+        room_id,
+        [Op.or]: [
+          {
+            start_date: {
+              [Op.between]: [start_date, end_date],
+            },
+          },
+          {
+            end_date: {
+              [Op.between]: [start_date, end_date],
+            },
+          },
+          {
+            [Op.and]: [
+              {
+                start_date: {
+                  [Op.lte]: start_date,
+                },
+              },
+              {
+                end_date: {
+                  [Op.gte]: end_date,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    }, {transaction: t});
+
+    let event;
+
+
+    // If there are overlapping events, update the first one with the new details
+    if (events.length > 0) {
+      const rates = await db.event_rates.findOne({where: {id: events[0].dataValues.event_rates_id}})
+
+      const eventRates = await db.event_rates.update(
+        { discount, markup },
+        {where: {id: rates.dataValues.id}},
+        { transaction: t }
+      );
+      event = await db.event.update(
+        {
+          name,
+          start_date,
+          end_date,
+          status_id,
+          total_rooms,
+        },
+        {where: {id: events[0].dataValues.id}},
+        {transaction: t}
+      );
+
+      return res.status(201).send({
+        isError: false,
+        message: `Special Prices updated`,
+        data: { event, eventRates },
+      });
+    }
+      // create the event_rates
+      const eventRates = await db.event_rates.create(
+        { discount, markup },
+        { transaction: t }
+      );
+
+      console.log(eventRates)
+
+      // create the event with the event_rates_id
+      event = await db.event.create(
+        {
+          name,
+          room_id,
+          start_date,
+          end_date,
+          event_rates_id: eventRates.id,
+          status_id,
+          total_rooms,
+        },
+        { transaction: t }
+      );
+
+      // Update the room's available rooms count and event rates ID
+      room.dataValues.available_room -= total_rooms;
+      room.event_rates_id = eventRates.dataValues.id;
+      await room.save({ transaction: t });
+    
+
+      await t.commit();
+      return res.status(201).send({
+        isError: false,
+        message: `Special Prices created`,
+        data: { event, eventRates },
+      });
+    } catch (error) {
+      await t.rollback();
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  },
+
+
 };
-
-// const {
-//   property_name,
-//   price_min,
-//   price_max,
-//   sort_order,
-//   page = 1,
-// } = req.query;
-
-// console.log(req.body);
-
-// const page_size = 10;
-// const offset = (page - 1) * page_size;
-// const limit = page_size;
-
-// try {
-//   let order = [];
-
-//   if (sort_order) {
-//     if (sort_order === "asc" || sort_order === "desc") {
-//       order.push(["price", sort_order]);
-//     } else {
-//       throw { message: "Invalid sort order" };
-//     }
-//   }
-
-//   const rooms = await db.room.findAll({
-//     where: {
-//       price: {
-//         [Op.gte]: price_min,
-//         [Op.lte]: price_max,
-//       },
-//       "$property.name$": { [Op.like]: `%${property_name}%` },
-//     },
-//     include: [
-//       {
-//         model: db.room_image,
-//         as: "room_images",
-//       },
-//       {
-//         model: property,
-//         as: "property",
-//       },
-//     ],
-//     order: order,
-//     offset,
-//     limit,
-//     subQuery: false,
-//   });
-
-//   if (rooms.length === 0) {
-//     return res.status(200).send({
-//       isError: false,
-//       message: "Cannot search the Room",
-//       data: rooms,
-//     });
-//   }
-
-//   const total_count = await db.room.count();
-//   const total_pages = Math.ceil(total_count / page_size);
-
-//   return res.status(200).json({
-//     isError: false,
-//     message: "Get room by query success",
-//     data: rooms,
-//     total_count,
-//     total_pages,
-//   });
-// } catch (error) {
-//   return res.status(400).json({
-//     isError: true,
-//     message: error.message,
-//     data: null,
-//   });
-// }
-// }
-
-// const { sort_order, price_min = 300000, price_max = 99999999, page = 1,  } = req.query;
-//       let page_size = 10;
-//       const offset = (page - 1) * page_size;
-//       const limit = page_size;
-//       try {
-//         let order = [];
-
-//         if (sort_order) {
-//           if (sort_order === "asc" || sort_order === "desc") {
-//             order.push(["rooms", "price", sort_order]);
-//           } else {
-//             throw { message: "Invalid sort order" };
-//           }
-//         }
-
-//         const properties = await property.findAll({
-//           include: [
-//             {
-//               model: db.property_image,
-//               as: "property_images",
-//             },
-//             {
-//               model: db.room,
-//               as: "rooms",
-//               where: {
-//                 price: {
-//                   [Op.gte]: price_min,
-//                   [Op.lte]: price_max,
-//                 },
-//               },
-//               include: [
-//                 {
-//                   model: db.room_image,
-//                   as: "room_images",
-//                 },
-//               ],
-//             },
-//             {
-//               model: db.location,
-//               as: "locations",
-//               include: [
-//                 {
-//                   model: db.city,
-//                   as: "city",
-//                 },
-//               ],
-//             },
-//           ],
-//           order: order,
-//           offset,
-//           limit,
-//         });
-
-//         const total_count = await property.count(); // get total number of properties
-//         const total_pages = Math.ceil(total_count / page_size); // calculate total number of pages
-
-//         return res.status(200).send({
-//           isError: false,
-//           message: "Get data by type Success",
-//           data: properties,
-//           total_data: total_count,
-//           total_pages,
-//         });
-//       } catch (error) {
-//         return res.status(400).send({
-//           isError: true,
-//           message: error.message,
-//           data: null,
-//         });
-//       }

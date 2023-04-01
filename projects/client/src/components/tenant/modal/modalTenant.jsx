@@ -15,7 +15,6 @@ function ModalTenant(props) {
   const [msg, setMsg] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
 
-  console.log(props?.propertyId)
 
   const navigate = useNavigate();
 

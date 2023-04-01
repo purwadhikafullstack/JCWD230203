@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../../supports/styles/SinglePage.css";
 import { Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
 import { FaKey } from "react-icons/fa";
 import { FaCalendarCheck } from "react-icons/fa";
 import { RiMedal2Fill } from "react-icons/ri";

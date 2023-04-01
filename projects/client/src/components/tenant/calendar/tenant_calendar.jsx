@@ -11,21 +11,12 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 
-export default function Calendars(props){
-  // console.log(props??rates?..details?.details?.[0]?.price)
-  const params = useParams();
-  const { id } = params;
+export default function TenantCalendars(props){
 
-  console.log(props)
-
+  const id  = props?.details?.[0]?.id;
   const location = useLocation()
 
-  const roomDetails = location.pathname === `/room-details/${id}`
-  const editPrice = location.pathname === '/dashboard-edit-price'
 
-  // const price = [
-  //   {"date": "2023-03-10", "price": 100000}
-  // ]
   
   const [now, setNow] = useState({
     date: 0,
@@ -72,6 +63,7 @@ export default function Calendars(props){
   let onCreateCalendar = async(btn, year1 = new Date().getUTCFullYear(), month1 = new Date().getMonth() + 1) => {
     try {
       const rates = await axios.get(`http://localhost:5000/transaction/rates?room_id=${id}`)
+      const blockedDate = await axios.get(`http://localhost:5000/transaction/get-blockedDate?room_id=${id}`)
       console.log(rates)
 
       if(btn === '+'){ // Apabila user meng-klik button "next"
@@ -248,86 +240,6 @@ useEffect(() => {
 
   return (
     <>
-    {/* Room Details */}
-    {roomDetails &&
-    <div className="side-box-card bg-red-300 w-[300px] ">
-    {console.log(props?.details)}
-    <h1 className="text-3xl font-bold mb-3">Calendar</h1>
-    <h5 className="text-lg font-medium mb-3">
-      {year} - {listMonth[month]}
-    </h5>
-    <div>
-      <div className="grid grid-cols-7 gap-3 px-10 h-[230px]">
-        {days
-          ? days.map((value) => {
-              return (
-                <>
-                  <div
-                    className="cursor-pointer w-fit"
-                  >
-                    <div
-                      className={
-                        new Date(`${year}-${month}-${value.date}`).getTime() /
-                          86400000 >=
-                          new Date(
-                            `${props?.startDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`
-                          ).getTime() /
-                            86400000 &&
-                        new Date(`${year}-${month}-${value.date}`).getTime() /
-                          86400000 <=
-                          new Date(
-                            `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`
-                          ).getTime() /
-                            86400000
-                          ? "border-b-2 border-red-700 cursor-pointer"
-                          : value.date < props?.startDate?.date &&
-                            month <= props?.startDate?.month &&
-                            year <= props?.startDate?.year
-                          ? "text-gray-500 cursor-pointer"
-                          : null
-                      }
-                      onClick={
-                        (value.date < props?.startDate?.date &&
-                        month <= props?.startDate?.month &&
-                        year <= props?.startDate?.year ) && (props?.endDate?.endDate === null)? 
-                            null
-                          : 
-                            value.date < now.date && month <= now.month && year <= now.year?
-                              null
-                            :
-                              () => props.funct(value.date, month, year, days)
-                      }
-                    >
-                      <div className={value.date < now.date && month <= now.month && year <= now.year? "text-sm text-center text-gray-200" : "text-sm text-center"}>
-                      {value?.date}
-                      </div>
-                      <div className={value.date < now.date && month <= now.month && year <= now.year? "text-xs text-gray-200" : value?.discount? "text-xs text-green-500" : value?.markup? "text-xs text-red-500" : "text-xs"}>
-                        {value?.discount? (props?.details?.[0]?.price - (props?.details?.[0]?.price * (value?.discount/100))).toString().slice(0, 3) : value?.markup? (props?.details?.[0]?.price + (props?.details?.[0].price * (value?.markup/100))).toString().slice(0, 3) : props?.details?.[0]?.price.toString().slice(0, 3)  }
-                      </div>
-                    </div>
-                  </div>
-                </>
-              );
-            })
-          : null}
-      </div>
-      <div className="py-3">
-        {/* 
-          Button previous akan di disabled ketika user berada di bulan saat ini
-        */}
-        <button disabled={month === now.month && year === now.year? true : false} onClick={() => onCreateCalendar("-")} type="button" className={month === now.month && year === now.year? "py-1 px-2 mr-2 mb-2 text-xs font-xs text-gray-500 focus:outline-none bg-gray-300 rounded-full border bg-gray-300" : "py-1 px-2 mr-2 mb-2 text-xs font-xs text-black-900 focus:outline-none bg-white rounded-full border border-red-700 hover:bg-red-700 hover:text-white focus:z-10 focus:ring-4 focus:ring-white-700 dark:focus:ring-white-700"}>
-          Prev
-        </button>
-        <button onClick={() => onCreateCalendar("+")} type="button" className="py-1 px-2 mr-2 mb-2 text-xs font-xs text-black-900 focus:outline-none bg-white rounded-full border border-red-700 hover:bg-red-700 hover:text-white focus:z-10 focus:ring-4 focus:ring-white-700 dark:focus:ring-white-700">
-          Next
-        </button>
-      </div>
-    </div>
-  </div>}
-
-
-  {/* edit Price */}
-  {editPrice && 
   <div className="side-box-card bg-red-300 w-[300px] ">
   <h1 className="text-3xl font-bold mb-3">Calendar</h1>
   <h5 className="text-lg font-medium mb-3">
@@ -363,17 +275,17 @@ useEffect(() => {
                         ? "text-gray-500 cursor-pointer"
                         : null
                     }
-                    onClick={
-                      (value.date < props?.startDate?.date &&
-                      month <= props?.startDate?.month &&
-                      year <= props?.startDate?.year ) && (props?.endDate?.endDate === null)? 
-                          null
-                        : 
-                          value.date < now.date && month <= now.month && year <= now.year?
-                            null
-                          :
-                            () => props.funct(value.date, month, year, days)
-                    }
+                    // onClick={
+                    //   (value.date < props?.startDate?.date &&
+                    //   month <= props?.startDate?.month &&
+                    //   year <= props?.startDate?.year ) && (props?.endDate?.endDate === null)? 
+                    //       null
+                    //     : 
+                    //       value.date < now.date && month <= now.month && year <= now.year?
+                    //         null
+                    //       :
+                    //         () => props.funct(value.date, month, year, days)
+                    // }
                   >
                     <div className={value.date < now.date && month <= now.month && year <= now.year? "text-sm text-center text-gray-200" : "text-sm text-center"}>
                     {value?.date}
@@ -400,7 +312,7 @@ useEffect(() => {
       </button>
     </div>
   </div>
-</div>}
+</div>
     </>
   );
 }
