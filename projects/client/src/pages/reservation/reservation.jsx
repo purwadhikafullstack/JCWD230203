@@ -53,7 +53,7 @@ const Reservation = () => {
 
   const getStatus = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/transaction/status");
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}transaction/status`);
       setStatus(res.data.data);
     } catch (error) {
       console.log(error);
@@ -73,7 +73,7 @@ const Reservation = () => {
     try {
       if (localStorage.getItem("token") && user) {
         const res = await axios.post(
-          `http://localhost:5000/transaction/order-list?start_date=${form?.startDate}&end_date=${form?.endDate}&status_id=${form?.status_id}&page=${currentPage}`,
+          `${process.env.REACT_APP_API_BASE_URL}transaction/order-list?start_date=${form?.startDate}&end_date=${form?.endDate}&status_id=${form?.status_id}&page=${currentPage}`,
           {},
           {
             headers: {
@@ -95,7 +95,7 @@ const Reservation = () => {
     try {
       if (localStorage.getItem("tokenTid") && tenant) {
         const res = await axios.post(
-          "http://localhost:5000/transaction/tenant-orderList",
+          `${process.env.REACT_APP_API_BASE_URL}transaction/tenant-orderList`,
           {
             page: currentPage,
             status_id: form?.status_id,
@@ -135,7 +135,7 @@ const Reservation = () => {
               {/* isi dashboard background*/}
               <div
                 id="main-content"
-                className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 "
+                className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 mb-24 md:0"
               >
                 {/* <div className="py-4 pb-20 px-4"> */}
                 {/* isi dashboard data*/}
@@ -251,7 +251,7 @@ const Reservation = () => {
                                             <div className="flex items-center">
                                               <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                                 <img
-                                                  src={`http://localhost:5000/Public/PROPERTY/${value?.room?.room_images?.[0]
+                                                  src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.room?.room_images?.[0]
                                                   ?.image_path}`}
                                                   alt=""
                                                 />
@@ -435,7 +435,7 @@ const Reservation = () => {
                                 })}
                             </tbody>
                           </table>
-                          <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                          <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
                             <span className="text-xs xs:text-sm text-gray-900">
                              Page {currentPage}, Showing 1 to {orderList?.length} data of {totalPages} Pages
                             </span>
@@ -485,7 +485,7 @@ const Reservation = () => {
               {/* <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3 w-full"> */}
               <div
                 id="main-content"
-                className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 "
+                className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 mb-24 md:0"
               >
                 {/* <div className="py-4 pb-20 px-4"> */}
                 {/* isi dashboard data*/}
@@ -631,7 +631,7 @@ const Reservation = () => {
                                             <div className="flex items-center">
                                               <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                                 <img
-                                                  src={`http://localhost:5000/Public/PROPERTY/${value?.room?.room_images?.[0]?.image_path}`}
+                                                  src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.room?.room_images?.[0]?.image_path}`}
                                                   alt=""
                                                 />
                                               </div>
@@ -824,7 +824,7 @@ const Reservation = () => {
                                 })}
                             </tbody>
                           </table>
-                          <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                          <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between ">
                             <span className="text-xs xs:text-sm text-gray-900">
                             Page {currentPage}, Showing 1 to {orderList?.length} data of{" "}
                               {totalPages} Pages

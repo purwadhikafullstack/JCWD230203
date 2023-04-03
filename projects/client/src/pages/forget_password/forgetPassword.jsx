@@ -35,7 +35,7 @@ const ForgotPassword = () => {
     const inputEmail = async(email) => {
         setLoading(true)
         try {
-            const res = await axios.post('http://localhost:5000/users/forget-password',{email})
+            const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/forget-password`,{email})
 
             toast.success(res.data.message)
         } catch (error) {
@@ -54,7 +54,7 @@ const ForgotPassword = () => {
     const tenantInputEmail = async(email) => {
       setLoading(true)
       try {
-        const res = await axios.post('http://localhost:5000/tenant/forget-password', {email})
+        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}tenant/forget-password`, {email})
         console.log(res)
       } catch (error) {
         console.log(error)
@@ -71,7 +71,7 @@ const ForgotPassword = () => {
           <div
             className="w-full h-auto my-bg-light hidden lg:block lg:w-1/2 bg-cover rounded-l-lg"
             style={{
-              backgroundImage: `url('http://localhost:5000/Public/assets/receptionist-receiving-visitor-at-desk.png')`,
+              backgroundImage:  "url(" + process.env.REACT_APP_API_BASE_URL + "Public/assets/receptionist-receiving-visitor-at-desk.png)",
             }}
           ></div>
 
@@ -131,7 +131,7 @@ const ForgotPassword = () => {
         <div
           className="w-full h-auto my-bg-light hidden lg:block lg:w-1/2 bg-cover rounded-l-lg"
           style={{
-            backgroundImage: `url('http://localhost:5000/Public/assets/receptionist-receiving-visitor-at-desk.png')`,
+            backgroundImage:  "url(" + process.env.REACT_APP_API_BASE_URL + "Public/assets/receptionist-receiving-visitor-at-desk.png)",
           }}
         ></div>
 

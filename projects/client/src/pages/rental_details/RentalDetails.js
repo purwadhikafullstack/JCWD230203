@@ -43,7 +43,7 @@ const Rental = () => {
   const onGetData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/properties/details?property_id=${id}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/details?property_id=${id}`
       );
       setProperties(res.data.data);
     } catch (error) {
@@ -84,7 +84,7 @@ const Rental = () => {
   const propertyConnector = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/properties/property-connector?property_id=${id}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/property-connector?property_id=${id}`
       );
       setAccommodation(res.data.data);
     } catch (error) {
@@ -112,43 +112,32 @@ const Rental = () => {
         <div className="wrapper flex justify-center items-center">
           {/* Carousel */}
           <section className="overflow-hidden text-neutral-700">
-            <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
+            <div className="container mx-auto px-5 py-2 lg:px-32">
               <div className="-m-1 flex flex-wrap md:-m-2">
                 <div className="flex w-fit flex-wrap">
                   {activeImg ? (
                     <img
                       src={
                         defaultImage ||
-                        `http://localhost:5000/Public/PROPERTY/${defaultImage}`
+                        `${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${defaultImage}`
                       }
                       className="single-page-main-pic cursor-pointer"
                     />
                   ) : (
                     <img
-                      src={`http://localhost:5000/Public/PROPERTY/${
-                        defaultImg || { defaultImg }
-                      }`}
+                      src={`${
+                        process.env.REACT_APP_API_BASE_URL
+                      }Public/PROPERTY/${defaultImg || { defaultImg }}`}
                       className="single-page-main-pic cursor-pointer"
                     />
                   )}
-                  {/* {properties?.property_images?.length > 0 ? (
-                    <img
-                      src={
-                        activeImg
-                          ? defaultImage ||
-                            `http://localhost:5000/Public/PROPERTY/${defaultImage}`
-                          : `http://localhost:5000/Public/PROPERTY/${properties?.property_images?.[0]?.image_path}`
-                      }
-                      className="single-page-main-pic cursor-pointer"
-                    />
-                  ) : null} */}
 
-                  <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-2 lg:grid-cols-2 single-page-hold ">
+                  <div className="w-fit xl:w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-1 lg:single-page-main-pic xl:grid-cols-2 single-page-hold ">
                     {properties?.property_images?.map((value) => {
                       return (
                         <div className="" key={value.id}>
                           <img
-                            src={`http://localhost:5000/Public/PROPERTY/${value?.image_path}`}
+                            src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.image_path}`}
                             className="w-40 rounded-xl cursor-pointer single-page-pic"
                             onMouseOver={getImageSrcHandler}
                             onMouseLeave={setDefaultImgHandler}
@@ -165,119 +154,113 @@ const Rental = () => {
       </div>
 
       {/* Description */}
-      <div className="container  px-6 lg:mt-[500px] mx-auto">
-        <section className="mb-5 text-gray-800 text-center px-6 mx-auto">
-          <h2 className="text-3xl font-bold py-5">
-            Property Descriptions{" "}
-            <u className="my-main">at {properties?.name || "Loading.."}</u>
-          </h2>
-          <div className="grid lg:gap-x-12 grid-cols-1">
-
-            <div className="flex items-center mb-12 md:mb-0">
-              <div className="p-4 bg-transparent rounded-md shadow-md w-14 h-14 flex items-center justify-center inline-block mb-6">
-                <MdLocationOn className="my-main" />
-              </div>
-              <div className="flex flex-col mx-10">
-                <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">Address</div>
-                <div className="text-lg font-medium text-gray-500">
-                  {properties?.locations?.[0]?.name || "Loading.."}
-                </div>
-              </div>
+      <div className="container px-4 py-6 mx-auto lg:py-12 xs:mt-[300px] sm:mt-[800px] md:mt-[700px] lg:mt-[650px] xl:mt-[500px]">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-2">Property Descriptions</h2>
+          <p className="text-gray-500 my-main">
+            at {properties?.name || "Loading.."}
+          </p>
+        </div>
+        <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex items-center p-4 bg-white rounded-lg shadow-md">
+            <div className="p-3 mr-4 bg-gray-100 rounded-full">
+              <MdLocationOn className="my-main text-xl" />
             </div>
-
-            <div className="flex items-center mb-12 md:mb-0">
-              <div className="p-4 bg-transparent rounded-md shadow-md w-14 h-14 flex items-center justify-center inline-block mb-6 mr-2">
-                <MdOtherHouses className="my-main" />
-              </div>
-              <div className="flex flex-col mx-10">
-                <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">About</div>
-                <div className="text-lg font-medium text-left text-gray-500 ">
+            <div>
+              <h3 className="text-lg font-bold">Address</h3>
+              <p className="text-gray-500">
+                {properties?.locations?.[0]?.name || "Loading.."}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center p-4 bg-white rounded-lg shadow-md">
+            <div className="p-3 mr-4 bg-gray-100 rounded-full">
+              <MdOtherHouses className="my-main text-xl" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">About</h3>
+              <p className="text-gray-500">
                 {properties?.description || "Loading.."}
-                </div>
-              </div>
+              </p>
             </div>
-
-            <div className="flex items-center mb-12 md:mb-0">
-              <div className="p-4 bg-transparent rounded-md shadow-md w-14 h-14 flex items-center justify-center inline-block mb-6 ">
-              <MdHotel className="my-main" />
-              </div>
-              <div className="flex flex-col mx-10">
-                <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">Available Room</div>
-                <div className="text-lg font-medium text-left text-gray-500 ">
+          </div>
+          <div className="flex items-center p-4 bg-white rounded-lg shadow-md">
+            <div className="p-3 mr-4 bg-gray-100 rounded-full">
+              <MdHotel className="my-main text-xl" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">Available Room</h3>
+              <p className="text-gray-500">
                 {properties?.rooms?.length || "Loading.."} Room Types avail in
                 this Property
-                </div>
-              </div>
+              </p>
             </div>
           </div>
-        </section>
-
-       {mappedData.length === 0 ? null : <div className="container my-14 px-6 mx-auto">
-          <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">Accommodation Available in this Property</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {mappedData &&
-              mappedData.map((value, index) => {
-                console.log(value);
-                return (
-                  <>
-                    <div className="flex items-center">
-                      <div className="p-4 text-2xl bg-transparent rounded-md shadow-md w-14 h-14 flex items-center justify-center">
-                        {value?.symbol}
-                      </div>
-                      <div className="grow ml-6">
-                        <p className="font-bold mb-1">{value?.name}</p>
-                      </div>
-                    </div>
-                  </>
-                );
-              })}
+        </div>
+        {mappedData.length === 0 ? null : (
+          <div className="my-8">
+            <h2 className="text-2xl font-bold mb-2">
+              Accommodation Available in this Property
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+              {mappedData.map((value, index) => (
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md">
+                  <div className="p-3 mr-4 bg-gray-100 rounded-full">
+                    {value?.symbol}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold">{value?.name}</h3>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>}
+        )}
       </div>
 
       {/* Property-rooms */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-center my-4 mx-20">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 justify-center my-4 mx-4 md:mx-20 mb-24">
         {properties?.rooms &&
           properties?.rooms?.map((room) => {
             return (
-              <>
-                <div className="flex items-center rounded-lg bg-white shadow-lg mx-10 bg-transparent md:max-w-xl md:flex-row">
-                  <div className="flex justify-center my-4 ">
-                    {/* Background */}
-                    <img
-                      src={`http://localhost:5000/Public/PROPERTY/${room?.room_images?.[0]?.image_path}`}
-                      alt=""
-                      className="object-cover sm:h-[17rem] md:h-[13rem] w-full px-5"
-                    />
-                  </div>
-
-                  <div className="flex flex-col justify-start p-6">
-                    <h5 className="mb-2 text-xl font-medium text-black ">
-                      {room?.name}
-                    </h5>
-                    <p className="mb-1 text-base text-black">Start From</p>
-                    <p className="mb-4 text-base text-black">
-                      Rp {room?.price.toLocaleString()} - Night
-                    </p>
-                    <p className="text-xs text-black">
-                      {room?.available_room} Rooms Left
-                    </p>
-                    <div className="flex items-center space-x-1 mt-2">
-                      <BsStarFill className="my-rating" />
-                      <p className="text-[15px] pr-5">5.0</p>
-                    </div>
-                    <Link to={`/room-details/${room?.id}`} className="mt-2">
-                      <button
-                        type="button"
-                        className="inline-block rounded-full border-2 border-success px-6 pt-2 pb-[6px] text-xs font-medium uppercase leading-normal text-success transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
-                        data-te-ripple-init
-                      >
-                        Book now !
-                      </button>
-                    </Link>
-                  </div>
+              <div className="flex items-center rounded-lg bg-white shadow-lg mx-2 md:mx-4 bg-transparent md:max-w-xl md:flex-row">
+                <div className="flex justify-center my-4 md:my-0 md:mr-4">
+                  {/* Background */}
+                  <img
+                    src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${room?.room_images?.[0]?.image_path}`}
+                    alt=""
+                    className="object-cover h-48 md:h-[13rem] w-full px-2 md:px-5"
+                  />
                 </div>
-              </>
+
+                <div className="flex flex-col justify-start p-2 md:p-6">
+                  <h5 className="mb-1 md:mb-2 text-lg md:text-xl font-medium text-black">
+                    {room?.name}
+                  </h5>
+                  <p className="mb-1 text-base text-black">Start From</p>
+                  <p className="mb-2 md:mb-4 text-base text-black">
+                    Rp {room?.price.toLocaleString()} - Night
+                  </p>
+                  <p className="text-xs text-black">
+                    {room?.available_room} Rooms Available
+                  </p>
+                  <div className="flex items-center space-x-1 mt-1 md:mt-2">
+                    <BsStarFill className="my-rating" />
+                    <p className="text-[14px] md:text-[15px] pr-2 md:pr-5">
+                      5.0
+                    </p>
+                  </div>
+                  <Link to={`/room-details/${room?.id}`} className="mt-2">
+                    <button
+                      type="button"
+                      className="inline-block rounded-full border-2 border-success px-3 pt-1 pb-[4px] md:pb-[6px] text-xs md:text-base font-medium uppercase leading-normal text-success transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
+                      data-te-ripple-init
+                    >
+                      See The Room!
+                    </button>
+                  </Link>
+                </div>
+              </div>
             );
           })}
       </div>

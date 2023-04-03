@@ -50,7 +50,7 @@ function EditProperty() {
       if (form?.accommodation === 0) throw { message: "Select Accommodation" };
 
       const property = await axios.patch(
-        "http://localhost:5000/properties/edit-property",
+        `${process.env.REACT_APP_API_BASE_URL}properties/edit-property`,
         {
             name: form?.name,
             address: form?.address,
@@ -112,7 +112,7 @@ function EditProperty() {
 
   let getCity = async () => {
     try {
-      const cities = await axios.get(`http://localhost:5000/properties/city`);
+      const cities = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/city`);
       setCity(cities.data.data);
     } catch (error) {
       console.log(error);
@@ -121,7 +121,7 @@ function EditProperty() {
 
   let getType = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/properties/type");
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/type`);
       setType(res.data.data);
     } catch (error) {
       console.log(error);
@@ -131,7 +131,7 @@ function EditProperty() {
   let getPropertyAccommodation = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/properties/property-accommodation"
+        `${process.env.REACT_APP_API_BASE_URL}properties/property-accommodation`
       );
       setAccommodation(res.data.data);
     } catch (error) {

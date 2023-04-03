@@ -45,7 +45,7 @@ function CreateRoom() {
   
       
   
-        const room = await axios.post('http://localhost:5000/properties/create-room', fd ,
+        const room = await axios.post(`${process.env.REACT_APP_API_BASE_URL}properties/create-room`, fd ,
         {
           headers: {
             auth: getTokenId,
@@ -102,7 +102,7 @@ function CreateRoom() {
 
   let getRoomAccommodation = async() => {
     try {
-      const res = await axios.get('http://localhost:5000/properties/room-accommodation')
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/room-accommodation`)
       setAccommodation(res.data.data)
     } catch (error) {
       console.log(error)

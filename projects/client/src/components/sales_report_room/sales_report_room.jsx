@@ -10,8 +10,7 @@ function SalesReportRoom() {
   const [report, setReport] = useState([]);
 
   const location = useLocation()
-  const id = location?.pathname?.split("/")[2]
-  console.log(id)
+  const id = location?.state
 
   // const {report} = props;
 
@@ -52,20 +51,13 @@ function SalesReportRoom() {
   const getSales = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/transaction/sales-reportRoom",
+        `${process.env.REACT_APP_API_BASE_URL}transaction/sales-reportRoom`,
         {
           sort: form?.sort,
           start_date: form?.start_date,
           end_date: form?.end_date,
           room_id: form?.room_id,
           page: currentPage,
-        },
-        {
-          headers: {
-            auth: getTokenId,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
         }
       );
       console.log(res)
@@ -93,11 +85,15 @@ function SalesReportRoom() {
     if(picturePath && picturePath.includes("https")){
       return picturePath
     }else if(picturePath && picturePath.includes("Public")){
-      return `http://localhost:5000/${picturePath}`
+      return `${process.env.REACT_APP_API_BASE_URL}${picturePath}`
     }else{
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
     }
   }
+
+  const revenueTotal = report.reduce((acc, curr) => {
+    return acc + curr.total_price
+  }, 0)
 
 
   useEffect(() => {
@@ -226,10 +222,8 @@ function SalesReportRoom() {
                         <tbody>
                           {report &&
                             report.map((value, index) => {
-                                console.log(value)
                               return (
                                 <>
-                                  {/* <Modal /> */}
                                   <tr key={index} className="">
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm hover:scale-105 duration-500">
                                       <Link to={`/tenant-transaction/${value?.room_id}/${value?.order_id}`} state={value?.users_id}
@@ -240,7 +234,7 @@ function SalesReportRoom() {
                                           </p>
                                           <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                             <img
-                                              src={`http://localhost:5000/Public/PROPERTY/${value?.room?.room_images?.[0]?.image_path}`}
+                                              src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.room?.room_images?.[0]?.image_path}`}
                                               alt=""
                                             />
                                           </div>
@@ -306,11 +300,16 @@ function SalesReportRoom() {
                             })}
                         </tbody>
                       </table>
-                      <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                      <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
                         <span className="text-xs xs:text-sm text-gray-900">
                           Page {currentPage}, Showing 1 to {report?.length} data of {totalPages}{" "}
                           Pages
                         </span>
+
+                        <span className="font-semibold text-xl uppercase">
+                        <span>Total Revenue</span> Rp. {revenueTotal.toLocaleString() ?? 0}
+                        </span>
+
                         <div className="inline-flex mt-2 xs:mt-0">
                           <button
                             className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"

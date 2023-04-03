@@ -17,7 +17,7 @@ const NavbarDashboard = () => {
       <div className="flex justify-between items-center sm:mx-6 md:mx-10 lg:mx-12">
         {/* Left */}
         <div className="flex h-10 my-5 pl-3">
-          <img src={`http://localhost:5000/Public/assets/logo.png`} className="object-cover my-1" />
+          <img src={`${process.env.REACT_APP_API_BASE_URL}Public/assets/logo.png`} className="object-cover my-1" />
         </div>
 
         {/* Middle */}

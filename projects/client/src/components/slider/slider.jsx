@@ -52,7 +52,7 @@ function Slider(props) {
               {property ? property.property_images.map((image) => {
                 return(
                     <img
-                        src={`http://localhost:5000/PROPERTY/${image.image_path}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL}PROPERTY/${image.image_path}`}
                         alt=""
                         className=" object-cover rounded-[1.3rem] sm:h-[17rem] md:h-[13rem] w-full pointer px-4"
             />

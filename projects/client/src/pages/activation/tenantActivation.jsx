@@ -33,7 +33,7 @@ function TenantActivation() {
         }
 
         setLoading(true)
-        let confirmation = await axios.post(`http://localhost:5000/tenant/tenant-activation/${id}`, dataSend)
+        let confirmation = await axios.post(`${process.env.REACT_APP_API_BASE_URL}tenant/tenant-activation/${id}`, dataSend)
         console.log(confirmation)
 
         
@@ -65,7 +65,7 @@ function TenantActivation() {
         }
 
         setLoading(true)
-        await axios.post(`http://localhost:5000/tenant/resend-otp/${id}`)
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}tenant/resend-otp/${id}`)
         toast.success("Check your Email")
         setClickCount(clickCount + 1)
         setLoading(false)

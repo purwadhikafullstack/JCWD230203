@@ -23,7 +23,7 @@ function Carousel() {
 
   let getCity = async () => {
     try {
-      const cities = await axios.get(`http://localhost:5000/properties/city`);
+      const cities = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/city`);
       setCity(cities.data.data);
     } catch (error) {
       console.log(error);
@@ -33,7 +33,7 @@ function Carousel() {
   let getDate = async () => {
     try {
       const details = await axios.get(
-        `http://localhost:5000/properties/search-date?check_in=${form.startDate}&check_out=${form.endDate}&city=${form.location}&page=1`
+        `${process.env.REACT_APP_API_BASE_URL}properties/search-date?check_in=${form.startDate}&check_out=${form.endDate}&city=${form.location}&page=1`
       );
       console.log(details);
       if (details?.data?.data?.length !== 0) {
@@ -113,7 +113,7 @@ function Carousel() {
               style={{
                 backgroundPosition: "100%",
                 backgroundImage:
-                  "url('http://localhost:5000/Public/PROPERTY/guesthouse-surabaya-lakarsantri-cheerful-1-1.webp')",
+                "url(" + process.env.REACT_APP_API_BASE_URL + "Public/PROPERTY/guesthouse-surabaya-lakarsantri-cheerful-1-1.webp)",
                 height: "300px",
                 maxHeight: "50vh",
               }}
@@ -129,12 +129,12 @@ function Carousel() {
               >
                 <div className="flex flex-wrap justify-center text-center lg:text-left">
                   <div className="grow-0 shrink-0 basis-auto w-full xl:w-10/12 px-6">
-                    <div className="grid lg:grid-cols-4 gap-x-6 items-center">
-                      <div className="mb-10 lg:mb-0">
-                        <div className="text-xl font-bold">
-                          <span className="mx-12"> Start Date</span>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 items-center">
+                      <div className="mb-0">
+                        <div className="text-md xl:text-xl font-bold">
+                          <span className="mx-auto xxl:mx-12"> Start Date</span>
                           <br />
-                          <span className="text-blue-600">
+                          <span className="my-main">
                             <Date
                               onChange={handleChange}
                               value={form.startDate}
@@ -144,9 +144,9 @@ function Carousel() {
                           {/* <p className="text-lg my-main">{error.startDate}</p> */}
                         </div>
                       </div>
-                      <div className="mb-10 lg:mb-0 ">
-                        <div className="text-xl font-bold">
-                          <span className="mx-12 ">End Date</span> 
+                      <div className="mb-0">
+                        <div className="text-md xl:text-xl font-bold">
+                          <span className="mx-auto xxl:mx-12">End Date</span> 
                           <br />
                           <span className="pt-5">
                             <Date
@@ -158,8 +158,8 @@ function Carousel() {
                           {/* <p className="text-lg my-main">{error.endDate}</p> */}
                         </div>
                       </div>
-                      <div className="mb-10 lg:mb-0">
-                        <div className="text-xl font-bold">
+                      <div className="mb-0">
+                        <div className="text-md xl:text-xl font-bold">
                           <span className="">Select Location</span> 
                           <br />
                           <span className="my-main">

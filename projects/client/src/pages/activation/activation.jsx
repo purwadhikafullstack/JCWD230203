@@ -34,7 +34,7 @@ function Activation() {
 
         setLoading(true)
         
-        let confirmation = await axios.post(`http://localhost:5000/users/activation/${id}`, dataSend)
+        let confirmation = await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/activation/${id}`, dataSend)
         console.log(confirmation)
         
         toast.success("User Validate Success")
@@ -64,7 +64,7 @@ function Activation() {
         }
 
         setActive(true)
-        await axios.post(`http://localhost:5000/users/resend-otp/${id}`)
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/resend-otp/${id}`)
         setTimeout(() => {
           toast.success("Check your Email")
         }, 6000)

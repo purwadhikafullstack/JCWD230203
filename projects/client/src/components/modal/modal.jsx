@@ -66,7 +66,7 @@ function Modal(props) {
       }
       if (getTokenId) {
         const booking = await axios.post(
-          `http://localhost:5000/transaction/booked`,
+          `${process.env.REACT_APP_API_BASE_URL}transaction/booked`,
           {
             check_in: startDate,
             check_out: endDate,
@@ -115,7 +115,7 @@ function Modal(props) {
   const cancelOrder = async() => {
     try {
       setLoading(true)
-      const res = await axios.patch(`http://localhost:5000/transaction/cancel`,
+      const res = await axios.patch(`${process.env.REACT_APP_API_BASE_URL}transaction/cancel`,
       {
         room_id: props?.data?.id,
         order_id1: props?.data?.order_id || props?.data?.order_id1,
@@ -170,7 +170,7 @@ function Modal(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/users/edit`,
+          `${process.env.REACT_APP_API_BASE_URL}users/edit`,
           {
             first_name: data.first_name,
             last_name: data.last_name,
@@ -251,7 +251,7 @@ function Modal(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/users/profile-picture`,
+          `${process.env.REACT_APP_API_BASE_URL}users/profile-picture`,
           fd,
           {
             headers: {
@@ -328,7 +328,7 @@ function Modal(props) {
       setLoading(true);
       if (getTokenId) {
         let res = await axios.post(
-          `http://localhost:5000/users/change-password`,
+          `${process.env.REACT_APP_API_BASE_URL}users/change-password`,
           {
             old_password: data.old_password,
             new_password: data.new_password,
@@ -829,7 +829,7 @@ function Modal(props) {
                   <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
                     <button
                       type="button"
-                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal my-main transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
                       data-te-modal-dismiss
                       data-te-ripple-init
                       data-te-ripple-color="light"
@@ -919,8 +919,6 @@ function Modal(props) {
                     id="exampleFormControlInput5"
                   >
                     <address>
-                      {/* {username} */}
-                      <br />
                       {props?.details?.[0]?.property?.name}
                       <br />
                       {props?.details?.[0]?.property?.address},{" "}
@@ -966,7 +964,7 @@ function Modal(props) {
                     for="exampleFormControlInput5"
                     className="rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   >
-                    Room Booked {Math.ceil(props?.totalGuest / 2)}
+                    Room Booked {Math.ceil(props?.totalGuest / 2)}, with {props?.totalGuest} Guest
                   </label>
                 </div>
               </div>

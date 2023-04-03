@@ -49,7 +49,7 @@ function ResetPassword() {
   const inputNewPassword = async(data) => {
       try {
           setLoading(true)
-          const res = await axios.post(`http://localhost:5000/users/reset-password/${id}`, {
+          const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/reset-password/${id}`, {
             id: id,
             password: data.input_password,
             confirm_password: data.confirm_password

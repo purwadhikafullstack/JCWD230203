@@ -866,7 +866,6 @@ module.exports = {
   salesReportByRoom: async(req, res) =>{
     const {status_id = 2 , page = 1 , start_date, end_date, room_id, sort} = req.body
     console.log(req.body)
-    // const id = req.dataToken.id
     const page_size = 5
     const offset = (page - 1) * page_size;
     const limit = page_size;

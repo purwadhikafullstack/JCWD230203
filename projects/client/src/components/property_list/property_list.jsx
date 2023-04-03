@@ -30,7 +30,7 @@ function PropertyList() {
 
   const getCity = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/properties/city");
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/city`);
       setCity(res.data.data);
     } catch (error) {
       console.log(error);
@@ -39,7 +39,7 @@ function PropertyList() {
 
   const getType = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/properties/type");
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/type`);
       setType(res.data.data);
     } catch (error) {
       console.log(error);
@@ -49,7 +49,7 @@ function PropertyList() {
   const tenantProperty = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/properties/tenant-property",
+        `${process.env.REACT_APP_API_BASE_URL}properties/tenant-property`,
         {
           city_id: form?.city_id,
           type_id: form?.type_id,
@@ -223,7 +223,7 @@ function PropertyList() {
                                           </p>
                                           <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                             <img
-                                              src={`http://localhost:5000/Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
+                                              src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
                                               alt=""
                                             />
                                           </div>
@@ -232,7 +232,7 @@ function PropertyList() {
                                         {/* <div className="flex items-center">
                                               <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                                 <img
-                                                  src={`http://localhost:5000/Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
+                                                  src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
                                                   alt=""
                                                 />
                                               </div>
@@ -268,7 +268,7 @@ function PropertyList() {
                                           </p>
                                           <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                             <img
-                                              src={`http://localhost:5000/Public/PROPERTY/${value?.rooms?.[0]?.room_images?.[0]?.image_path}`}
+                                              src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.rooms?.[0]?.room_images?.[0]?.image_path}`}
                                               alt=""
                                             />
                                           </div>
@@ -313,7 +313,7 @@ function PropertyList() {
                                           </p>
                                           <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                             <img
-                                              src={`http://localhost:5000/Public/PROPERTY/${value?.rooms?.[1]?.room_images?.[0]?.image_path}`}
+                                              src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.rooms?.[1]?.room_images?.[0]?.image_path}`}
                                               alt=""
                                             />
                                           </div>

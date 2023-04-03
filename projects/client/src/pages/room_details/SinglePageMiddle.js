@@ -1,13 +1,7 @@
 import React , { useEffect, useState} from 'react'
 import "../../supports/styles/SinglePageMiddle.css"
-import section3 from "../../supports/styles/av.png"
 import { useParams } from 'react-router-dom'
 import { FaStar, FaBath, FaShower,FaSmoking, FaSmokingBan } from "react-icons/fa"
-// import { placesStore } from './../../supports/assets/Store'
-import rev1 from "../../supports/styles/stars1.png"
-import rev2 from "../../supports/styles/stars2.png"
-import reviews from "../../supports/styles/rev.png";
-import modalPic from "../../supports/styles/pic.png"
 import {GiHeatHaze, GiRobe} from "react-icons/gi"
 import { BsPersonCircle , BsBoxSeamFill, BsWifi} from "react-icons/bs"
 import {MdRestaurantMenu, MdTv, MdBathtub, MdDry, MdDesk, MdCable} from "react-icons/md"
@@ -31,7 +25,7 @@ const SinglePageMiddle = (props) => {
     const roomConnector = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:5000/properties/room-connector?room_id=${id}`
+            `${process.env.REACT_APP_API_BASE_URL}properties/room-connector?room_id=${id}`
           );
           setAccommodation(res.data.data);
         } catch (error) {
@@ -67,19 +61,12 @@ const SinglePageMiddle = (props) => {
       })
 
 
-
-    // const placeClicked = placesStore.find((item) => item.id === id)
-
-    // const { stars } = placeClicked || {}
-
-    console.log(props?.details.length > 0)
-
     return (<div>
 
         <p className='spmLine text-gray-300'>__________________________________________________________________________________________________________</p>
 
         <div className='section1-hold'>
-            <img src='http://localhost:5000/Public/assets/logo.png' className='w-36' />
+            <img src={`${process.env.REACT_APP_API_BASE_URL}Public/assets/logo.png`} className='w-36' />
 
             <p>Every booking includes free protection from Host cancellations,
                 listing inaccuracies, and other issues like trouble checking in.</p>
@@ -125,16 +112,6 @@ const SinglePageMiddle = (props) => {
         <div className='spm-star flex '>
             <span className='text-3xl pr-2 font-semibold leading-7 lg:leading-9 text-gray-800'>{props?.details?.[0]?.rating ? props?.details?.[0]?.rating : 5 }</span> <FaStar className='text-2xl mt-1 my-rating' /> 
         </div>
-
-        {/* <p className='spm-rev text-2xl'>{stars}</p> */}
-
-        {/* <div className='star-calc-hold'>
-
-            <img src={rev1} className="spm-pic" />
-            <img src={rev2} className="spm-pic" />
-
-        </div> */}
-
         <div className='review-hold'>
             <Review className="spm-review" details={props?.details} />
 
@@ -145,7 +122,6 @@ const SinglePageMiddle = (props) => {
        null
        }
 
-        <button className='' onClick={(e) => e.preventDefault()}></button>
 
     </div>)
 

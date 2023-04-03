@@ -28,7 +28,7 @@ const Type = (props) => {
   
   let getCity = async () => {
     try {
-      const cities = await axios.get(`http://localhost:5000/properties/city`);
+      const cities = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/city`);
       setCity(cities.data.data);
     } catch (error) {
       console.log(error);
@@ -43,11 +43,10 @@ const Type = (props) => {
       setLoading(true)
       if(!form.property_name || !form.price_min || !form.price_max) throw {message: "Field cannot blank!"}
       
-      const res = await axios.get(`http://localhost:5000/properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/search-rooms?property_name=${form.property_name}&price_min=${form.price_min}&price_max=${form.price_max}&sort_order=${form.ascending ? form.ascending:form.descending}`);
       console.log(res);
 
       if(res?.data?.data?.length !== 0 ){
-        console.log("masjk")
         const searchData = res.data;
         const searchParams = new URLSearchParams({
         property_name: form.property_name,
@@ -103,7 +102,7 @@ const Type = (props) => {
   ];
   return (
     <div className="flex justify-center items-center">
-      <div className="flex justify-center gap-3 sm:gap-4 h-8 my-4">
+      <div className="grid grid-cols-2 gap-2 mb-[50px] sm:flex md:mb-0 justify-center gap-1 sm:gap-4 h-8 my-4">
         {sorting.map((obj, index) => (
           <Link to={`/category/${index + 1}`} key={index}>
             <Filter
@@ -113,11 +112,13 @@ const Type = (props) => {
             />
           </Link>
         ))}
-        <span className="flex items-center text-white bg-[#c9403e] hover:bg-white hover:text-[#c9403e] duration-200 ease-out gap-2 px-5 sm:mx-0 md:mx-1 lg:mx-1 rounded-full text-[14px] sm:text-[16px] mb-2 pointer">
+        <span className="flex items-center justify-center text-white bg-[#c9403e] hover:bg-white hover:text-[#c9403e] duration-200 ease-out gap-2 px-5 sm:mx-0 md:mx-1 lg:mx-1 rounded-full text-[14px] sm:text-[16px] mb-2 pointer cursor-pointer"
+        data-te-offcanvas-toggle
+        data-te-target="#offcanvasTop"
+        >
           <RiFilterOffLine
             className="flex lg:hidden"
-            data-te-offcanvas-toggle
-            data-te-target="#offcanvasTop"
+            
             aria-controls="offcanvasTop"
             data-te-ripple-init
             data-te-ripple-color="light"
@@ -133,36 +134,36 @@ const Type = (props) => {
             Sort by
           </button>
         </span>
+        </div>
 
-
-
+        <div>
         <div
-          class="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-1/3 h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
+          className="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-fit md:h-1/3 md:h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding  text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
           tabindex="-1"
           id="offcanvasTop"
           aria-labelledby="offcanvasTopLabel"
           data-te-offcanvas-init
         >
-          <div class="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between p-4">
             <h5
-              class="mb-0 font-semibold leading-normal"
+              className="mb-0 font-semibold leading-normal"
               id="offcanvasTopLabel"
             >
               Choose Your Requirement
             </h5>
             <button
               type="button"
-              class="box-content rounded-none border-none opacity-50 hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+              className="box-content rounded-none border-none opacity-50 hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
               data-te-offcanvas-dismiss
             >
-              <span class="w-[1em] focus:opacity-100 disabled:pointer-events-none disabled:select-none disabled:opacity-25 [&.disabled]:pointer-events-none [&.disabled]:select-none [&.disabled]:opacity-25">
+              <span className="w-[1em] focus:opacity-100 disabled:pointer-events-none disabled:select-none disabled:opacity-25 [&.disabled]:pointer-events-none [&.disabled]:select-none [&.disabled]:opacity-25">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="h-6 w-6"
+                  className="h-6 w-6"
                 >
                   <path
                     stroke-linecap="round"
@@ -177,21 +178,21 @@ const Type = (props) => {
           {/* FIlter By: */}
           <div className="flex flex-wrap justify-center lg:text-left md:mt-0">
             <div className="mb-6 md:mb-0">
-              <div className="md:flex flex-row items-center">
-                <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
-                  <h2 className="text-3xl font-bold">
+              <div className="md:flex md:flex-nowrap md:flex-row items-center">
+                <div className="mb-1 lg:mb-0 mr-0 lg:mr-3 ">
+                  <h2 className="lg:text-lg xl:text-3xl font-bold">
                     Filter by:
                     <br />
                   </h2>
                 </div>
 
                 <div className="mb-6 md:mb-0">
-                  <div className="md:flex flex-row">
+                  <div className="lg:flex flex-row">
                     {/* property Name */}
                     <input
                       type="text"
                       list="text-editor"
-                      className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block md:w-fit xl:w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-md lg:text-lg xl:text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Where You want to stay ?"
                       onChange={(e) => setForm({...form, property_name: e.target.value})}
                       name="property_name"
@@ -207,18 +208,18 @@ const Type = (props) => {
                     </datalist>
                   </div>
                 </div>
-                <div className="mb-10 lg:mb-0 mr-0 lg:mr-3 ">
-                    <div className="text-3xl font-bold">
+                <div className="mb-1 lg:mb-0 mr-0 lg:mr-3 ">
+                    <div className="text-md lg:text-lg xl:text-3xl font-bold">
                       Price :
                       <br />
                     </div>
                   </div>
                 <div className="mb-6 md:mb-0">
-                  <div className="md:flex flex-row">
+                  <div className="lg:flex flex-row">
 
                     <input
                       type="number"
-                      className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-fit xl:w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-md lg:text-lg xl:text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Lowest price"
                       onChange={(e) => setForm({...form, price_min: e.target.value})}
                       name="price_min"
@@ -231,7 +232,7 @@ const Type = (props) => {
 
                     <input
                       type="number"
-                      className="form-control block w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      className="form-control block w-fit xl:w-full px-4 py-2 mb-2 md:mb-0 md:mr-2 text-md lg:text-lg xl:text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                       placeholder="Higher Price"
                       onChange={(e) => setForm({...form, price_max: e.target.value})}
                       name="price_max"
@@ -243,7 +244,7 @@ const Type = (props) => {
                 <div className="asc-desc flex flex-row justify-center items-center">
                   {/* ascending */}
                   <div className="mb-6 md:mb-0">
-                    <div className="md:flex flex-row">
+                    <div className="flex flex-row">
                       <input
                         type="checkbox"
                         className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
@@ -275,9 +276,7 @@ const Type = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center lg:text-left">
+                <div className="flex flex-wrap justify-center lg:text-left">
               <div className="mb-6 ml-4 md:mb-0">
                 <button
                   type="submit"
@@ -288,6 +287,8 @@ const Type = (props) => {
                 >
                   {loading? <Loader /> : "Search"}
                 </button>
+              </div>
+            </div>
               </div>
             </div>
           </div>
