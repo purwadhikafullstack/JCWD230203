@@ -57,7 +57,7 @@ const Profiling = (props) => {
     if(picturePath && picturePath.includes("https")){
       return picturePath
     }else if(picturePath && picturePath.includes("Public")){
-      return `http://localhost:5000/${picturePath}`
+      return `${process.env.REACT_APP_API_BASE_URL}${picturePath}`
     }else{
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
     }
@@ -67,7 +67,7 @@ const Profiling = (props) => {
     try {
       if (getTokenId) {
         let response = await axios.post(
-          `http://localhost:5000/users/user-profile`,
+          `${process.env.REACT_APP_API_BASE_URL}users/user-profile`,
           {},
           {
             headers: {
@@ -100,7 +100,7 @@ const Profiling = (props) => {
     try {
       if (getTokenId) {
         const res = await axios.post(
-          "http://localhost:5000/transaction/order-list",
+          `${process.env.REACT_APP_API_BASE_URL}transaction/order-list`,
           {},
           {
             headers: {
@@ -270,7 +270,7 @@ const Profiling = (props) => {
                 </span>
                 <span>Confirmed</span>
               </div>
-              <div className="grid grid-cols-3">
+              <div className="grid grid-cols-1 shadow-md xl:mb-10">
                 <div id="tasks" className="my-5">
                   <div
                     id="task"
@@ -356,7 +356,7 @@ const Profiling = (props) => {
                   </div>
                   <div
                     id="task"
-                    className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
+                    className="flex justify-between items-center border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:from-slate-100 transition ease-linear duration-150"
                   >
                     <div className="inline-flex items-center space-x-2">
                       <div>
@@ -438,7 +438,7 @@ const Profiling = (props) => {
                     <div className="px-4 py-2">{profile?.last_name}</div>
                   </div>
                   <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">Email</div>
+                    <div className="px-4 py-2 font-semibold md:mr-5">Email</div>
                     <div className="px-4 py-2">
                       <a
                         className="text-blue-800"
@@ -639,7 +639,7 @@ const Profiling = (props) => {
               src={
                 !profile?.picture_path
                   ? `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
-                  : `http://localhost:5000/${profile?.picture_path}`
+                  : `${process.env.REACT_APP_API_BASE_URL}${profile?.picture_path}`
               }
               className="w-24 rounded-full shadow-lg"
               alt="Avatar"

@@ -23,7 +23,7 @@ function Review(props) {
   const review = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/properties/reviews?room_id=${id}&page=${currentPage}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/reviews?room_id=${id}&page=${currentPage}`
       );
       setTotalPages(res.data.total_pages);
       setReview(res.data.data);
@@ -36,7 +36,7 @@ function Review(props) {
     if(picturePath && picturePath.includes("https")){
       return picturePath
     }else if(picturePath && picturePath.includes("Public")){
-      return `http://localhost:5000/${picturePath}`
+      return `${process.env.REACT_APP_API_BASE_URL}${picturePath}`
     }else{
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
     }

@@ -48,7 +48,7 @@ function SpecialPrice() {
   const onGetData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/properties/room-details?room_id=${id}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/room-details?room_id=${id}`
       );
       console.log(res);
       setDetails(res.data.data);
@@ -108,7 +108,7 @@ function SpecialPrice() {
         throw { message: "Please select date" };
 
       const res = await axios.post(
-        "http://localhost:5000/properties/room-price",
+        `${process.env.REACT_APP_API_BASE_URL}properties/room-price`,
         {
           name: form?.eventName,
           start_date: form?.start_date,

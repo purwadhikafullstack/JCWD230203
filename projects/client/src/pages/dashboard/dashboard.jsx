@@ -17,6 +17,9 @@ import EditRoom from "components/edit_room/edit_room";
 import SpecialPrice from "components/special_price/special_price";
 import SalesReport from "components/sales_report/sales_report";
 import { FaStar } from "react-icons/fa";
+import {RiReservedFill} from "react-icons/ri"
+import {GiReceiveMoney} from "react-icons/gi"
+import {TbStarsFilled} from "react-icons/tb"
 import SalesReportRoom from "components/sales_report_room/sales_report_room";
 
 
@@ -27,10 +30,18 @@ export default function Dashboard(props) {
   const [picture, setPicture] = useState("");
   const [details, setDetails] = useState("");
   const [report, setReport] = useState([])
+  const [property, setProperty] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const location = useLocation();
   const id = location.pathname.split("/")[2]
   const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    city_id: "",
+    type_id: "",
+  });
+
 
   const dashboard = location.pathname === "/dashboard"
   const reservation = location.pathname === "/dashboard-reservation";
@@ -42,20 +53,21 @@ export default function Dashboard(props) {
   const editRoom = location.pathname === "/dashboard-edit-room"
   const setSpecialPrice = location.pathname === '/dashboard-edit-price'
   const salesReport = location.pathname === "/dashboard-sales-report"
-  const salesReportRoom = location.pathname === `/dashboard-sales-report-room/${id}`
+  const salesReportRoom = location.pathname === `/dashboard-sales-report-room`
   const getTokenId = localStorage.getItem("tokenTid");
 
   useEffect(() => {
     checkIsLogin();
     getTenantProfile();
-    getSalesReport()
+    getSalesReport();
+    tenantProperty();
   }, []);
 
   let checkIsLogin = async () => {
     try {
       if (getTokenId) {
         let response = await axios.post(
-          `http://localhost:5000/tenant/keep-login`,
+          `${process.env.REACT_APP_API_BASE_URL}tenant/keep-login`,
           {},
           {
             headers: {
@@ -82,7 +94,7 @@ export default function Dashboard(props) {
     try {
       if (getTokenId) {
         const res = await axios.post(
-          `http://localhost:5000/tenant/tenant-profile`,
+          `${process.env.REACT_APP_API_BASE_URL}tenant/tenant-profile`,
           {},
           {
             headers: {
@@ -92,7 +104,6 @@ export default function Dashboard(props) {
             },
           }
         );
-        console.log(res);
         setDetails(res?.data?.data);
         setUsername(res?.data?.data?.first_name);
         setPicture(res?.data?.data?.tenant_detail?.picture_path);
@@ -104,7 +115,7 @@ export default function Dashboard(props) {
 
   const getSalesReport = async() => {
     try {
-      const res = await axios.post("http://localhost:5000/transaction/sales-report", 
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/sales-report`, 
       {},
         {
             headers: {
@@ -119,6 +130,30 @@ export default function Dashboard(props) {
     }
   }
 
+  const tenantProperty = async () => {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}properties/tenant-property`,
+        {
+          city_id: form?.city_id,
+          type_id: form?.type_id,
+          page: currentPage,
+        },
+        {
+          headers: {
+            auth: getTokenId,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProperty(res.data.data);
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   const result = report.reduce((acc, curr) => {
     return acc + curr.bookings_count
   }, 0)
@@ -131,7 +166,6 @@ export default function Dashboard(props) {
     return acc + curr.revenue
   }, 0)
 
-  console.log(details)
 
 
   if (!getTokenId) {
@@ -154,9 +188,9 @@ export default function Dashboard(props) {
                     <div>
                       {/* Card stats */}
                       <div className="flex flex-wrap">
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
+                        <div className="w-full lg:w-6/12 xl:w-4/12 px-4">
                           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                            <div className="flex-auto p-4">
+                            <div className="flex-auto p-4 ">
                               <div className="flex flex-wrap">
                                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
                                   <h5 className="text-blueGray-400 uppercase font-bold text-xs">
@@ -168,7 +202,7 @@ export default function Dashboard(props) {
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
                                   <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-red-500">
-                                    <i className="far fa-chart-bar"></i>
+                                    <i className="far fa-chart-bar text-2xl"><RiReservedFill /></i>
                                   </div>
                                 </div>
                               </div>
@@ -183,7 +217,7 @@ export default function Dashboard(props) {
                             </div>
                           </div>
                         </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
+                        <div className="w-full lg:w-6/12 xl:w-4/12 px-4">
                           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
                             <div className="flex-auto p-4">
                               <div className="flex flex-wrap">
@@ -199,8 +233,8 @@ export default function Dashboard(props) {
                                   </div>
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
-                                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-orange-500">
-                                    <i className="fas fa-chart-pie"></i>
+                                  <div className="my-rating p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full my-bg-light"> 
+                                    <i className="fas fa-chart-pie text-2xl"><TbStarsFilled /></i>
                                   </div>
                                 </div>
                               </div>
@@ -215,7 +249,7 @@ export default function Dashboard(props) {
                             </div>
                           </div>
                         </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
+                        <div className="w-full lg:w-6/12 xl:w-4/12 px-4">
                           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
                             <div className="flex-auto p-4">
                               <div className="flex flex-wrap">
@@ -229,7 +263,7 @@ export default function Dashboard(props) {
                                 </div>
                                 <div className="relative w-auto pl-4 flex-initial">
                                   <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-pink-500">
-                                    <i className="fas fa-users"></i>
+                                    <i className="fas fa-users text-2xl "><GiReceiveMoney /></i>
                                   </div>
                                 </div>
                               </div>
@@ -244,7 +278,7 @@ export default function Dashboard(props) {
                             </div>
                           </div>
                         </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
+                        {/* <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
                             <div className="flex-auto p-4">
                               <div className="flex flex-wrap">
@@ -272,7 +306,7 @@ export default function Dashboard(props) {
                               </p>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -284,7 +318,7 @@ export default function Dashboard(props) {
                     <BarChart report={report} />
                   </div>
                   <div className="flex flex-wrap mt-4">
-                    <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
+                    <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
                       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
                         <div className="rounded-t mb-0 px-4 py-3 border-0">
                           <div className="flex flex-wrap items-center">
@@ -322,9 +356,6 @@ export default function Dashboard(props) {
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                  Revenue
                                 </th>
-                                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Bounce rate
-                                </th>
                               </tr>
                             </thead>
                             <tbody>
@@ -342,10 +373,6 @@ export default function Dashboard(props) {
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                   Rp. {value?.revenue?.toLocaleString()}
                                 </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                                  46,53%
-                                </td>
                               </tr>
                                   </>
                                 )
@@ -355,16 +382,17 @@ export default function Dashboard(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="w-full xl:w-4/12 px-4">
+                    <div className="w-full xl:w-6/12 px-4 mb-24 md:mb-0">
                       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
                         <div className="rounded-t mb-0 px-4 py-3 border-0">
                           <div className="flex flex-wrap items-center">
                             <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                               <h3 className="font-semibold text-base text-blueGray-700">
-                                Social traffic
+                                Property Review
                               </h3>
                             </div>
                             <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                            <Link to={'/dashboard-propertylist'} >
                               <button
                                 className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1"
                                 type="button"
@@ -372,6 +400,7 @@ export default function Dashboard(props) {
                               >
                                 See all
                               </button>
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -381,123 +410,38 @@ export default function Dashboard(props) {
                             <thead className="thead-light">
                               <tr>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Referral
+                                  Property
                                 </th>
                                 <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Visitors
+                                  Type
                                 </th>
                                 <th
                                   className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
                                   style={{ minWidth: "140px" }}
-                                ></th>
+                                >Start From</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
+                              {property ? property.map((value, idx) => {
+                                console.log(value)
+                                  return(
+                                    <>
+                                    <tr>
                                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  Facebook
+                                  {value?.name}
                                 </th>
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  1,480
+                                  {value?.type?.name}
                                 </td>
                                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                   <div className="flex items-center">
-                                    <span className="mr-2">60%</span>
-                                    <div className="relative w-full">
-                                      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                                        <div
-                                          style={{ width: "60%" }}
-                                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                                        ></div>
-                                      </div>
-                                    </div>
+                                    <span className="mr-2">Rp. {value?.rooms?.[1]?.price?.toLocaleString()}</span>
                                   </div>
                                 </td>
                               </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  Facebook
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  5,480
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <div className="flex items-center">
-                                    <span className="mr-2">70%</span>
-                                    <div className="relative w-full">
-                                      <div className="overflow-hidden h-2 text-xs flex rounded bg-emerald-200">
-                                        <div
-                                          style={{ width: "70%" }}
-                                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-emerald-500"
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  Google
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  4,807
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <div className="flex items-center">
-                                    <span className="mr-2">80%</span>
-                                    <div className="relative w-full">
-                                      <div className="overflow-hidden h-2 text-xs flex rounded bg-purple-200">
-                                        <div
-                                          style={{ width: "80%" }}
-                                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  Instagram
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  3,678
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <div className="flex items-center">
-                                    <span className="mr-2">75%</span>
-                                    <div className="relative w-full">
-                                      <div className="overflow-hidden h-2 text-xs flex rounded bg-lightBlue-200">
-                                        <div
-                                          style={{ width: "75%" }}
-                                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-lightBlue-500"
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  twitter
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  2,645
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <div className="flex items-center">
-                                    <span className="mr-2">30%</span>
-                                    <div className="relative w-full">
-                                      <div className="overflow-hidden h-2 text-xs flex rounded bg-orange-200">
-                                        <div
-                                          style={{ width: "30%" }}
-                                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-emerald-500"
-                                        ></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
+                                    </>
+                                  )
+                              }) : null}
                             </tbody>
                           </table>
                         </div>

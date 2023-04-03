@@ -29,7 +29,7 @@ const Rentals = () => {
   let onGetData = async () => {
     try {
       let res = await axios.get(
-        `http://localhost:5000/properties/getAll?page=${currentPage}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/getAll?page=${currentPage}`
       );
       setProperties(res.data.data);
       setPagination(res.data);
@@ -41,7 +41,7 @@ const Rentals = () => {
   let getType = async () => {
     try {
       let res = await axios.get(
-        `http://localhost:5000/properties/getType?type=${id}&page=${currentPage}`
+        `${process.env.REACT_APP_API_BASE_URL}properties/getType?type=${id}&page=${currentPage}`
       );
       setType(res.data.data);
       setTypePagination(res.data);
@@ -69,16 +69,16 @@ const Rentals = () => {
                             <div className="flex  ">
                               {/* Background */}
                               <img
-                                src={`http://localhost:5000/Public/PROPERTY/${value.property_images[0].image_path}`}
+                                src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value.property_images[0].image_path}`}
                                 alt=""
                                 className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full pointer"
                               />
                               {/* Title */}
-                              <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
-                                {/* {value.name} */}
+                              {/* <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
+                                {value.name}
                                 <span>&#x2022;</span>
                                 <p className="text-[18px] text-slate-200"></p>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                           {/* Description */}
@@ -128,16 +128,10 @@ const Rentals = () => {
                           <div className="flex  ">
                             {/* Background */}
                             <img
-                              src={`http://localhost:5000/Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
+                              src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.property_images?.[0]?.image_path}`}
                               alt=""
                               className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full pointer"
                             />
-                            {/* Title */}
-                            <div className="absolute text-white font-bold bottom-6 left-6 text-[22px] flex items-center gap-2 pointer">
-                              {/* {value.name} */}
-                              <span>&#x2022;</span>
-                              <p className="text-[18px] text-slate-200"></p>
-                            </div>
                           </div>
                         </div>
                         {/* Description */}
@@ -178,7 +172,7 @@ const Rentals = () => {
         <hr className="h-10 mt-4" />
         {location.pathname === `/category/${id}` ? (
           <>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-24">
               <nav aria-label="Page navigation example">
                 <ul className="flex list-style-none">
                   <li
@@ -238,7 +232,7 @@ const Rentals = () => {
           </>
         ) : (
           <>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-24">
               <nav aria-label="Page navigation example">
                 <ul className="flex list-style-none">
                   <li

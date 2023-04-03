@@ -66,7 +66,7 @@ function EditProfile() {
       let getTokenId = localStorage.getItem("token")
       if(getTokenId){
         let res = await axios.patch(
-          `http://localhost:5000/users/profile-picture`, fd,
+          `${process.env.REACT_APP_API_BASE_URL}users/profile-picture`, fd,
           {
             headers: {
               auth: getTokenId,
@@ -92,7 +92,7 @@ function EditProfile() {
       if (getTokenId) {
 
         let response = await axios.post(
-          `http://localhost:5000/users/user-profile`,
+          `${process.env.REACT_APP_API_BASE_URL}users/user-profile`,
           {},
           {
             headers: {
@@ -132,7 +132,7 @@ function EditProfile() {
             <div className="flex flex-wrap ">
               <div className="grow-0 shrink-0 basis-auto block w-full lg:flex lg:w-6/12 xl:w-4/12">
                 <img
-                  src={`http://localhost:5000`}
+                  src={`${process.env.REACT_APP_API_BASE_URL}`}
                   alt="Trendy Pants and Shoes"
                   className="w-full rounded-t-lg lg:rounded-tr-none lg:rounded-bl-lg"
                 />

@@ -50,7 +50,7 @@ function CreateProperty(){
       fd.append('location', form?.location)
       fd.append('property_accommodation', form?.accommodation)
 
-        const property = await axios.post('http://localhost:5000/properties/create-property', fd ,
+        const property = await axios.post(`${process.env.REACT_APP_API_BASE_URL}properties/create-property`, fd ,
         {
           headers: {
             auth: getTokenId,
@@ -102,7 +102,7 @@ function CreateProperty(){
 
   let getCity = async () => {
     try {
-      const cities = await axios.get(`http://localhost:5000/properties/city`);
+      const cities = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/city`);
       setCity(cities.data.data);
     } catch (error) {
       console.log(error);
@@ -111,7 +111,7 @@ function CreateProperty(){
 
   let getType = async() => {
     try {
-      const res = await axios.get('http://localhost:5000/properties/type')
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/type`)
       setType(res.data.data)
     } catch (error) {
       console.log(error)
@@ -120,7 +120,7 @@ function CreateProperty(){
 
   let getPropertyAccommodation = async() => {
     try {
-      const res = await axios.get('http://localhost:5000/properties/property-accommodation')
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/property-accommodation`)
       setAccommodation(res.data.data)
     } catch (error) {
       console.log(error)

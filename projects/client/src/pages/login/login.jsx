@@ -115,7 +115,7 @@ function Login(props) {
                     onChange={onCheckbox}
                   />
                   <label
-                    className="form-check-label inline-block text-gray-800"
+                    className="form-check-label inline-block text-gray-800 mr-4 md:mr-0"
                     for="exampleCheck2"
                   >
                     Remember me
@@ -126,7 +126,7 @@ function Login(props) {
                 </a>
               </div>
 
-              <div className="text-center lg:text-left">
+              <div className="text-center lg:text-left mb-24">
                 <button
                   type="button"
                   className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-800 hover:shadow-lg focus:bg-emerald-800 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
@@ -222,7 +222,7 @@ function Login(props) {
                   </a>
                 </div>
 
-                <div className="text-center lg:text-left">
+                <div className="text-center lg:text-left mb-24">
                   <button
                     type="button"
                     className="inline-block px-7 py-3 my-bg-button-dark text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-emerald-800 hover:shadow-lg focus:bg-emerald-800 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"

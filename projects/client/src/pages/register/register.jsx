@@ -63,7 +63,7 @@ function Register(props) {
         phone_number: inputPhoneNumber,
       };
       let register = await axios.post(
-        `http://localhost:5000/users/register`,
+        `${process.env.REACT_APP_API_BASE_URL}users/register`,
         dataToSend
       );
 
@@ -151,7 +151,7 @@ let onImagesValidation = (e) => {
       fd.append('phone_number', inputPhoneNumber)
         
       
-      let tenantRegister = await axios.post(`http://localhost:5000/tenant/register`, fd)
+      let tenantRegister = await axios.post(`${process.env.REACT_APP_API_BASE_URL}tenant/register`, fd)
 
       
       localStorage.setItem("tokenTid", `${tenantRegister.data.data.token}`)

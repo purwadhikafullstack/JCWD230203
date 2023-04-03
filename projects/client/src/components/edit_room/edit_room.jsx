@@ -44,7 +44,7 @@ function EditRoom() {
 
 
       const room = await axios.patch(
-        "http://localhost:5000/properties/edit-room",
+        `${process.env.REACT_APP_API_BASE_URL}properties/edit-room`,
         {
             name: form?.name,
             description: form?.description,
@@ -111,7 +111,7 @@ function EditRoom() {
   let getRoomAccommodation = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/properties/room-accommodation"
+        `${process.env.REACT_APP_API_BASE_URL}properties/room-accommodation`
       );
       setAccommodation(res.data.data);
     } catch (error) {

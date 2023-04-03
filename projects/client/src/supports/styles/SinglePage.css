@@ -154,7 +154,7 @@
 .s {
     position: absolute;
     top: 100rem;
-    left: 20rem;
+    left: 37rem;
 }
 
 .rdrInputRanges {
@@ -162,7 +162,7 @@
 }
 
 .side-box-card {
-    top: 43rem;
+    top: 47rem;
     background-color: white;
     width: 25rem;
     height: 25rem;
@@ -209,7 +209,7 @@
 
 .reserve-date-button-holder {
     position: absolute;
-    top: 47rem;
+    top: 60rem;
     left: 65rem;
     width: 20rem;
 }
@@ -232,7 +232,7 @@
 .calendarHolder {
     position: absolute;
     top: -31rem;
-    left: 27rem;
+    left: 23rem;
     z-index: 9999999999999999999;
 }
 
@@ -287,12 +287,12 @@
 }
 
 .price-total-text {
-    top: 65.1rem;
+    top: 64.5rem;
     left: 63rem;
 }
 
 .price-total {
-    top: 65.1rem;
+    top: 64.5rem;
     left: 67.6rem;
 }
 
@@ -303,3 +303,145 @@
     width: 2rem;
 
 }
+
+@media only screen and (max-width: 767px) {
+
+    .single-page-name {
+    left: 0;
+    top: 1rem;
+    }
+    
+    .basicDeatils {
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+    white-space: normal;
+    left: 0;
+    top: 3rem;
+    gap: 1.5rem;
+    font-size: 16px;
+    }
+    
+    .single-page-hold {
+    top: 16rem;
+    left: 0;
+    width: 100%;
+    gap: 4%;
+    }
+    
+    .single-page-main-pic {
+    width: 100%;
+    height: auto;
+    left: 0;
+    top: 2.5rem;
+    }
+    
+    .super-host {
+    top: 7.5rem;
+    left: 0;
+    font-size: 20px;
+    }
+    
+    .heart {
+    top: 7.5rem;
+    left: 18.5rem;
+    font-size: 30px;
+    }
+    
+    .features-text {
+    top: 36rem;
+    left: 0;
+    font-size: 20px;
+    }
+    
+    .actual-features {
+    top: 38rem;
+    left: 0;
+    font-size: 16px;
+    }
+    
+    .line1 {
+    top: 39rem;
+    left: 0;
+    }
+    
+    .line2 {
+    top: 59rem;
+    left: 0;
+    }
+    
+    .feature-hold {
+    top: 42rem;
+    }
+    
+    .icon-hold {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 3rem;
+    top: 42rem;
+    left: 0;
+    }
+    
+    .heading-hold {
+    top: 42rem;
+    left: 0;
+    gap: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    }
+    
+    .description-hold {
+    top: 44rem;
+    left: 0;
+    gap: 1.5rem; 
+    display: flex;
+    flex-direction: column;
+    font-style: italic;
+    }
+    
+    .side-box-card {
+    top: 62rem;
+    left: 0;
+    width: 100%;
+    }
+    
+    .ab {
+    top: 0.5rem;
+    left: 1rem;
+    width: 100%;
+    flex-wrap: wrap;
+    font-size: 14px;
+    }
+    
+    .rev-card {
+    top: 0.5rem;
+    left: 1rem;
+    font-size: 14px;
+    }
+    
+    .rev2-card {
+    top: 0.5rem;
+    left: 9rem;
+    font-size: 14px;
+    }
+    
+    .reserve-date-button-holder {
+    top: 44rem;
+    left: 0;
+    width: 100%;
+    }
+    
+    .reserve-date-button {
+    height: 3rem;
+    width: 100%;
+    font-size: 16px;
+    }
+    
+    .calendarHolder {
+    top: -10rem;
+    left: 0;
+    }
+    
+    }

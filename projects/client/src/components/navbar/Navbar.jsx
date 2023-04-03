@@ -35,17 +35,17 @@ const Navbar = (props) => {
   return (
     <>
       {location.pathname === "/dashboard" || location.pathname === "/dashboard-reservation" ||
-      location.pathname === "/dashboard-register" || location.pathname === "/dashboard-profile" || location.pathname === "/dashboard-propertylist" || location.pathname === "/dashboard-createlisting" || location.pathname === "/dashboard-edit-price" || location.pathname === "/dashboard-createroom" || location.pathname === "/dashboard-sales-report" ||  location.pathname === `/tenant-activation/${id}` || location.pathname === `/dashboard-sales-report-room/${id}` ? null : (
+      location.pathname === "/dashboard-register" || location.pathname === "/dashboard-profile" || location.pathname === "/dashboard-propertylist" || location.pathname === "/dashboard-createlisting" || location.pathname === "/dashboard-edit-price" || location.pathname === "/dashboard-createroom" || location.pathname === "/dashboard-sales-report" ||  location.pathname === `/tenant-activation/${id}` || location.pathname === "/dashboard-sales-report-room" ? null : (
         <div className="flex justify-between items-center ml-2 mr-2 border-b top-0  ">
           {/* Left */}
           <Link to="/" className="hidden md:flex ">
             <div className=" my-5 h-10 md:flex pl-3">
-              <img src={`http://localhost:5000/Public/assets/logo.png`} className="object-cover my-1" alt="" />
+              <img src={`${process.env.REACT_APP_API_BASE_URL}Public/assets/logo.png`} className="object-cover my-1" alt="" />
             </div>
           </Link>
           <Link to="/" className="flex items-center md:hidden ">
             <div className="mb-2 ml-4 h-2 w-fit md:flex pl-3">
-              <img src={`http://localhost:5000/Public/assets/logo-vcation02.png`} className="object-cover h-5 " alt="" />
+              <img src={`${process.env.REACT_APP_API_BASE_URL}Public/assets/logo-vcation02.png`} className="object-cover h-5 " alt="" />
             </div>
           </Link>
 
@@ -93,7 +93,7 @@ const Navbar = (props) => {
 
            {showMenu && 
            
-           <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3 transition duration-300 ease-in-out z-99"
+           <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3 transition duration-300 ease-in-out z-[1045]"
            ref={menuRef}>
            <ul>
              {localStorage.getItem("token") ||

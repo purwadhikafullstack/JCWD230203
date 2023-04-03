@@ -30,14 +30,14 @@ function SearchRoom() {
     const getData = async () => {
       if (propertyName && priceMin && priceMax && sortOrder) {
         const res = await axios.get(
-          `http://localhost:5000/properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
+          `${process.env.REACT_APP_API_BASE_URL}properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
         );
         console.log(res.data)
         setRoom(res.data.data);
 
       } else {
         const response = await axios.get(
-          `http://localhost:5000/properties/search-date?check_in=${startDate}&check_out=${endDate}&city=${location}&page=${currentPage}`
+          `${process.env.REACT_APP_API_BASE_URL}properties/search-date?check_in=${startDate}&check_out=${endDate}&city=${location}&page=${currentPage}`
         );
         setProperty(response.data.data);
         // console.log(response.data)
@@ -74,7 +74,7 @@ function SearchRoom() {
                       <div className="flex justify-center my-4 ">
                         {/* Background */}
                         <img
-                          src={`http://localhost:5000/Public/PROPERTY/${room?.room_images?.[0 ]?.image_path}`}
+                          src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${room?.room_images?.[0 ]?.image_path}`}
                           alt=""
                           className="object-cover sm:h-[17rem] md:h-[13rem] w-full px-5"
                         />
@@ -131,7 +131,7 @@ function SearchRoom() {
                       </div>
                       <div className="flex justify-center my-4 ">
                               <img
-                                src={`http://localhost:5000/Public/PROPERTY/${value?.property?.property_images?.[0]?.image_path}`}
+                                src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.property?.property_images?.[0]?.image_path}`}
                                 alt=""
                                 className="object-cover sm:h-[17rem] md:h-[13rem] w-full px-5"
                               />
@@ -177,7 +177,7 @@ export default SearchRoom;
 // const onGetData = async () => {
 //   try {
 //     const res = await axios.get(
-//       `http://localhost:5000/properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
+//       `${process.env.REACT_APP_API_BASE_URL}properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
 //     );
 //     console.log(res.data);
 

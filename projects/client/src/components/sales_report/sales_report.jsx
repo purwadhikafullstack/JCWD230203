@@ -30,7 +30,7 @@ function SalesReport(){
   
     const getSales = async() => {
       try {
-        const res = await axios.post("http://localhost:5000/transaction/sales-report",
+        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/sales-report`,
         {
                   sort: form?.sort,
                   page: currentPage,
@@ -49,6 +49,10 @@ function SalesReport(){
         console.log(error)
       }
     }
+
+    const revenueTotal = report.reduce((acc, curr) => {
+      return acc + curr.revenue
+    }, 0)
   
     useEffect(() => {
       getSales()
@@ -143,7 +147,7 @@ function SalesReport(){
                                     <tr key={index} className="">
                                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm hover:scale-105 duration-500">
                                         <Link
-                                          to={`/dashboard-sales-report-room/${value?.room?.id}`}
+                                          to={`/dashboard-sales-report-room`} state={`${value?.room?.id}`}
                                         >
                                           <div className="flex flex-col items-center">
                                             <p className="text-gray-900 font-semibold mb-2 text-center">
@@ -151,7 +155,7 @@ function SalesReport(){
                                             </p>
                                             <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                                               <img
-                                                src={`http://localhost:5000/Public/PROPERTY/${value?.room?.property?.property_images?.[0]?.image_path}`}
+                                                src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.room?.property?.property_images?.[0]?.image_path}`}
                                                 alt=""
                                               />
                                             </div>
@@ -190,6 +194,11 @@ function SalesReport(){
                            Page {currentPage}, Showing 1 to {report?.length} data of {totalPages}{" "}
                             Pages
                           </span>
+
+                          <span className="font-semibold text-xl uppercase">
+                         <span>Total Revenue</span> Rp. {revenueTotal.toLocaleString() ?? 0}
+                          </span>
+
                           <div className="inline-flex mt-2 xs:mt-0">
                             <button
                               className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"

@@ -33,7 +33,7 @@ function ModalTenant(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/tenant/tenant-edit`,
+          `${process.env.REACT_APP_API_BASE_URL}tenant/tenant-edit`,
           {
             first_name: data.first_name,
             last_name: data.last_name,
@@ -113,7 +113,7 @@ function ModalTenant(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/tenant/change-picture`,
+          `${process.env.REACT_APP_API_BASE_URL}tenant/change-picture`,
           fd,
           {
             headers: {
@@ -190,7 +190,7 @@ function ModalTenant(props) {
       setLoading(true);
       if (getTokenId) {
         let res = await axios.post(
-          `http://localhost:5000/tenant/change-password`,
+          `${process.env.REACT_APP_API_BASE_URL}tenant/change-password`,
           {
             old_password: data.old_password,
             new_password: data.new_password,
@@ -266,7 +266,7 @@ function ModalTenant(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/properties/edit-propertyPicture`,
+          `${process.env.REACT_APP_API_BASE_URL}properties/edit-propertyPicture`,
           fd,
           {
             headers: {
@@ -310,7 +310,7 @@ function ModalTenant(props) {
     try {
       setLoading(true);
       const res = await axios.delete(
-        'http://localhost:5000/properties/delete-property',
+        `${process.env.REACT_APP_API_BASE_URL}properties/delete-property`,
         {
           headers: {
             auth: getTokenId,
@@ -387,7 +387,7 @@ function ModalTenant(props) {
 
       if (getTokenId) {
         let res = await axios.patch(
-          `http://localhost:5000/properties/edit-roomPicture`,
+          `${process.env.REACT_APP_API_BASE_URL}properties/edit-roomPicture`,
           fd,
           {
             headers: {
@@ -431,7 +431,7 @@ function ModalTenant(props) {
     try {
       setLoading(true);
       const res = await axios.delete(
-        'http://localhost:5000/properties/delete-room',
+        `${process.env.REACT_APP_API_BASE_URL}properties/delete-room`,
         {
           headers: {
             auth: getTokenId,
@@ -912,7 +912,7 @@ function ModalTenant(props) {
                   <div className="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
                     <button
                       type="button"
-                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
+                      className="inline-block rounded bg-primary-100 px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal my-main transition duration-150 ease-in-out hover:bg-primary-accent-100 focus:bg-primary-accent-100 focus:outline-none focus:ring-0 active:bg-primary-accent-200"
                       data-te-modal-dismiss
                       data-te-ripple-init
                       data-te-ripple-color="light"

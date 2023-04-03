@@ -57,7 +57,7 @@ function App() {
       let getTokenId = localStorage.getItem("token");
       if (getTokenId) {
         let response = await axios.post(
-          `http://localhost:5000/users/keep-login`,
+          `${process.env.REACT_APP_API_BASE_URL}users/keep-login`,
           {},
           {
             headers: {
@@ -67,6 +67,8 @@ function App() {
             },
           }
         );
+
+        console.log(response)
 
         if (response) {
           setUsername(response.data.data.first_name);
@@ -100,7 +102,7 @@ function App() {
         password: inputPassword,
       };
       let response = await axios.post(
-        "http://localhost:5000/users/login/",
+        `${process.env.REACT_APP_API_BASE_URL}users/login/`,
         dataToSend
       );
       console.log(response);
@@ -153,7 +155,7 @@ function App() {
         password: inputPassword,
       };
       let response = await axios.post(
-        "http://localhost:5000/tenant/login/",
+        `${process.env.REACT_APP_API_BASE_URL}tenant/login/`,
         dataToSend
       );
 
@@ -192,7 +194,7 @@ function App() {
     try {
       let response = await signInWithPopup(auth, provider);
       console.log(response)
-      setUsername(response.user.displayName);
+      setUsername(response._tokenResponse.firstName);
       
       // localStorage.setItem("tokenUid", `${response.user.uid}`);
       
@@ -208,7 +210,7 @@ function App() {
       };
 
 
-      const {data: register} = await axios.post('http://localhost:5000/users/register', dataToSend)
+      const {data: register} = await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/register`, dataToSend)
       console.log(register)
       if(!register.isError){
         toast.success("Login With Google Success")
@@ -353,7 +355,7 @@ function App() {
       <Route path='/transaction/:id/:order_id1/:order_id2' element={<Transaction />} />
       <Route path='/tenant-transaction/:id/:order_id' element={<Transaction />} />
       <Route path='/dashboard-sales-report' element={<Dashboard />} />
-      <Route path='/dashboard-sales-report-room/:id' element={<Dashboard />} />
+      <Route path='/dashboard-sales-report-room' element={<Dashboard />} />
       <Route path='*' element={<NotFound />} />
       {/* <Route path="/calendar" element={<Calendars/>} /> */}
     </Routes>

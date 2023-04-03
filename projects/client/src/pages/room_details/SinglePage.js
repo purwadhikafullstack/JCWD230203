@@ -22,23 +22,17 @@ const SinglePage = (props) => {
   const params = useParams();
   const { id } = params;
 
+
+
   let onSelectedDate = (discount, daysCheck, rates) => {
-    //value, month, year,
+    console.log(daysCheck)
     setIsRates(rates);
     setDiscount(discount);
     setDays(daysCheck);
-    // if(startDate === null){
-    //     console.log('Masuk1')
-    //     setStartDate({ date: value, month: month, year: year })
-    // }else if(startDate !== null && endDate === null){
-    //     console.log('Masuk2')
-    //     setEndDate({ date: value, month: month, year: year })
-    // }else if(startDate !== null && endDate !== null){
-    //     console.log('Masuk3')
-    //     setStartDate({ date: value, month: month, year: year })
-    //     setEndDate(null)
-    // }
   };
+
+
+  console.log(days)
 
   let onChange = (value) => {
     setValue(value)
@@ -83,13 +77,13 @@ const SinglePage = (props) => {
                       <img
                         src={
                           defaultImage ||
-                          `http://localhost:5000/Public/PROPERTY/${defaultImage}`
+                          `${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${defaultImage}`
                         }
                         className="single-page-main-pic cursor-pointer"
                       />
                     ) : (
                       <img
-                        src={`http://localhost:5000/Public/PROPERTY/${
+                        src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${
                           defaultImg || { defaultImg }
                         }`}
                         className="single-page-main-pic cursor-pointer"
@@ -106,7 +100,7 @@ const SinglePage = (props) => {
                                 key={val.id}
                               >
                                 <img
-                                  src={`http://localhost:5000/Public/PROPERTY/${val.image_path}`}
+                                  src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${val.image_path}`}
                                   className="w-40 object-cover rounded-xl cursor-pointer single-page-pic"
                                   onMouseOver={getImageSrcHandler}
                                   onMouseLeave={setDefaultImgHandler}
@@ -200,12 +194,9 @@ const SinglePage = (props) => {
         </div>
 
         <div className="expense-title-hold">
-          <p>Days Booked</p>
-          {isRates?.length === 0 ? null : <p>Discount from </p>}
           <p className="pt-2">Total Guest</p>
         </div>
         <div className="calculated-expense-hold">
-          <p>{days} </p>
           {isRates?.length === 0 ? null : (
             <p>
               {isRates?.[0]?.start_date} until {isRates?.[0]?.end_date}
@@ -242,7 +233,7 @@ const SinglePage = (props) => {
           </div>
         </div>
         <div className="line-total text-gray-300">
-          _____________________________________________________
+          _____________________________________________
         </div>
 
         <div className="price-total-text absolute font-semibold text-xl uppercase">
@@ -255,13 +246,6 @@ const SinglePage = (props) => {
 
         <SinglePageMiddle details={details} />
       </div>
-
-      {/* <Calendars 
-        price={price}
-        buttonopenState={buttonOpen}
-        buttonCloseState={buttonClose}
-        closeFunc={buttonCloseHandler}
-        /> */}
     </>
   );
 };

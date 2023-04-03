@@ -24,7 +24,7 @@ const Footer = () => {
 
   const mobile = [
     <Link to='/'><FaHome /></Link>  ,
-    <Link to='/dashboard'><MdOutlineHomeWork  /></Link>,
+    <Link to='/tenant-login'><MdOutlineHomeWork  /></Link>,
   ]
   return (
     <>
@@ -32,7 +32,7 @@ const Footer = () => {
    {location.pathname === `/room-details/${id}` ? null :
     
     <>
-     <div className="bg-white border-t-2 shadow-md shadow-gray-300 bottom-0 h-20 w-full hidden md:flex items-center justify-center gap-6 mt-20">
+     <div className="bg-white border-t-2 shadow-md fixed shadow-gray-300 bottom-0 h-20 w-full hidden md:flex items-center justify-center gap-6 mt-20">
      <div className="text-[30px] text-gray-600 hover:text-black duration-100 ease-out ">
         <span className="flex pr-2">© {year} Vcation.inc</span> 
      </div>
@@ -45,9 +45,6 @@ const Footer = () => {
     
 
     <div className="bg-white border-t-2 shadow-md shadow-gray-300 fixed bottom-0 h-20 w-full flex md:hidden items-center justify-center gap-6 ">
-    <div className="h-2 md:flex pl-3">
-         <img src={logo} className="object-cover h-5" alt="" />
-    </div>
     {mobile.map((mobile) => (
       <div className="text-[30px] text-gray-600 hover:text-black duration-100 ease-out ">
         {mobile}

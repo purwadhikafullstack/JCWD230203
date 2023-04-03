@@ -55,7 +55,7 @@ const Transaction = () => {
     try {
       if (localStorage.getItem("token") && user) {
         const res = await axios.post(
-          `http://localhost:5000/transaction/data`,
+          `${process.env.REACT_APP_API_BASE_URL}transaction/data`,
           {
             room_id: data?.id,
             order_id1: data?.order_id || data?.order_id1,
@@ -81,7 +81,7 @@ const Transaction = () => {
   const tenantTransaction = async() => {
     try {
       if(localStorage.getItem("tokenTid") && tenant){
-        const res = await axios.post('http://localhost:5000/transaction/tenant-data',
+        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/tenant-data`,
         {
           users_id,
           room_id: data?.id,
@@ -136,7 +136,7 @@ const Transaction = () => {
       fd.append("order_id2", data?.order_id2 || null);
 
       const res = await axios.patch(
-        `http://localhost:5000/transaction/payment-proof`,
+        `${process.env.REACT_APP_API_BASE_URL}transaction/payment-proof`,
         fd
       );
 
@@ -173,7 +173,7 @@ const Transaction = () => {
 
   const acceptPayment = async(respond) => {
     try {
-      const res = await axios.post('http://localhost:5000/transaction/confirmation',
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/confirmation`,
       {
         users_id: details?.[0]?.users_id,
         room_id: data?.id,
@@ -326,7 +326,7 @@ const Transaction = () => {
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                         <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
-                          src={`http://localhost:5000/Public/PROPERTY/${details?.[0].room?.room_images?.[0]?.image_path}`}
+                          src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${details?.[0].room?.room_images?.[0]?.image_path}`}
                         />
                         </Link>
                       </div>
@@ -361,7 +361,7 @@ const Transaction = () => {
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                       <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
-                          src={`http://localhost:5000/Public/PROPERTY/${details?.[1].room?.room_images?.[0]?.image_path}`}
+                          src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${details?.[1].room?.room_images?.[0]?.image_path}`}
                         />
                         </Link>
                       </div>
@@ -403,7 +403,7 @@ const Transaction = () => {
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                       <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
-                          src={`http://localhost:5000/Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
+                          src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
                         />
                         </Link>
                       </div>
@@ -420,12 +420,17 @@ const Transaction = () => {
                         <p className="text-gray-500 font-medium">Night </p>
                       </div>
                       <div>
+                        <span className="font-semibold text-slate-200 text-sm">
+                          *Normal Price
+                        </span>{" "}
+                        <div className="flex justify-center items-center">
                         <span className="font-semibold text-gray-400 text-sm">
                           Rp
                         </span>{" "}
                         <span className="font-semibold text-md">
                           {details?.[0]?.room?.price?.toLocaleString()}
                         </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -534,9 +539,10 @@ const Transaction = () => {
                     <div className="w-full flex border-gray-200 md:border-none text-gray-800 text-xl">
                       <div className="w-full flex items-center">
                         <div className="flex-grow">
-                          <span className="text-gray-600">Total</span>
+                          <span className="text-gray-600">Total Price</span>
                         </div>
                         <div className="pl-3">
+                          <span className="text-slate-300 text-xs pr-1">Calculated after event etc.</span>
                           <span className="font-semibold text-gray-400 text-sm">
                             Rp
                           </span>{" "}
@@ -692,7 +698,7 @@ const Transaction = () => {
                       </div>
                     </div>
                     <div class="px-6 py-12 md:px-12 text-gray-800 text-center lg:text-left">
-                        <img src={`http://localhost:5000/${details?.[0]?.image_path}`} alt=""
+                        <img src={`${process.env.REACT_APP_API_BASE_URL}${details?.[0]?.image_path}`} alt=""
                         className="w-full rounded-lg shadow-lg" />
                   </div>
                   </div>
@@ -858,7 +864,7 @@ const Transaction = () => {
                       <div className="overflow-hidden rounded-md w-36 h-24 bg-gray-50 border border-gray-200">
                       <Link to={`/room-details/${details?.[0]?.room_id}`}>
                         <img
-                          src={`http://localhost:5000/Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
+                          src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${details?.[0]?.room?.room_images?.[0]?.image_path}`}
                         />
                       </Link>
                       </div>
@@ -987,9 +993,10 @@ const Transaction = () => {
                     <div className="w-full flex border-gray-200 md:border-none text-gray-800 text-xl">
                       <div className="w-full flex items-center">
                         <div className="flex-grow">
-                          <span className="text-gray-600">Total</span>
+                          <span className="text-gray-600">Total Price</span>
                         </div>
                         <div className="pl-3">
+                          <span className="text-slate-300">after discount event etc.</span>
                           <span className="font-semibold text-gray-400 text-sm">
                             Rp
                           </span>{" "}
@@ -1143,7 +1150,7 @@ const Transaction = () => {
                     </div>
                   </div>
                   <div class="px-6 py-12 md:px-12 text-gray-800 text-center lg:text-left">
-                      <img src={`http://localhost:5000/${details?.[0]?.image_path}`} alt=""
+                      <img src={`${process.env.REACT_APP_API_BASE_URL}${details?.[0]?.image_path}`} alt=""
                       className="w-full rounded-lg shadow-lg" />
                 </div>
                 </div>

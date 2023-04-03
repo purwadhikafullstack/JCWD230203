@@ -71,7 +71,7 @@ export default function Calendars(props){
   */
   let onCreateCalendar = async(btn, year1 = new Date().getUTCFullYear(), month1 = new Date().getMonth() + 1) => {
     try {
-      const rates = await axios.get(`http://localhost:5000/transaction/rates?room_id=${id}`)
+      const rates = await axios.get(`${process.env.REACT_APP_API_BASE_URL}transaction/rates?room_id=${id}`)
       console.log(rates)
 
       if(btn === '+'){ // Apabila user meng-klik button "next"
@@ -250,7 +250,7 @@ useEffect(() => {
     <>
     {/* Room Details */}
     {roomDetails &&
-    <div className="side-box-card bg-red-300 w-[300px] ">
+    <div className="side-box-card bg-red-300 w-[300px] h-[400px] ">
     {console.log(props?.details)}
     <h1 className="text-3xl font-bold mb-3">Calendar</h1>
     <h5 className="text-lg font-medium mb-3">
