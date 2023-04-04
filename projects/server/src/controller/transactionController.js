@@ -1,7 +1,7 @@
 const { sequelize } = require("../sequelize/models");
 const db = require("../sequelize/models");
 const transactions = db.transactions;
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const moment = require("moment");
 
 // Import transporter formhandling email
@@ -50,9 +50,9 @@ module.exports = {
           room_id,
           start_blocked_date: { [Op.lte]: check_out },
           end_blocked_date: { [Op.gte]: check_in },
-        }
-      })
-      
+        },
+      });
+
       if (blockedDates.length > 0) {
         return res.status(400).send({
           isError: true,
@@ -93,7 +93,6 @@ module.exports = {
           total_guest - i * maxGuest,
           maxGuest
         );
-
 
         const transaction = await transactions.findAll(
           {
@@ -599,21 +598,20 @@ module.exports = {
 
   tenantOrderList: async (req, res) => {
     const id = req.dataToken.id;
-    const { page = 1, status_id, start_date,
-      end_date} = req.body;
-    console.log(req.body)
+    const { page = 1, status_id, start_date, end_date } = req.body;
+    console.log(req.body);
     const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
     try {
       // because the transactions doest record the tenant id, we should track the tenant id based on their relations
 
-      const where = {}
-      if(start_date && end_date){
-        where.check_in = {[Op.between]: [start_date, end_date]}
+      const where = {};
+      if (start_date && end_date) {
+        where.check_in = { [Op.between]: [start_date, end_date] };
       }
-      if(status_id){
-        where.status_id = status_id
+      if (status_id) {
+        where.status_id = status_id;
       }
 
       // first get the property which it available in transactions db
@@ -638,24 +636,27 @@ module.exports = {
             ],
           },
         ],
-        order: [[{ model: db.room }, { model: transactions }, "check_in", "DESC"]]
+        order: [
+          [{ model: db.room }, { model: transactions }, "check_in", "DESC"],
+        ],
       });
 
       // initialize an empty array to hold the transactions
       let transaction = [];
 
-
       properties.forEach((property) => {
         if (property.rooms) {
           property.rooms.forEach((room) => {
             if (room.transactions) {
-              transaction = transaction.concat(room.transactions.map((transaction) => {
-                return {
-                  property: property.dataValues,
-                  room: room.dataValues,
-                  transaction: transaction.dataValues,
-                };
-              }));
+              transaction = transaction.concat(
+                room.transactions.map((transaction) => {
+                  return {
+                    property: property.dataValues,
+                    room: room.dataValues,
+                    transaction: transaction.dataValues,
+                  };
+                })
+              );
             }
           });
         }
@@ -664,16 +665,15 @@ module.exports = {
       const total_data = transaction.length;
       const total_pages = Math.ceil(total_data / page_size);
 
-
       transaction = transaction.slice(offset, offset + limit);
 
-    return res.status(200).send({
-      isError: false,
-      message: "Get Tenant Order List By Status",
-      data: transaction,
-      total_data: total_data,
-      total_pages: total_pages,
-     });
+      return res.status(200).send({
+        isError: false,
+        message: "Get Tenant Order List By Status",
+        data: transaction,
+        total_data: total_data,
+        total_pages: total_pages,
+      });
     } catch (error) {
       return res.status(400).send({
         isError: true,
@@ -701,20 +701,22 @@ module.exports = {
         include: [{ model: db.users, where: { id } }],
       });
 
-      const room = await db.room.findOne({where: {id: transaction.dataValues.id}, include: {model: db.property}})
-      const name = room.dataValues.name
-      const desc = room.dataValues.description
-      const price = room.dataValues.price.toLocaleString()
-      const address = room.dataValues.property.dataValues.address
-      const propertyName = room.dataValues.property.dataValues.name
-      const order = transaction.dataValues.order_id
-      const totalPrice = transaction.dataValues.total_price.toLocaleString()
-      const guest = transaction.dataValues.total_guest
-      const check_in = String(transaction.dataValues.check_in)
-      const newCheckIn = check_in.split("T")[0]
-      const check_out = String(transaction.dataValues.check_out)
-      const newCheckOut = check_out.split("T")[0]
-
+      const room = await db.room.findOne({
+        where: { id: transaction.dataValues.id },
+        include: { model: db.property },
+      });
+      const name = room.dataValues.name;
+      const desc = room.dataValues.description;
+      const price = room.dataValues.price.toLocaleString();
+      const address = room.dataValues.property.dataValues.address;
+      const propertyName = room.dataValues.property.dataValues.name;
+      const order = transaction.dataValues.order_id;
+      const totalPrice = transaction.dataValues.total_price.toLocaleString();
+      const guest = transaction.dataValues.total_guest;
+      const check_in = String(transaction.dataValues.check_in);
+      const newCheckIn = check_in.split("T")[0];
+      const check_out = String(transaction.dataValues.check_out);
+      const newCheckOut = check_out.split("T")[0];
 
       if (respond === "Accept") {
         await transactions.update(
@@ -731,8 +733,8 @@ module.exports = {
           { transaction: t }
         );
 
-        const user = await db.users.findOne({where: {id}})
-        const email = user.dataValues.email
+        const user = await db.users.findOne({ where: { id } });
+        const email = user.dataValues.email;
 
         await db.transactions_history.update(
           { status_id: 2 },
@@ -744,8 +746,17 @@ module.exports = {
 
         const templateCompile = await handlebars.compile(template);
         const newTemplate = templateCompile({
-          name, desc, price, address, order, totalPrice, guest, newCheckIn, newCheckOut, propertyName
-        })
+          name,
+          desc,
+          price,
+          address,
+          order,
+          totalPrice,
+          guest,
+          newCheckIn,
+          newCheckOut,
+          propertyName,
+        });
 
         await transporter.sendMail({
           from: "Vcation",
@@ -784,7 +795,7 @@ module.exports = {
 
         return res.status(200).send({
           isError: false,
-          message: "Payment Rejected",
+          message: "Sorry, Payment Rejected",
           data: transaction,
         });
       }
@@ -805,89 +816,95 @@ module.exports = {
     }
   },
 
-  salesReport: async(req, res) =>{
-    const {status_id = 2 , page = 1 , sort='desc'} = req.body
-    const id = req.dataToken.id
-    const page_size = 5
+  salesReport: async (req, res) => {
+    const { status_id = 2, page = 1, sort = "desc" } = req.body;
+    const id = req.dataToken.id;
+    const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
     try {
-      
       const properties = await db.property.findAll({
-        where: {tenant_id: id},
+        where: { tenant_id: id },
         include: [
-          {model: db.room,
-          include: [
-            {model: db.property, include: {model: db.property_image}},
-            {model: db.room_image},
-            {model: transactions, where: {status_id}, 
-            include: {model: db.users, include: {model: db.users_details}}
-          }
-          ]},
+          {
+            model: db.room,
+            include: [
+              { model: db.property, include: { model: db.property_image } },
+              { model: db.room_image },
+              {
+                model: transactions,
+                where: { status_id },
+                include: {
+                  model: db.users,
+                  include: { model: db.users_details },
+                },
+              },
+            ],
+          },
         ],
-      })
+      });
 
-      let transaction = []
+      let transaction = [];
 
       properties.forEach((property) => {
-        if(property.rooms){
+        if (property.rooms) {
           property.rooms.forEach((room) => {
-            if(room.transactions){
-              transaction = transaction.concat(room.transactions.map(
-                (transaction) => {
-                  return{
+            if (room.transactions) {
+              transaction = transaction.concat(
+                room.transactions.map((transaction) => {
+                  return {
                     property: property.dataValues,
                     room: room.dataValues,
                     transaction: transaction.dataValues,
-                  }
-                }
-              ))
+                  };
+                })
+              );
             }
-          })
+          });
         }
-      })
+      });
 
-
-      if (sort === 'asc') {
-        transaction.sort((a, b) => a.transaction.total_price - b.transaction.total_price);
+      if (sort === "asc") {
+        transaction.sort(
+          (a, b) => a.transaction.total_price - b.transaction.total_price
+        );
       } else {
-        transaction.sort((a, b) => b.transaction.total_price - a.transaction.total_price);
+        transaction.sort(
+          (a, b) => b.transaction.total_price - a.transaction.total_price
+        );
       }
 
-      
       transaction = transaction
-      .slice(offset, offset + limit)
-      .reduce((acc, curr) => {
-        // Find existing entry in the accumulator that matches the current property and room
-        const existingEntry = acc.find(
-          (entry) =>
-            entry.property.id === curr.property.id && entry.room.id === curr.room.id
-        );
+        .slice(offset, offset + limit)
+        .reduce((acc, curr) => {
+          // Find existing entry in the accumulator that matches the current property and room
+          const existingEntry = acc.find(
+            (entry) =>
+              entry.property.id === curr.property.id &&
+              entry.room.id === curr.room.id
+          );
 
-      
-        // If an existing entry is found, update its revenue and booking count
-        if (existingEntry) {
-          existingEntry.revenue += curr.transaction.total_price;
-          existingEntry.bookings_count += 1;
-        } 
-        // Otherwise, create a new entry with the current property, room, and transaction info
-        else {
-          const newEntry = {
-            property: curr.property,
-            room: curr.room,
-            revenue: curr.transaction.total_price,
-            bookings_count: 1,
-          };
-          acc.push(newEntry);
-        }
-      
-        return acc;
-      }, []);
-      
+          // If an existing entry is found, update its revenue and booking count
+          if (existingEntry) {
+            existingEntry.revenue += curr.transaction.total_price;
+            existingEntry.bookings_count += 1;
+          }
+          // Otherwise, create a new entry with the current property, room, and transaction info
+          else {
+            const newEntry = {
+              property: curr.property,
+              room: curr.room,
+              revenue: curr.transaction.total_price,
+              bookings_count: 1,
+            };
+            acc.push(newEntry);
+          }
 
+          return acc;
+        }, []);
 
       const total_data = transaction.length;
-      const total_pages = Math.ceil(total_data / page_size)
+      const total_pages = Math.ceil(total_data / page_size);
 
       return res.status(200).send({
         isError: false,
@@ -895,7 +912,7 @@ module.exports = {
         data: transaction,
         total_data: total_data,
         total_pages: total_pages,
-       });
+      });
     } catch (error) {
       return res.status(400).send({
         isError: true,
@@ -905,41 +922,45 @@ module.exports = {
     }
   },
 
-  salesReportByRoom: async(req, res) =>{
-    const {status_id = 2 , page = 1 , start_date, end_date, room_id, sort} = req.body
-    console.log(req.body)
-    const page_size = 5
+  salesReportByRoom: async (req, res) => {
+    const {
+      status_id = 2,
+      page = 1,
+      start_date,
+      end_date,
+      room_id,
+      sort,
+    } = req.body;
+    console.log(req.body);
+    const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
     try {
-
-
-
-      const where = {room_id, status_id}
+      const where = { room_id, status_id };
       if (start_date && end_date) {
         where.check_in = { [Op.between]: [start_date, end_date] };
       }
 
-      let sortOrder = [['total_price', sort]];
-      if (sort === 'asc') {
-        sortOrder = [['total_price', 'asc']];
-      }else{
-        sortOrder = [['total_price', 'desc']];
+      let sortOrder = [["total_price", sort]];
+      if (sort === "asc") {
+        sortOrder = [["total_price", "asc"]];
+      } else {
+        sortOrder = [["total_price", "desc"]];
       }
 
       const report = await transactions.findAll({
         where,
         include: [
-          {model: db.room, include: {model: db.room_image}},
-          {model: db.users, include: {model: db.users_details}}
+          { model: db.room, include: { model: db.room_image } },
+          { model: db.users, include: { model: db.users_details } },
         ],
         order: sortOrder,
         offset,
-        limit
-        })
+        limit,
+      });
 
       const total_data = report.length;
-      const total_pages = Math.ceil(total_data / page_size)
+      const total_pages = Math.ceil(total_data / page_size);
 
       return res.status(200).send({
         isError: false,
@@ -947,7 +968,7 @@ module.exports = {
         data: report,
         total_data: total_data,
         total_pages: total_pages,
-       });
+      });
     } catch (error) {
       return res.status(400).send({
         isError: true,
@@ -959,11 +980,11 @@ module.exports = {
 
   blockedDate: async (req, res) => {
     const { room_id, start_date, end_date, reason } = req.body;
-    const t = await sequelize.transaction()
-    console.log(req.body)
+    const t = await sequelize.transaction();
+    console.log(req.body);
     try {
       // Check if the specified room exists
-      const room = await db.room.findOne({where: {id: room_id}});
+      const room = await db.room.findOne({ where: { id: room_id } });
       if (!room) {
         return res.status(400).send({
           isError: true,
@@ -971,7 +992,7 @@ module.exports = {
           data: null,
         });
       }
-  
+
       // Check if the specified date range is valid
       if (!start_date || !end_date || start_date >= end_date) {
         return res.status(400).send({
@@ -980,36 +1001,47 @@ module.exports = {
           data: null,
         });
       }
-  
+
       // Check if there is an existing blocked date for the specified room and date range
-      const existingBlockedDate = await db.room_blocked_dates.findOne({
-        where: { room_id, start_blocked_date: { [Op.lte]: end_date }, end_blocked_date: { [Op.gte]: start_date } },
-      }, {transaction: t});
+      const existingBlockedDate = await db.room_blocked_dates.findOne(
+        {
+          where: {
+            room_id,
+            start_blocked_date: { [Op.lte]: end_date },
+            end_blocked_date: { [Op.gte]: start_date },
+          },
+        },
+        { transaction: t }
+      );
       if (existingBlockedDate) {
         return res.status(400).send({
           isError: true,
-          message: "The specified date range has already been blocked for this room",
+          message:
+            "The specified date range has already been blocked for this room",
           data: null,
         });
       }
-  
-      // Create a new blocked date entry
-      const newBlockedDate = await db.room_blocked_dates.create({
-        room_id,
-        start_blocked_date: start_date,
-        end_blocked_date: end_date,
-        reason,
-      }, {transaction: t});
 
-      await t.commit()
-  
+      // Create a new blocked date entry
+      const newBlockedDate = await db.room_blocked_dates.create(
+        {
+          room_id,
+          start_blocked_date: start_date,
+          end_blocked_date: end_date,
+          reason,
+        },
+        { transaction: t }
+      );
+
+      await t.commit();
+
       return res.status(200).send({
         isError: false,
         message: "Blocked date added successfully",
         data: newBlockedDate,
       });
     } catch (error) {
-      await t.rollback()
+      await t.rollback();
       return res.status(400).send({
         isError: true,
         message: error.message,
@@ -1018,79 +1050,82 @@ module.exports = {
     }
   },
 
-  getBlockedDate: async(req, res) => {
-    const{room_id} = req.query
+  getBlockedDate: async (req, res) => {
+    const { room_id } = req.query;
 
-    const blocked = await db.room_blocked_dates.findAll({where: {room_id}})
+    const blocked = await db.room_blocked_dates.findAll({ where: { room_id } });
     return res.status(200).send({
       isError: false,
       message: "Get Data Success",
-      data: blocked
-    })
+      data: blocked,
+    });
   },
 
-  deleteBlockedDate: async(req, res) => {
-    const {start_date, end_date, room_id} = req.body
-    console.log(req.body)
+  deleteBlockedDate: async (req, res) => {
+    const { start_date, end_date, room_id } = req.body;
+    console.log(req.body);
 
     const date = await db.room_blocked_dates.findOne({
-      where: {start_blocked_date: start_date, end_blocked_date: end_date, room_id}
-    })
+      where: {
+        start_blocked_date: start_date,
+        end_blocked_date: end_date,
+        room_id,
+      },
+    });
 
-    if(!date){
+    if (!date) {
       return res.status(400).send({
         isError: true,
         message: "There is no date Blocked!",
-        data: null
-      })
+        data: null,
+      });
     }
 
     await db.room_blocked_dates.destroy({
-      where: {id: date.dataValues.id}
-    })
+      where: { id: date.dataValues.id },
+    });
 
     return res.status(200).send({
       isError: false,
       message: "Delete date Success",
-      data: null
-    })
+      data: null,
+    });
   },
 
-  paidOrderList: async(req, res) => {
-    const id = req.dataToken.id
-    const page = 1
-    const status_id = 2
+  paidOrderList: async (req, res) => {
+    const id = req.dataToken.id;
+    const page = 1;
+    const status_id = 2;
     const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
 
     try {
       const paid = await transactions.findAll({
-        where: {users_id: id, status_id},
+        where: { users_id: id, status_id },
         include: [
           {
-            model: db.users, 
-            include: {model: db.users_details}
+            model: db.users,
+            include: { model: db.users_details },
           },
           {
             model: db.room,
             include: [
-              {model: db.room_image},
-              {model: db.property, include: {model: db.property_image}}
+              { model: db.room_image },
+              { model: db.property, include: { model: db.property_image } },
             ],
-          }
+          },
         ],
         offset,
         limit,
-        order: [["check_in", "DESC"]]
+        order: [["check_in", "DESC"]],
       });
-      
 
-        return res.status(200).send({
-          isError: false,
-          message: "Get Tenant Order List By Status",
-          data: paid,
-         });
+      return res.status(200).send({
+        isError: false,
+        message: "Get Tenant Order List By Status",
+        data: paid,
+      });
     } catch (error) {
       return res.status(400).send({
         isError: true,
@@ -1098,8 +1133,5 @@ module.exports = {
         data: null,
       });
     }
-  }
-
-  
-  
+  },
 };
