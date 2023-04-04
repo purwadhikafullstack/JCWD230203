@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { DateRangePicker } from "react-date-range";
-import { MdOutlineHomeWork } from "react-icons/md";
-import { FiSearch } from "react-icons/fi";
-import { FaCalendar } from "react-icons/fa";
-import { BsHouseAddFill, BsFillHousesFill } from "react-icons/bs";
-import NavbarDashboard from "components/tenant/navbar/NavbarTentBoard";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Modal from "components/modal/modal";
@@ -14,9 +8,6 @@ import Modal from "components/modal/modal";
 const Reservation = () => {
   const [status, setStatus] = useState([]);
   const [orderList, setOrderList] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [buttonOpen, setButtonOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const location = useLocation();
@@ -40,16 +31,6 @@ const Reservation = () => {
       sort_by: "",
     });
   };
-
-  // const getProfilePicture = (picturePath) => {
-  //   if (picturePath && picturePath.includes("https")) {
-  //     return picturePath;
-  //   } else if (picturePath && picturePath.includes("localhost")) {
-  //     return `http://localhost:5000/${orderList?.user?.users_details?.picture_path}`;
-  //   } else {
-  //     return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`;
-  //   }
-  // };
 
   const getStatus = async () => {
     try {
@@ -125,7 +106,7 @@ const Reservation = () => {
     tenantOrderList();
   }, [currentPage, form]);
 
-  // console.log(orderList)
+
   return (
     <>
       {tenant ? (
@@ -139,7 +120,7 @@ const Reservation = () => {
                 id="main-content"
                 className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 mb-24 md:0"
               >
-                {/* <div className="py-4 pb-20 px-4"> */}
+               
                 {/* isi dashboard data*/}
 
                 <body className="antialiased font-sans bg-transparent">
@@ -299,7 +280,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 4 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEF3C7" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -313,7 +294,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 7 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEF3C7" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -327,7 +308,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 2 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-                                              // style={{ backgroundColor: "#D1FAE5" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -341,7 +322,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEE2E2" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -355,7 +336,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 8 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEE2E2" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -371,7 +352,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 2 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-                                              // style={{ backgroundColor: "#D1FAE5" }}
+                                             
                                             >
                                               <span
                                                 aria-hidden
@@ -385,7 +366,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEE2E2" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -399,7 +380,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 8 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEE2E2" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -413,7 +394,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 4 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEF3C7" }}
+                                              
                                             >
                                               <span
                                                 aria-hidden
@@ -427,7 +408,7 @@ const Reservation = () => {
                                           {value?.transaction?.status_id === 7 && (
                                             <span
                                               className="relative inline-block px-5 pr-7 py-1 font-semibold text-purple-900 leading-tight"
-                                              // style={{ backgroundColor: "#EDE9FE" }}
+                                             
                                             >
                                               <span
                                                 aria-hidden
@@ -492,12 +473,12 @@ const Reservation = () => {
               {/* <NavbarDashboard /> */}
 
               {/* isi dashboard background*/}
-              {/* <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3 w-full"> */}
+              
               <div
                 id="main-content"
                 className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 mb-24 md:0"
               >
-                {/* <div className="py-4 pb-20 px-4"> */}
+               
                 {/* isi dashboard data*/}
 
                 <body className="antialiased font-sans bg-transparent">
@@ -658,7 +639,7 @@ const Reservation = () => {
                                           {value?.status_id === 4 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEF3C7" }}
+                                            
                                             >
                                               <span
                                                 aria-hidden
@@ -672,7 +653,7 @@ const Reservation = () => {
                                           {value?.status_id === 7 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-yellow-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEF3C7" }}
+                                             
                                             >
                                               <span
                                                 aria-hidden
@@ -686,7 +667,7 @@ const Reservation = () => {
                                           {value?.status_id === 2 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-                                              // style={{ backgroundColor: "#D1FAE5" }}
+                                             
                                             >
                                               <span
                                                 aria-hidden
@@ -700,7 +681,7 @@ const Reservation = () => {
                                           {value?.status_id === 3 && (
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                              // style={{ backgroundColor: "#FEE2E2" }}
+                                             
                                             >
                                               <span
                                                 aria-hidden
@@ -714,7 +695,7 @@ const Reservation = () => {
                                           {value?.status_id === 8 && (
                                             <span
                                             className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
-                                            // style={{ backgroundColor: "#FEE2E2" }}
+                                       
                                           >
                                             <span
                                               aria-hidden
@@ -739,7 +720,7 @@ const Reservation = () => {
                                             :
                                             <span
                                               className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-                                              // style={{ backgroundColor: "#D1FAE5" }}
+                                            
                                             >
                                               <span
                                                 aria-hidden
