@@ -756,7 +756,7 @@ module.exports = {
 
         return res.status(200).send({
           isError: false,
-          message: "Payment Accpeted",
+          message: "Payment Accepted",
           data: transaction,
         });
       }
