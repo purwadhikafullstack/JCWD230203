@@ -82,7 +82,7 @@ function TenantActivation() {
 
   return (
     <>
-      <div className="wrapper flex justify-center py-[250px]">
+      <div className="wrapper flex justify-center py-[100px]">
         <div className="block max-w-md rounded-lg bg-white p-6 shadow-lg ">
             <div className="p text-4xl flex justify-center mb-5">Activation Form</div>
           <form>

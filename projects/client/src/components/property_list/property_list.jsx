@@ -289,7 +289,7 @@ function PropertyList() {
                                           </Link>
                                         </div>
                                       ) : (
-                                        <Link to={'/dashboard-edit-room'} state={[value]}>
+                                        <Link to={'/dashboard-edit-room'} state={value?.rooms?.[0]}>
                                         <div className="flex justify-center items-center h-full">
                                           <button className="text-gray-900 my-bg-rating px-3 py-3 rounded-lg shadow-md text-center font-semibold">
                                             Edit Room 1
@@ -334,7 +334,7 @@ function PropertyList() {
                                           </Link>
                                         </div>
                                       ) : (
-                                        <Link to={'/dashboard-edit-room'} state={[value]}>
+                                        <Link to={'/dashboard-edit-room'} state={value?.rooms?.[1]}>
                                         <div className="flex justify-center items-center h-full">
                                           <button className="text-gray-900 my-bg-rating px-3 py-3 rounded-lg shadow-md text-center font-semibold">
                                             Edit Room 2

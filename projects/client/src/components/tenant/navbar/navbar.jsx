@@ -25,17 +25,17 @@ export default function Navbar(props) {
             href="#pablo"
             onClick={e => e.preventDefault()}
           >
-            Hi {props?.username}, This is your annually Reports!
+            {props?.property.length === 0 ? `Hi ${props?.username}, Earn more by renting your Property!` : `Hi ${props?.username}, This is your annually Reports!`}
           </a>}
 
           {/* reservation Greetings */}
-          {reservation &&  <a
+          {/* {reservation &&  <a
             className="text-white text-sm uppercase hidden lg:inline-block font-semibold "
             href="#pablo"
             onClick={e => e.preventDefault()}
           >
             {props?.username}, This is All the reservation you have !
-          </a>}
+          </a>} */}
           
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">

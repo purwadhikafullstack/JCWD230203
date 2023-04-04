@@ -3,14 +3,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "components/modal/modal";
 import { Navigate, useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuthValue } from "state/user-firebase/AuthContext";
-// import {
-//   GoogleAuthProvider,
-//   onAuthStateChanged,
-//   signOut,
-// } from "firebase/auth";
-// import { auth } from "./../../firebase";
 
-// const provider = new GoogleAuthProvider();
 
 const Profiling = (props) => {
   const {cacheUserGoogle} = useAuthValue()
@@ -19,26 +12,16 @@ const Profiling = (props) => {
   const location = useLocation()
   const navigate = useNavigate();
   let getTokenId = localStorage.getItem("token");
-  console.log(location)
-
-  // onAuthStateChanged(auth, (userFromFireBase) => {
-  //   if (userFromFireBase) {
-  //     console.log(userFromFireBase);
-  //   }
-  // });
 
   useEffect(() => {
     getProfile();
     userTransaction();
+    historyTransaction();
   }, []);
 
-  const [show, setShow] = useState({
-    editProfile: false,
-    changePicture: false,
-    changePassword: false,
-  });
 
   const [orderList, setOrderList] = useState([]);
+  const [history, setHistory] = useState([])
 
   const [profile, setProfile] = useState({
     first_name: "",
@@ -62,6 +45,8 @@ const Profiling = (props) => {
       return `https://tecdn.b-cdn.net/img/new/avatars/2.webp`
     }
   }
+
+  console.log(profile)
 
   const getProfile = async () => {
     try {
@@ -95,6 +80,23 @@ const Profiling = (props) => {
       console.log(error);
     }
   };
+
+  const historyTransaction = async() => {
+    try {
+      const res = await axios.post(`http://localhost:5000/transaction/paid-orderList`,
+      {},
+      {
+        headers: {
+          auth: getTokenId,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        }})
+        setHistory(res.data.data)
+        console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const userTransaction = async () => {
     try {
@@ -480,19 +482,11 @@ const Profiling = (props) => {
               </div>
 
               <Modal
-                showEditProfile={show.editProfile}
-                // handleCloseProfile={() => handleCloseProfile("editProfile")}
                 profile={profile}
               />
               <Modal
-                showChangePicture={show.changePicture}
-                // handleClosePicture={() => handleClosePicture("changePicture")}
               />
               <Modal
-                showChangePassword={show.changePassword}
-                // handleClosePassword={() =>
-                //   handleClosePassword("changePassword")
-                // }
               />
               {/* </button> */}
             </div>
@@ -526,7 +520,6 @@ const Profiling = (props) => {
                   <ul className="list-inside space-y-2">
                     {orderList &&
                       orderList.map((value, index) => {
-                        console.log(value)
                         return (
                           <li>
                             <Link  to={`/transaction/${value?.room_id}/${value?.order_id}`} >
@@ -574,41 +567,36 @@ const Profiling = (props) => {
                         />
                       </svg>
                     </span>
-                    <span className="tracking-wide">History</span>
+                    <span className="tracking-wide">Renting History</span>
                   </div>
 
                   <div className="">
-                    <ul className="list-inside space-y-2">
+                  <ul className="list-inside space-y-2">
+                    {history &&
+                      history.map((value, index) => {
+                        return (
+                          <li>
+                            <Link  to={`/transaction/${value?.room_id}/${value?.order_id}`} >
+                            <div key={index} className="text-[#df6e6c]">
+                              {value?.room?.property?.name}, {value?.room?.name} Room
+                            </div>
+                            <div className="text-gray-500 text-xs">
+                              {value?.createdAt.split("T")[0]}
+                            </div>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    <div className="">
                       <li>
-                        <div className="text-[#df6e6c]">
-                          Villa Bumi Andung Bandung
-                        </div>
-                        <div className="text-gray-500 text-xs">
-                          Mar 15, 2023
-                        </div>
-                      </li>
-                      <li>
-                        <div className="text-[#df6e6c]">
-                          Villa Bumi Andung Bandung
-                        </div>
-                        <div className="text-gray-500 text-xs">
-                          Mar 15, 2023
-                        </div>
-                      </li>
-                      <li>
-                        <div className="text-[#df6e6c]">
-                          Villa Bumi Andung Bandung
-                        </div>
-                        <div className="text-gray-500 text-xs">
-                          Mar 15, 2023
-                        </div>
-                      </li>
-                      <li>
+                        <Link to='/user-reservation'>
                         <button className="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">
                           Show More
                         </button>
+                        </Link>
                       </li>
-                    </ul>
+                    </div>
+                  </ul>
                   </div>
                 </div>
               </div>
@@ -979,7 +967,6 @@ const Profiling = (props) => {
           </div>
 
           <Modal
-            showEditProfile={show.editProfile}
             // handleCloseProfile={() => handleCloseProfile("editProfile")}
             profile={profile}
           />

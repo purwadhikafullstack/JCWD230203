@@ -2,6 +2,7 @@ import axios from "axios";
 import StarRating from "components/star_rating/starRating";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "components/loader/loader";
 
 function TextArea(props) {
   const getTokenId = localStorage.getItem("token");
@@ -29,6 +30,7 @@ function TextArea(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if(_form.rating <= 0) throw {message: "Please Fill the comment"}
     try {
       setLoading(true)
       const res = await axios.post(
@@ -46,11 +48,13 @@ function TextArea(props) {
           },
         }
       );
-
-      console.log(res);
       setTimeout(() => {
         toast.success(res?.data?.message)
       }, 4500);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000)
 
       setForm({
         room_id: props?.details?.[0]?.id,
@@ -58,7 +62,6 @@ function TextArea(props) {
         comment: "",
       });
 
-      console.log(res);
     } catch (error) {
       console.log(error);
       setLoading(false)
@@ -110,7 +113,7 @@ function TextArea(props) {
             type="submit"
             className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white my-bg-main rounded-lg focus:ring-4 focus:ring-rose-200  hover:bg-rose-800"
           >
-            Leave a Review
+            {loading ? <Loader /> : "Leave a Review"}
           </button>
         </div>
       </form>

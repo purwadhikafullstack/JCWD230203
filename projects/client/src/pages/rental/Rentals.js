@@ -172,7 +172,7 @@ const Rentals = () => {
         <hr className="h-10 mt-4" />
         {location.pathname === `/category/${id}` ? (
           <>
-            <div className="flex justify-center mb-24">
+            <div className="flex justify-center mb-5">
               <nav aria-label="Page navigation example">
                 <ul className="flex list-style-none">
                   <li
@@ -232,7 +232,7 @@ const Rentals = () => {
           </>
         ) : (
           <>
-            <div className="flex justify-center mb-24">
+            <div className="flex justify-center mb-5">
               <nav aria-label="Page navigation example">
                 <ul className="flex list-style-none">
                   <li

@@ -1,7 +1,6 @@
 import Modal from "./../modal/modalTenant"
 
 function Profile(props){
-    console.log(props)
     const {details} = props;
     return(
         <>
@@ -128,7 +127,7 @@ function Profile(props){
                         </div>
                       </div>
                     </div>
-                    <Modal
+                    <Modal details={details}
                       // showEditProfile={show.editProfile}
                       // handleCloseProfile={() => handleCloseProfile("editProfile")}
                     //   details={details}

@@ -32,7 +32,7 @@ const SinglePage = (props) => {
   };
 
 
-  console.log(days)
+  console.log(details)
 
   let onChange = (value) => {
     setValue(value)
@@ -164,9 +164,10 @@ const SinglePage = (props) => {
         </div>
 
         <div className="side-box-card absolute flex justify-center ">
+
           <p className="single-page-price font-semibold text-2xl w-full">
             {" "}
-            Rp {discount === 0 ? details?.[0]?.price : discount}/ Night{" "}
+            Rp. {details?.[0]?.price?.toLocaleString()} / Night{" "}
           </p>
         </div>
 
@@ -194,12 +195,12 @@ const SinglePage = (props) => {
         </div>
 
         <div className="expense-title-hold">
-          <p className="pt-2">Total Guest</p>
+          <p className="pt-2 font-semibold">Total Guest</p>
         </div>
         <div className="calculated-expense-hold">
           {isRates?.length === 0 ? null : (
             <p>
-              {isRates?.[0]?.start_date} until {isRates?.[0]?.end_date}
+              {isRates?.[0]?.start_date} until {isRates?.[0]?.end_date} 
             </p>
           )}
           <div className="custom-number-input h-10 w-32">

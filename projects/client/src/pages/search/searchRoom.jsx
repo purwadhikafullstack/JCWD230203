@@ -57,10 +57,9 @@ function SearchRoom() {
          </div>
        </div>
         }
-        <div className="grid grid-cols-1 lg:grid-cols-2  gap-4 justify-center my-4 mx-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-center my-4 mx-10 ">
           {room &&
             room.map((room) => {
-              console.log(room)
               return (
                 <>
                   <div className="flex items-center justify-between rounded-lg bg-white shadow-lg bg-transparent md:max-w-xl md:flex-row">
@@ -118,7 +117,6 @@ function SearchRoom() {
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-4 justify-center my-4 mx-10">
           {property &&
             property.map((value) => {
-
               return (
                 <>
                   <div className="flex items-center justify-evenly rounded-lg bg-white shadow-xl bg-transparent md:max-w-xl md:flex-row">
@@ -137,7 +135,6 @@ function SearchRoom() {
                               />
                       </div>
                     </div>
-
                     <div className="flex flex-col items-end justify-end mr-5 pt-20">
                     <div className="mb-2 text-xl font-medium text-black ">
                       Start From 

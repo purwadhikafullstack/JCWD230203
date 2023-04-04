@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({users, transactions_history, room}) {
       this.belongsTo(users,{foreignKey: 'users_id'})
-      this.belongsTo(transactions_history, {foreignKey: 'transactions_history_id'})
       this.belongsTo(room, {foreignKey: 'room_id'})
     }
   }
@@ -24,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     users_id:{
       type: DataTypes.UUID,
-      allowNull: false
-    },
-    transactions_history_id: {
-      type: DataTypes.INTEGER,
       allowNull: false
     },
     review: {

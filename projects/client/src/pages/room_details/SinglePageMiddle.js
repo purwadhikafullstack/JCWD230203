@@ -84,7 +84,7 @@ const SinglePageMiddle = (props) => {
             {/* <img src={section3} className="c" /> */}
             {mappedData.length === 0 ? null : <div className="container my-14 px-6 mx-auto">
           <div className="text-2xl font-bold mb-4 flex shrink-0 pt-4">Accommodation Available in this Room</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {mappedData &&
               mappedData.map((value, index) => {
                 return (

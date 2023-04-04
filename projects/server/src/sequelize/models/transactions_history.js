@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate({transactions, status, review}) {
       this.belongsTo(transactions, {foreignKey: 'transactions_id'})
       this.belongsTo(status, {foreignKey: 'status_id'})
-      this.hasMany(review, {foreignKey: 'transactions_history_id'})
     }
   }
   transactions_history.init({

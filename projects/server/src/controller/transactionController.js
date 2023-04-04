@@ -45,6 +45,22 @@ module.exports = {
         });
       }
 
+      const blockedDates = await db.room_blocked_dates.findAll({
+        where: {
+          room_id,
+          start_blocked_date: { [Op.lte]: check_out },
+          end_blocked_date: { [Op.gte]: check_in },
+        }
+      })
+      
+      if (blockedDates.length > 0) {
+        return res.status(400).send({
+          isError: true,
+          message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`,
+          data: null,
+        });
+      }
+
       const bookings = await transactions.findAll(
         {
           where: {
@@ -77,6 +93,7 @@ module.exports = {
           total_guest - i * maxGuest,
           maxGuest
         );
+
 
         const transaction = await transactions.findAll(
           {
@@ -582,13 +599,22 @@ module.exports = {
 
   tenantOrderList: async (req, res) => {
     const id = req.dataToken.id;
-    const { page = 1, status_id, room_id } = req.body;
+    const { page = 1, status_id, start_date,
+      end_date} = req.body;
     console.log(req.body)
     const page_size = 5;
     const offset = (page - 1) * page_size;
     const limit = page_size;
     try {
       // because the transactions doest record the tenant id, we should track the tenant id based on their relations
+
+      const where = {}
+      if(start_date && end_date){
+        where.check_in = {[Op.between]: [start_date, end_date]}
+      }
+      if(status_id){
+        where.status_id = status_id
+      }
 
       // first get the property which it available in transactions db
       const properties = await db.property.findAll({
@@ -601,7 +627,7 @@ module.exports = {
               { model: db.room_image },
               {
                 model: transactions,
-                where: status_id ? { status_id } : {},
+                where: where,
                 include: [
                   {
                     model: db.users,
@@ -612,6 +638,7 @@ module.exports = {
             ],
           },
         ],
+        order: [[{ model: db.room }, { model: transactions }, "check_in", "DESC"]]
       });
 
       // initialize an empty array to hold the transactions
@@ -637,12 +664,6 @@ module.exports = {
       const total_data = transaction.length;
       const total_pages = Math.ceil(total_data / page_size);
 
-      // Filter transactions by room_id if provided
-      if (room_id) {
-        transaction = transactions.filter(
-          (transaction) => transaction.room_id === room_id
-        );
-      }
 
       transaction = transaction.slice(offset, offset + limit);
 
@@ -680,6 +701,21 @@ module.exports = {
         include: [{ model: db.users, where: { id } }],
       });
 
+      const room = await db.room.findOne({where: {id: transaction.dataValues.id}, include: {model: db.property}})
+      const name = room.dataValues.name
+      const desc = room.dataValues.description
+      const price = room.dataValues.price.toLocaleString()
+      const address = room.dataValues.property.dataValues.address
+      const propertyName = room.dataValues.property.dataValues.name
+      const order = transaction.dataValues.order_id
+      const totalPrice = transaction.dataValues.total_price.toLocaleString()
+      const guest = transaction.dataValues.total_guest
+      const check_in = String(transaction.dataValues.check_in)
+      const newCheckIn = check_in.split("T")[0]
+      const check_out = String(transaction.dataValues.check_out)
+      const newCheckOut = check_out.split("T")[0]
+
+
       if (respond === "Accept") {
         await transactions.update(
           { status_id: 2 },
@@ -695,6 +731,9 @@ module.exports = {
           { transaction: t }
         );
 
+        const user = await db.users.findOne({where: {id}})
+        const email = user.dataValues.email
+
         await db.transactions_history.update(
           { status_id: 2 },
           { where: { transactions_id: transaction.dataValues.id } },
@@ -704,12 +743,15 @@ module.exports = {
         const template = await fs.readFile("./template/rules.html", "utf-8");
 
         const templateCompile = await handlebars.compile(template);
+        const newTemplate = templateCompile({
+          name, desc, price, address, order, totalPrice, guest, newCheckIn, newCheckOut, propertyName
+        })
 
         await transporter.sendMail({
           from: "Vcation",
           to: email,
           subject: "Rules and Room Details",
-          html: templateCompile,
+          html: newTemplate,
         });
 
         return res.status(200).send({
@@ -918,6 +960,7 @@ module.exports = {
   blockedDate: async (req, res) => {
     const { room_id, start_date, end_date, reason } = req.body;
     const t = await sequelize.transaction()
+    console.log(req.body)
     try {
       // Check if the specified room exists
       const room = await db.room.findOne({where: {id: room_id}});
@@ -941,7 +984,7 @@ module.exports = {
       // Check if there is an existing blocked date for the specified room and date range
       const existingBlockedDate = await db.room_blocked_dates.findOne({
         where: { room_id, start_blocked_date: { [Op.lte]: end_date }, end_blocked_date: { [Op.gte]: start_date } },
-      });
+      }, {transaction: t});
       if (existingBlockedDate) {
         return res.status(400).send({
           isError: true,
@@ -984,6 +1027,79 @@ module.exports = {
       message: "Get Data Success",
       data: blocked
     })
+  },
+
+  deleteBlockedDate: async(req, res) => {
+    const {start_date, end_date, room_id} = req.body
+    console.log(req.body)
+
+    const date = await db.room_blocked_dates.findOne({
+      where: {start_blocked_date: start_date, end_blocked_date: end_date, room_id}
+    })
+
+    if(!date){
+      return res.status(400).send({
+        isError: true,
+        message: "There is no date Blocked!",
+        data: null
+      })
+    }
+
+    await db.room_blocked_dates.destroy({
+      where: {id: date.dataValues.id}
+    })
+
+    return res.status(200).send({
+      isError: false,
+      message: "Delete date Success",
+      data: null
+    })
+  },
+
+  paidOrderList: async(req, res) => {
+    const id = req.dataToken.id
+    const page = 1
+    const status_id = 2
+    const page_size = 5;
+    const offset = (page - 1) * page_size;
+    const limit = page_size;
+
+    try {
+      const paid = await transactions.findAll({
+        where: {users_id: id, status_id},
+        include: [
+          {
+            model: db.users, 
+            include: {model: db.users_details}
+          },
+          {
+            model: db.room,
+            include: [
+              {model: db.room_image},
+              {model: db.property, include: {model: db.property_image}}
+            ],
+          }
+        ],
+        offset,
+        limit,
+        order: [["check_in", "DESC"]]
+      });
+      
+
+        return res.status(200).send({
+          isError: false,
+          message: "Get Tenant Order List By Status",
+          data: paid,
+         });
+    } catch (error) {
+      return res.status(400).send({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
   }
+
+  
   
 };

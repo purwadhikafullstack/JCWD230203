@@ -99,6 +99,8 @@ const Reservation = () => {
           {
             page: currentPage,
             status_id: form?.status_id,
+            start_date: form?.startDate,
+            end_date: form?.endDate
           },
           {
             headers: {
@@ -150,31 +152,10 @@ const Reservation = () => {
                       </div>
                       <div className="my-2 flex sm:flex-row flex-col">
                         <div className="flex flex-row mb-1 sm:mb-0">
-                          {/* upcoming */}
-                          <div className="relative">
-                            <div className="flex">
-                              <select className="  h-full rounded-r border-t border-l sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                                <option>Upcoming</option>
-                                <option>Completed</option>
-                                <option>Canceled</option>
-                                <option>All</option>
-                              </select>
-                              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                <svg
-                                  className="fill-current h-4 w-4"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                          {/* status */}
                           <div className="relative">
                             <div className="flex">
                               <select
-                                className=" h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className=" h-full rounded-r border-t border-l sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 onChange={(e) => handleChange(e)}
                                 value={form?.status_id}
                                 name="status_id"
@@ -206,6 +187,35 @@ const Reservation = () => {
                             </div>
                           </div>
                           {/* Calendar */}
+                           <div className="relative">
+                            <div className="flex">
+                              {/* start date */}
+                              <input
+                                type="date"
+                                placeholder="Start Date"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                value={form.startDate}
+                                name="startDate"
+                                onChange={handleChange}
+                              />
+                              {/* endDate */}
+                              <input
+                                type="date"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                value={form.endDate}
+                                name="endDate"
+                                onChange={handleChange}
+                              />
+                              {form?.startDate && (
+                                <button
+                                  className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                  onClick={handleClearForm}
+                                >
+                                  Clear Dates
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -500,31 +510,11 @@ const Reservation = () => {
                       </div>
                       <div className="my-2 flex sm:flex-row flex-col">
                         <div className="flex flex-row mb-1 sm:mb-0">
-                          {/* upcoming */}
-                          <div className="relative">
-                            <div className="flex">
-                              <select className="  h-full rounded-r border-t border-l sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                                <option>Upcoming</option>
-                                <option>Completed</option>
-                                <option>Canceled</option>
-                                <option>All</option>
-                              </select>
-                              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                <svg
-                                  className="fill-current h-4 w-4"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
                           {/* status */}
                           <div className="relative">
                             <div className="flex">
                               <select
-                                className=" h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className=" h-full rounded-r border-l border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 onChange={(e) => handleChange(e)}
                                 value={form.status_id}
                                 name="status_id"

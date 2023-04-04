@@ -20,6 +20,8 @@ Router.post('/sales-report', jwtVerify, transactionController.salesReport)
 Router.post('/sales-reportRoom', transactionController.salesReportByRoom)
 Router.post('/blocked-date', transactionController.blockedDate)
 Router.get('/get-blockedDate', transactionController.getBlockedDate)
+Router.post('/delete-date', transactionController.deleteBlockedDate)
+Router.post('/paid-orderList', jwtVerify, transactionController.paidOrderList)
 
 
 module.exports = Router;

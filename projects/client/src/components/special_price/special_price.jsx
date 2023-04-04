@@ -7,11 +7,15 @@ import Modal from "./../tenant/modal/modalTenant";
 import TenantCalendars from "components/tenant/calendar/tenant_calendar";
 import Date from "components/date/date";
 import {BsFillArrowUpSquareFill, BsFillArrowDownSquareFill} from "react-icons/bs"
+import BlockedDates from "./bloked_dates";
 
 function SpecialPrice() {
   const location = useLocation();
   const data = location?.state;
-  const id = data?.[0]?.id;
+  const id = data?.id;
+
+  console.log(data)
+  console.log(id)
 
   const [value, setValue] = useState(0);
   const [accommodation, setAccommodation] = useState([]);
@@ -113,7 +117,7 @@ function SpecialPrice() {
           name: form?.eventName,
           start_date: form?.start_date,
           end_date: form?.end_date,
-          room_id: data?.[0]?.id,
+          room_id: data?.id,
           discount: form?.discount,
           markup: form?.markup
         }
@@ -353,72 +357,10 @@ function SpecialPrice() {
                             </div>
                           </section>
                     </div>
-
-                    {/* <fieldset className="mt-8">
-                      <legend className=" text-base  text-1.5xl font-medium text-gray-900">
-                        Room Accommodation
-                      </legend>
-                      <div className="grid grid-cols-4 mt-2 space-y-2">
-                        {accommodation
-                          ? accommodation.map((value, idx) => {
-                              const isChecked =
-                                data?.[0]?.room_connectors?.some(
-                                  (connector) =>
-                                    Number(connector.room_accommodation_id) ===
-                                    Number(value.id)
-                                );
-                              return (
-                                <>
-                                  <div className="flex place-items-center">
-                                    <div className="flex items-center h-5">
-                                      <input
-                                        id={idx}
-                                        name="accommodation"
-                                        value={value.id}
-                                        defaultChecked={isChecked}
-                                        type="checkbox"
-                                        className="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300 rounded"
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                    <div className="ml-3 text-md">
-                                      <label
-                                        for="accommodation"
-                                        className="font-regular text-gray-700"
-                                      >
-                                        {value.name}
-                                      </label>
-                                    </div>
-                                  </div>
-                                </>
-                              );
-                            })
-                          : null}
-                      </div>
-                    </fieldset> */}
                   </div>
 
                   <div className="mx-4 my-4 py-3 bg-white flex justify-end sm:px-6">
                     <div className="">
-                      {/* <button
-                        type="button"
-                        className="inline-block mr-6 rounded my-bg-light px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal my-main shadow-lg transition duration-150 ease-in-out hover:bg-slate-200 "
-                        data-te-target="#deleteRoom"
-                        data-te-toggle="modal"
-                      >
-                        DELETE 
-                      </button>
-                    </div>
-
-                    <div className="">
-                      <button
-                        type="button"
-                        className="inline-block mr-6 rounded bg-[#c9403e] px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-danger-700 "
-                        data-te-target="#editRoomPicture"
-                        data-te-toggle="modal"
-                      >
-                        EDIT ROOM PICTURE
-                      </button> */}
                       <button
                         type="button"
                         className="inline-block rounded bg-success px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-success-600"
@@ -433,9 +375,9 @@ function SpecialPrice() {
             </div>
           </div>
         </div>
-        <Modal roomId={data?.[0]?.id} />
         <Toaster />
       </div>
+      <BlockedDates />
     </>
   );
 }
