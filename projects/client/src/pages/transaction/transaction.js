@@ -89,6 +89,7 @@ const Transaction = () => {
           order_id2: data?.order_id2 || null,
         })
         setDetails(res?.data?.data);
+        console.log(res)
       }
     } catch (error) {
       console.log(error.message);
@@ -166,13 +167,12 @@ const Transaction = () => {
 
   const handleClick = (event) =>{
     const respond = event.target.value
-    console.log(respond)
-    // setRespond(respond)
     acceptPayment(respond);
   }
 
   const acceptPayment = async(respond) => {
     try {
+      setLoading(true)
       const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/confirmation`,
       {
         users_id: details?.[0]?.users_id,
@@ -181,8 +181,6 @@ const Transaction = () => {
         order_id2: data?.order_id2 || null,
         respond: respond
       })
-
-      console.log(res.data.message)
       setTimeout(() => {
         toast.success(res.data.message)
         setPayment(true);
@@ -1027,13 +1025,13 @@ const Transaction = () => {
                         <div className="font-extrabold uppercase text-xl">
                           Order Details
                         </div>
-                        <button
+                        {/* <button
                           className="block max-w-xs mx-auto border border-transparent bg-[#c9403e] hover:bg-[#e58786]  text-white rounded-md px-5 py-2 font-semibold"
                           data-te-toggle="modal"
                           data-te-target="#cancelOrder"
                         >
                           Cancel Order
-                        </button>
+                        </button> */}
                       </div>
                     </>
                   )}

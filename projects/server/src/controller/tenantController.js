@@ -260,7 +260,7 @@ module.exports = {
     try {
       let findEmailAndPhoneNumber = await tenant.findOne({
         where: {
-          [Op.or]: [{ email: emailOrPhone }, { phone_number: emailOrPhone }],
+          [Op.or]: [{ email: emailOrPhone }, { phone_number: parseInt(emailOrPhone) }],
         },
       });
 

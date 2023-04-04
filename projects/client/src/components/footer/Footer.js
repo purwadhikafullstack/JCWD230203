@@ -32,7 +32,7 @@ const Footer = () => {
    {location.pathname === `/room-details/${id}` ? null :
     
     <>
-     <div className="bg-white border-t-2 shadow-md fixed shadow-gray-300 bottom-0 h-20 w-full hidden md:flex items-center justify-center gap-6 mt-20">
+     <div className="bg-white border-t-2 shadow-md shadow-gray-300 bottom-0 h-20 w-full hidden md:flex items-center justify-center gap-6 mt-20">
      <div className="text-[30px] text-gray-600 hover:text-black duration-100 ease-out ">
         <span className="flex pr-2">© {year} Vcation.inc</span> 
      </div>

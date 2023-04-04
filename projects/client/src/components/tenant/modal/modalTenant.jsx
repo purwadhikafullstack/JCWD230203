@@ -7,6 +7,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Loader from "./../../loader/loader";
 
 function ModalTenant(props) {
+  const data = {props}
+  const profile = data?.props?.details
   let getTokenId = localStorage.getItem("tokenTid");
   const { register, handleSubmit, reset } = useForm({});
   const [loading, setLoading] = useState(false);
@@ -15,6 +17,20 @@ function ModalTenant(props) {
   const [msg, setMsg] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
 
+  // const [profile, setProfile] = useState({
+  //   first_name: "",
+  //   last_name: "",
+  //   email: "",
+  //   gender: "",
+  //   phone_number: "",
+  //   status: "",
+  //   address: "",
+  //   birth_date: "",
+  //   picture_path: "",
+  // });
+
+  
+  console.log(profile)
 
   const navigate = useNavigate();
 
@@ -470,6 +486,41 @@ function ModalTenant(props) {
     }
   }
 
+  const deleteDates = async() => {
+    try {
+      setLoading(true);
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}transaction/delete-date`, {
+        start_date: data?.props?.data?.[0].start_blocked_date,
+        end_date: data?.props?.data?.[0].end_blocked_date,
+        room_id: data?.props?.data?.[0].room_id
+      })
+      console.log(res)
+
+      setTimeout(() => {
+        toast.success(res.data.message);
+      }, 5000);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000)
+      
+    } catch (error) {
+      setLoading(false);
+      if (
+        error.message === "Request failed with status code 400" ||
+        error.message === "Request failed with status code 404"
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
+    }finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
+  }
+
   useEffect(() => {
     if (loading) {
       setTimeout(() => {
@@ -555,7 +606,7 @@ function ModalTenant(props) {
                     type="text"
                     {...register("first_name")}
                     id="first_name"
-                    defaultValue={props?.details?.first_name}
+                    defaultValue={profile?.first_name}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
@@ -574,7 +625,7 @@ function ModalTenant(props) {
                     type="text"
                     {...register("last_name")}
                     id="last_name"
-                    defaultValue={props?.details?.last_name}
+                    defaultValue={profile?.last_name}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
                     {msg ? msg : null}
@@ -591,7 +642,7 @@ function ModalTenant(props) {
                     type="text"
                     {...register("email")}
                     id="email"
-                    defaultValue={props?.details?.email}
+                    defaultValue={profile?.email}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
@@ -609,7 +660,7 @@ function ModalTenant(props) {
                     type="number"
                     {...register("phone_number")}
                     id="phone_number"
-                    defaultValue={props?.details?.phone_number}
+                    defaultValue={profile?.phone_number}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
@@ -627,7 +678,7 @@ function ModalTenant(props) {
                     type="text"
                     {...register("address")}
                     id="address"
-                    defaultValue={props?.details?.address}
+                    defaultValue={profile?.address}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
@@ -645,7 +696,7 @@ function ModalTenant(props) {
                     type="date"
                     {...register("birth_date")}
                     id="birth_date"
-                    defaultValue={props?.details?.birth_date}
+                    defaultValue={profile?.birth_date}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
                   <div className=" text-red-700 text-sm font-semibold ">
@@ -1294,6 +1345,78 @@ function ModalTenant(props) {
                 data-te-ripple-init
                 data-te-ripple-color="light"
                 onClick={() => ondDeleteRoom()}
+              >
+                {loading ? <Loader /> : "Yes"} 
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      {/* Delete Date */}
+
+      <div
+        data-te-modal-init
+        class="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        id="deleteDates"
+        tabindex="-1"
+        aria-labelledby="deleteDates"
+        aria-hidden="true"
+      >
+        <div
+          data-te-modal-dialog-ref
+          class="pointer-events-none relative flex min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px]"
+        >
+          <div class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none ">
+            <div class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 ">
+              <div
+                class="text-xl font-medium leading-normal text-neutral-800 "
+                id="deleteDates"
+              >
+                Deleting Blocked Dates
+              </div>
+              <button
+                type="button"
+                class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                data-te-modal-dismiss
+                aria-label="Close"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="h-6 w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="relative flex-auto p-4" data-te-modal-body-ref>
+              <span className="my-main font-semibold">CAUTION !</span> After you deleting this Dates it can not be undone ! {" "}
+            </div>
+            <div class="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 ">
+              <button
+                type="button"
+                class="inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-emerald-accent-700 focus:bg-emerald-accent-700focus:outline-none focus:ring-0 active:bg-emerald-accent-700"
+                data-te-modal-dismiss
+                data-te-ripple-init
+                data-te-ripple-color="light"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                class="ml-1 inline-block rounded my-bg-main px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-rose-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-rose-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-rose-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                onClick={() => deleteDates()}
               >
                 {loading ? <Loader /> : "Yes"} 
               </button>

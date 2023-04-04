@@ -8,7 +8,7 @@ import Modal from "./../tenant/modal/modalTenant"
 function EditRoom() {
   const location = useLocation();
   const data = location?.state;
-  console.log(data);
+  console.log(data?.id);
 
   
   const [value, setValue] = useState(0);
@@ -21,11 +21,11 @@ function EditRoom() {
   const getTokenId = localStorage.getItem("tokenTid");
 
   const [form, setForm] = useState({
-    name: data?.[0]?.name,
-    description: data?.[0]?.description,
-    room: data?.[0]?.available_room,
-    accommodation: data?.[0]?.room_connectors,
-    price: data?.[0]?.price,
+    name: data?.name,
+    description: data?.description,
+    room: data?.available_room,
+    accommodation: data?.room_connectors,
+    price: data?.price,
   });
 
   console.log(form);
@@ -51,7 +51,7 @@ function EditRoom() {
             available_room: form?.room,
             room_accommodation: form?.accommodation,
             price: form?.price,
-            room_id: data?.[0].id
+            room_id: data?.id
         },
         {
           headers: {
@@ -91,6 +91,7 @@ function EditRoom() {
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
     let _form = { ...form };
+
     if (type === "checkbox") {
       if (checked) {
         _form[name] = [..._form[name], value];
@@ -113,6 +114,7 @@ function EditRoom() {
       const res = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}properties/room-accommodation`
       );
+      console.log(res)
       setAccommodation(res.data.data);
     } catch (error) {
       console.log(error);
@@ -200,7 +202,7 @@ function EditRoom() {
                       >
                         <span className="text-gray-400">You can change it anytime.</span>
                         <Link to="/dashboard-edit-price" state={data}>
-                        <span className="pointer my-main hover:text-rose-800 capitalize" role="button">Click Here for setting Special Price </span>
+                        <span className="pointer my-main hover:text-rose-800 capitalize" role="button">Click Here for setting Special Price & Block Dates</span>
                         </Link>
                       </label>
                       <div className="flex flex-wrap items-stretch w-full mb-4 relative">
@@ -220,7 +222,7 @@ function EditRoom() {
                         />
                         <div className="flex -mr-px">
                           <span className="flex items-center leading-normal rounded rounded-l-none border border-l-0 font-regular text-gray-700 border-gray-300 px-4 whitespace-no-wrap text-md">
-                            per night
+                            Per night
                           </span>
                         </div>
                       </div>
@@ -305,7 +307,7 @@ function EditRoom() {
                       {accommodation
                           ? accommodation.map((value, idx) => {
                               const isChecked =
-                                data?.[0]?.room_connectors?.some(
+                                data?.room_connectors?.some(
                                   (connector) =>
                                     Number(connector.room_accommodation_id) ===
                                     Number(value.id)
@@ -376,7 +378,7 @@ function EditRoom() {
             </div>
           </div>
         </div>
-        <Modal roomId={data?.[0]?.id}/>
+        <Modal roomId={data?.id}/>
         <Toaster />
       </div>
     </>

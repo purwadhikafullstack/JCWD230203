@@ -21,6 +21,7 @@ import {RiReservedFill} from "react-icons/ri"
 import {GiReceiveMoney} from "react-icons/gi"
 import {TbStarsFilled} from "react-icons/tb"
 import SalesReportRoom from "components/sales_report_room/sales_report_room";
+import Homepage from "components/tenant/homepage/homepage";
 
 
 export default function Dashboard(props) {
@@ -130,6 +131,7 @@ export default function Dashboard(props) {
     }
   }
 
+  console.log(report)
   const tenantProperty = async () => {
     try {
       const res = await axios.post(
@@ -176,10 +178,15 @@ export default function Dashboard(props) {
     <>
       <Sidebar />
       <div className="relative md:ml-64 bg-blueGray-100">
-        <Navbar username={username} picture={picture} isRedirect={redirect} />
+        <Navbar username={username} picture={picture} isRedirect={redirect} property={property}/>
 
         {localStorage.getItem("tokenTid") ? (
           <>
+           {property.length === 0 ? 
+           <>
+           <Homepage />
+           </> : 
+           <>
             {dashboard && (
               <>
                 {/* Header */}
@@ -314,11 +321,12 @@ export default function Dashboard(props) {
                 {/* Chart */}
                 <div className="px-4 md:px-10 mx-auto w-full -m-24">
                   <div className="flex flex-wrap">
-                    <LineChart report={report} />
-                    <BarChart report={report} />
+                    {/* <LineChart report={report} /> */}
+                    {/* <BarChart report={report} /> */}
                   </div>
                   <div className="flex flex-wrap mt-4">
-                    <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
+                    {report.length === 0 ? "tes" :
+                     <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
                       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
                         <div className="rounded-t mb-0 px-4 py-3 border-0">
                           <div className="flex flex-wrap items-center">
@@ -379,78 +387,82 @@ export default function Dashboard(props) {
                               }): null}
                             </tbody>
                           </table>
-                        </div>
+                        </div> 
                       </div>
-                    </div>
+                    </div>}
+
+                    
+                    {property.length === 0 ? "tes" : 
                     <div className="w-full xl:w-6/12 px-4 mb-24 md:mb-0">
-                      <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
-                        <div className="rounded-t mb-0 px-4 py-3 border-0">
-                          <div className="flex flex-wrap items-center">
-                            <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                              <h3 className="font-semibold text-base text-blueGray-700">
-                                Property Review
-                              </h3>
-                            </div>
-                            <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                            <Link to={'/dashboard-propertylist'} >
-                              <button
-                                className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1"
-                                type="button"
-                                style={{ transition: "all .15s ease" }}
-                              >
-                                See all
-                              </button>
-                              </Link>
-                            </div>
+                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+                      <div className="rounded-t mb-0 px-4 py-3 border-0">
+                        <div className="flex flex-wrap items-center">
+                          <div className="relative w-full px-4 max-w-full flex-grow flex-1">
+                            <h3 className="font-semibold text-base text-blueGray-700">
+                              Property Review
+                            </h3>
+                          </div>
+                          <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                          <Link to={'/dashboard-propertylist'} >
+                            <button
+                              className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1"
+                              type="button"
+                              style={{ transition: "all .15s ease" }}
+                            >
+                              See all
+                            </button>
+                            </Link>
                           </div>
                         </div>
-                        <div className="block w-full overflow-x-auto">
-                          {/* Projects table */}
-                          <table className="items-center w-full bg-transparent border-collapse">
-                            <thead className="thead-light">
-                              <tr>
-                                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Property
-                                </th>
-                                <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                  Type
-                                </th>
-                                <th
-                                  className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
-                                  style={{ minWidth: "140px" }}
-                                >Start From</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {property ? property.map((value, idx) => {
-                                console.log(value)
-                                  return(
-                                    <>
-                                    <tr>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                  {value?.name}
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  {value?.type?.name}
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  <div className="flex items-center">
-                                    <span className="mr-2">Rp. {value?.rooms?.[1]?.price?.toLocaleString()}</span>
-                                  </div>
-                                </td>
-                              </tr>
-                                    </>
-                                  )
-                              }) : null}
-                            </tbody>
-                          </table>
-                        </div>
+                      </div>
+                      <div className="block w-full overflow-x-auto">
+                        {/* Projects table */}
+                        <table className="items-center w-full bg-transparent border-collapse">
+                          <thead className="thead-light">
+                            <tr>
+                              <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                Property
+                              </th>
+                              <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                Type
+                              </th>
+                              <th
+                                className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+                                style={{ minWidth: "140px" }}
+                              >Start From</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {property ? property.map((value, idx) => {
+                              console.log(value)
+                                return(
+                                  <>
+                                  <tr>
+                              <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                                {value?.name}
+                              </th>
+                              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                {value?.type?.name}
+                              </td>
+                              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                <div className="flex items-center">
+                                  <span className="mr-2">Rp. {value?.rooms?.[1]?.price?.toLocaleString()}</span>
+                                </div>
+                              </td>
+                            </tr>
+                                  </>
+                                )
+                            }) : "tes"}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
+                  </div>}
                   </div>
                 </div>
               </>
             )}
+           </>}
           </>
         ) : null}
 
@@ -459,131 +471,6 @@ export default function Dashboard(props) {
           <>
             {reservation && (
               <>
-                <div className="relative my-bg-main md:pt-32 pb-32 pt-12">
-                  <div className="px-4 md:px-10 mx-auto w-full">
-                    <div>
-                      {/* Card stats */}
-                      <div className="flex flex-wrap">
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                            <div className="flex-auto p-4">
-                              <div className="flex flex-wrap">
-                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                                  <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Booked
-                                  </h5>
-                                  <span className="font-semibold text-xl text-blueGray-700">
-                                    350,897
-                                  </span>
-                                </div>
-                                <div className="relative w-auto pl-4 flex-initial">
-                                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-red-500">
-                                    <i className="far fa-chart-bar"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
-                                <span className="text-emerald-500 mr-2">
-                                  <i className="fas fa-arrow-up"></i> 3.48%
-                                </span>
-                                <span className="whitespace-nowrap">
-                                  Since last month
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                            <div className="flex-auto p-4">
-                              <div className="flex flex-wrap">
-                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                                  <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Average Renters
-                                  </h5>
-                                  <span className="font-semibold text-xl text-blueGray-700">
-                                    2,356
-                                  </span>
-                                </div>
-                                <div className="relative w-auto pl-4 flex-initial">
-                                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-orange-500">
-                                    <i className="fas fa-chart-pie"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
-                                <span className="text-red-500 mr-2">
-                                  <i className="fas fa-arrow-down"></i> 3.48%
-                                </span>
-                                <span className="whitespace-nowrap">
-                                  Since last week
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                            <div className="flex-auto p-4">
-                              <div className="flex flex-wrap">
-                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                                  <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Sales
-                                  </h5>
-                                  <span className="font-semibold text-xl text-blueGray-700">
-                                    924
-                                  </span>
-                                </div>
-                                <div className="relative w-auto pl-4 flex-initial">
-                                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-pink-500">
-                                    <i className="fas fa-users"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
-                                <span className="text-orange-500 mr-2">
-                                  <i className="fas fa-arrow-down"></i> 1.10%
-                                </span>
-                                <span className="whitespace-nowrap">
-                                  Since yesterday
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
-                          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                            <div className="flex-auto p-4">
-                              <div className="flex flex-wrap">
-                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                                  <h5 className="text-blueGray-400 uppercase font-bold text-xs">
-                                    Performance
-                                  </h5>
-                                  <span className="font-semibold text-xl text-blueGray-700">
-                                    49,65%
-                                  </span>
-                                </div>
-                                <div className="relative w-auto pl-4 flex-initial">
-                                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full bg-lightBlue-500">
-                                    <i className="fas fa-percent"></i>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className="text-sm text-blueGray-400 mt-4">
-                                <span className="text-emerald-500 mr-2">
-                                  <i className="fas fa-arrow-up"></i> 12%
-                                </span>
-                                <span className="whitespace-nowrap">
-                                  Since last month
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <Reservation />
               </>
             )}

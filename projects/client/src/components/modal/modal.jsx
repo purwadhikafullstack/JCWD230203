@@ -25,38 +25,9 @@ function Modal(props) {
 
   const navigate = useNavigate();
 
-  console.log(props)
-
 
   const bookedRoom = async () => {
-    // const date1 = new Date(props?.endDate);
-    // const setDate1 = date1
-    //   .toLocaleDateString("en-US", {
-    //     year: "numeric",
-    //     month: "2-digit",
-    //     day: "2-digit",
-    //   })
-    //   .replace(/\//g, "-");
-    // const dateStr = setDate1;
-    // const dateParts = dateStr.split("-");
-    // const year = dateParts[2];
-    // const month = dateParts[0];
-    // const day = dateParts[1];
     const endDate = `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`;
-
-    // const date2 = new Date(props?.startDate);
-    // const setDate2 = date2
-    //   .toLocaleDateString(`en-US`, {
-    //     year: "numeric",
-    //     month: "2-digit",
-    //     day: "2-digit",
-    //   })
-    //   .replace(/\//g, "-");
-    // const dateStr2 = setDate2;
-    // const dateParts2 = dateStr2.split("-");
-    // const year2 = dateParts2[2];
-    // const month2 = dateParts2[0];
-    // const day2 = dateParts2[1];
     const startDate = `${props?.endDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`;
 
     try {
@@ -460,7 +431,7 @@ function Modal(props) {
                     defaultValue={props?.profile?.first_name}
                     onChange={(e) => validateProfile(e.target.value)}
                   />
-                  <div className=" text-sm font-semibold ">
+                  <div className="text-red-700 text-sm font-semibold ">
                     {msg ? msg : null}
                   </div>
                   {/* last_name */}

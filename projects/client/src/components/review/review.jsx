@@ -25,6 +25,7 @@ function Review(props) {
       const res = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}properties/reviews?room_id=${id}&page=${currentPage}`
       );
+      console.log(res)
       setTotalPages(res.data.total_pages);
       setReview(res.data.data);
     } catch (error) {

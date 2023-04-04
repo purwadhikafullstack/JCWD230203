@@ -379,6 +379,8 @@
                           <li>No illegal substances allowed on the premises.</li>
                         </ul>
                         <p style="font-size: 16px; line-height: 1.5;">Thank you for your cooperation and enjoy your stay!</p>
+
+                        <p style="font-size: 16px; line-height: 1.5; padding-top: 10px;">You will stay at {{propertyName}}, With Room Type {{name}}. Start From {{newCheckIn}} Until {{newCheckOut}}</p>
                               </td>
                             </tr>
                           </table>
@@ -389,29 +391,69 @@
                 </td>
               </tr>
 
-              <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                <tbody>
+               <!-- start receipt table -->
+          <tr>
+            <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="left" bgcolor="#D2C7BA" width="75%" style="padding: 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;"><strong>Order ID</strong></td>
+                  <td align="left" bgcolor="#D2C7BA" width="25%" style="padding: 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;"><strong>{{order}}</strong></td>
+                </tr>
+                <tr>
+                  <td align="left" width="75%" style="padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">Price Per night</td>
+                  <td align="left" width="25%" style="padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">Rp. {{price}}</td>
+                </tr>
+                <tr>
+                  <td align="left" width="75%" style="padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">Guest</td>
+                  <td align="left" width="25%" style="padding: 6px 12px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">{{guest}} Person(s)</td>
+                </tr>
+                <tr>
+                  <td align="left" width="75%" style="padding: 12px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-top: 2px dashed #D2C7BA; border-bottom: 2px dashed #D2C7BA;"><strong>Total</strong></td>
+                  <td align="left" width="25%" style="padding: 12px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-top: 2px dashed #D2C7BA; border-bottom: 2px dashed #D2C7BA;"><strong>Rp. {{totalPrice}}</strong></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- start receipt address block -->
+    <tr>
+      <td align="center" bgcolor="#D2C7BA" valign="top" width="100%">
+
+        <table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+          <tr>
+            <td align="center" valign="top" style="font-size: 0; border-bottom: 3px solid #d4dadf">
+              <div style="display: inline-block; width: 100%; max-width: 50%; min-width: 240px; vertical-align: top;">
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 300px;">
                   <tr>
-                    <td>
-                      <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
-                        <tbody>
-                          <tr>
-                            <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                              <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                <tr>
-                                  <td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-                                    <div class="alignment" align="center" style="line-height:10px"><img class="big" src="rules.webp" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" width="680" alt="Top round corners" title="Top round corners"></div>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <td align="left" valign="top" style="padding-bottom: 36px; padding-left: 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                      <p><strong>Property Address</strong></p>
+                      <p>{{address}}</p>
                     </td>
                   </tr>
-                </tbody>
-              </table>
+                </table>
+              </div>
+
+              <div style="display: inline-block; width: 100%; max-width: 50%; min-width: 240px; vertical-align: top;">
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 300px;">
+                  <tr>
+                    <td align="left" valign="top" style="padding-bottom: 36px; padding-left: 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                      <p><strong>Billing Address</strong></p>
+                      <p>1234 S. Broadway Ave<br>Unit 2<br>Denver, CO 80211</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>  
+      </td>
+    </tr>
+    <!-- end receipt address block -->
+        </table>
+      </td>
+    </tr>
+    <!-- end copy block -->
+
+    
 
             <!-- END MAIN CONTENT AREA -->
             </table>

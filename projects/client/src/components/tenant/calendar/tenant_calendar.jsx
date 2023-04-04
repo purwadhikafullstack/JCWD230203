@@ -63,7 +63,7 @@ export default function TenantCalendars(props){
   let onCreateCalendar = async(btn, year1 = new Date().getUTCFullYear(), month1 = new Date().getMonth() + 1) => {
     try {
       const rates = await axios.get(`${process.env.REACT_APP_API_BASE_URL}transaction/rates?room_id=${id}`)
-      const blockedDate = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/transaction/get-blockedDate?room_id=${id}`)
+      const blockedDate = await axios.get(`${process.env.REACT_APP_API_BASE_URL}transaction/get-blockedDate?room_id=${id}`)
       console.log(rates)
 
       if(btn === '+'){ // Apabila user meng-klik button "next"

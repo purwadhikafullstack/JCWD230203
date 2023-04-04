@@ -837,11 +837,12 @@ module.exports = {
     const {
       name,
       description,
-      available_room,
+      available_room = 2,
       room_accommodation,
       price,
       room_id,
     } = req.body;
+    console.log(req.body)
 
     const t = await sequelize.transaction();
     try {
@@ -850,6 +851,7 @@ module.exports = {
         transaction: t,
       });
 
+
       if (!room) {
         return res.status(404).send({
           isError: true,
@@ -857,6 +859,16 @@ module.exports = {
           data: null,
         });
       }
+
+      if(!room.price){
+        return res.status(404).send({
+          isError: true,
+          message: `Please Set The Price again`,
+          data: null,
+        });
+      }
+
+      console.log(price)
 
       room.name = name;
       room.description = description;
@@ -1021,7 +1033,7 @@ module.exports = {
         { transaction: t }
       );
 
-      // await t.commit()
+      await t.commit()
 
       return res.status(200).send({
         isError: false,
@@ -1163,6 +1175,14 @@ module.exports = {
         });
       }
 
+      if(comment.length === 0){
+        return res.status(400).send({
+          isError: true,
+          message: "Please fill the Comment",
+          data: null
+        })
+      }
+
       if(rating === 0){
           return res.status(400).send({
             isError: true,
@@ -1171,14 +1191,12 @@ module.exports = {
           })
       }
 
-
-      const history = await db.transactions_history.findOne({
-        where: { id: room.dataValues.id },
-      });
+      // const history = await db.transactions_history.findOne({
+      //   where: { transactions_id: room.dataValues.id },
+      // });
 
       const findRoom = await db.room.findOne({ where: { id: room_id } });
 
-      console.log(room)
       // Add validation for checkout date
     if (!room.dataValues.check_out || room.dataValues.check_out > new Date()) {
       return res.status(400).send({
@@ -1207,6 +1225,8 @@ module.exports = {
         });
       }
 
+      console.log(room.dataValues.id)
+
       // create Review
       const review = await db.review.create(
         {
@@ -1214,7 +1234,7 @@ module.exports = {
           room_id,
           rating,
           review: comment,
-          transactions_history_id: history.dataValues.id,
+          // transactions_history_id: history.dataValues.id,
         },
         { transaction: t }
       );
@@ -1259,10 +1279,6 @@ module.exports = {
       const reviews = await db.review.findAll({
         where: { room_id },
         include: [
-          {
-            model: db.transactions_history,
-            include: { model: db.transactions },
-          },
           { model: db.users, include: { model: db.users_details } },
         ],
         offset,
@@ -1446,5 +1462,6 @@ module.exports = {
     }
   },
 
+  
 
 };
