@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import AptJktKbyBrBtnMtr from "../../supports/assets/apartment-jakarta-kbybaru-botanica-master-2-1.webp";
 import Bca from "../../supports/assets/bcavector.png";
 import Bri from "../../supports/assets/bankbri.png";
-import { format } from "date-fns";
 import axios from "axios";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "components/loader/loader";
 import Modal from "./../../components/modal/modal";
@@ -13,22 +11,16 @@ import { Link } from "react-router-dom";
 const Transaction = () => {
   const [details, setDetails] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [respond, setRespond] = useState("")
   const [timer, setTimer] = useState(null)
   const [loading, setLoading] = useState(false);
   const [payment, setPayment] = useState(false);
   const [role, setRole] = useState("")
   const data = useParams();
   const location = useLocation()
-  console.log(location)
   const users_id = location?.state;
   const navigate = useNavigate();
   const tenant = location.pathname === `/tenant-transaction/${data?.id}/${data?.order_id}`
   const user = location.pathname === `/transaction/${data?.id}/${data?.order_id}` || location.pathname ===`/transaction/${data?.id}/${data?.order_id1}/${data?.order_id2}`
-  // const currentTime = new Date().getTime();
-  // const expiredTime = new Date(details?.[0]?.expired).getTime();
-  // const paymentDueTime = expiredTime + (2 * 60 * 60 * 1000); // 2 hours in milliseconds
-  // const remainingTime = paymentDueTime - currentTime
 
   const startDate = details?.[0]?.check_in?.split("T")[0].split("-")[2]
   const endDate = details?.[0]?.check_out?.split("T")[0].split("-")[2]
@@ -232,41 +224,7 @@ const Transaction = () => {
       }
     }, 1000);
   }
-//   const paymentDue = () => {
-//   const timeZone = "Asia/Jakarta"; // replace with your timezone
-//   const now = new Date().toLocaleString("en-US", { timeZone });
-//   const expired = new Date(details?.[0]?.expired)
-//   const countDown = new Date(now).getTime() + (2 * 60 * 60 * 1000)
-//   const intervalId = setInterval(() => {
-//     const currentTime = new Date().toLocaleString("en-US", { timeZone });
-//     const distance = countDown - new Date(currentTime).getTime();
-//     console.log(distance)
-//     if(distance <= 0){
-//       clearInterval(intervalId)
-//       setTimer("Your time is up!");
-//     } else {
-//       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-//       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-//       if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-//         console.log("masuk")
-//         clearInterval(intervalId);
-//         setTimer("Your time is up!");
-//       } else {
-//         setTimer(`${hours} hours, ${minutes} minutes, ${seconds} seconds`);
-//       }
-//     }
-//   }, 1000);
-// }
 
-
-
-  // if (payment) {
-  //   setTimeout(() => {
-  //     navigate("/user-profile");
-  //   }, 5000);
-  // }
-  console.log(details)
 
   return (
     <>
