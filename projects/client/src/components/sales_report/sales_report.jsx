@@ -69,12 +69,12 @@ function SalesReport(){
             {/* <NavbarDashboard /> */}
   
             {/* isi dashboard background*/}
-            {/* <div className="sm:mx-6 md:mx-3 lg:mx-12 px-3 w-full"> */}
+            
             <div
               id="main-content"
               className="h-full w-full bg-transparent rounded-lg relative overflow-y-auto z-0 "
             >
-              {/* <div className="py-4 pb-20 px-4"> */}
+              
               {/* isi dashboard data*/}
   
               <body className="antialiased bg-transparent">
