@@ -154,7 +154,7 @@ const Rental = () => {
       </div>
 
       {/* Description */}
-      <div className="container px-4 py-6 mx-auto lg:py-12 xs:mt-[300px] sm:mt-[800px] md:mt-[700px] lg:mt-[650px] xl:mt-[500px]">
+      <div className="container px-4 py-6 mx-auto lg:py-12 sm:mt-[800px] md:mt-[700px] lg:mt-[650px] xl:mt-[500px]">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-2">Property Descriptions</h2>
           <p className="text-gray-500 my-main">

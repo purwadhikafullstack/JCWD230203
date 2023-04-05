@@ -85,39 +85,14 @@ const CalendarFunc = (props) => {
         }
       }
 
-      // let calculate = 0;
-      // days.forEach((val) => {
-      //   if (
-      //     new Date(`${val.year}-${val.month}-${val.date}`).getTime() /
-      //       86400000 >=
-      //       new Date(
-      //         `${startDate?.year}-${startDate?.month}-${startDate?.date}`
-      //       ).getTime() /
-      //         86400000 &&
-      //     new Date(`${val.year}-${val.month}-${val.date}`).getTime() /
-      //       86400000 <=
-      //       new Date(`${year}-${month}-${value}`).getTime() / 86400000
-      //   ) {
-      //     if (val?.discount === 0 && val?.markup === 0)
-      //       calculate += props.details[0].price;
-      //     if (val?.discount > 0)
-      //       calculate +=
-      //         props.details[0].price -
-      //         props.details[0].price * (val?.discount / 100);
-      //     if (val?.markup > 0)
-      //       calculate +=
-      //         props.details[0].price +
-      //         props.details[0].price * (val?.markup / 100);
-      //   }
-      // });
-
       setTotalPrice(calculate);
       setEndDate({ date: value, month: month, year: year });
     }
   };
 
   return (
-    <div className="flex justify-end  calendarHolder calendarHolder2">
+    <>
+    <div className="flex justify-end absolute w-fit">
       <Toaster />
       {props.buttonopenState && (
         <Calendars
@@ -129,11 +104,13 @@ const CalendarFunc = (props) => {
       )}
 
       {props.buttonopenState && (
-        <button className="close-cal rounded-xl" onClick={props.closeFunc}>
+        <button
+          className="my-bg-main h-14 w-48 transition duration-400 font-semibold text-lg text-white relative top-[650px] left-[150px] -translate-x-1/2 rounded-xl"
+          onClick={props.closeFunc}
+        >
           Close calendar
         </button>
       )}
-
 
       {totalDays > 0 && (
         <button
@@ -141,11 +118,16 @@ const CalendarFunc = (props) => {
           data-te-toggle="modal"
           className={
             props.buttonCloseState === false
-              ? "checkout-btn-after"
-              : "checkout-btn"
+              ? "my-bg-main h-14 w-48 transition duration-400 font-semibold text-lg text-white relative top-[650px] left-[-43px] -translate-x-1/2 rounded-xl"
+              : "my-bg-main h-14 w-48 transition duration-400 font-semibold text-lg text-white relative top-[650px] left-[-43px] -translate-x-1/2 rounded-xl"
           }
         >
-          <Modal
+          Proceed To checkout
+        </button>
+      )}
+    </div>
+    <div className="">
+    <Modal
             daysCheck={totalDays}
             placeId={room_id}
             price={totalPrice}
@@ -154,10 +136,8 @@ const CalendarFunc = (props) => {
             details={props?.details}
             totalGuest={props?.totalGuest}
           />
-          Proceed To checkout
-        </button>
-      )}
     </div>
+    </>
   );
 };
 

@@ -836,7 +836,7 @@ function Modal(props) {
       {/* Transaction modal */}
       <div
         data-te-modal-init
-        className="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        className="fixed top-[100px] left-[55px] md:top-0 md:left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
         id="transaction"
         data-te-backdrop="static"
         data-te-keyboard="false"
@@ -958,6 +958,7 @@ function Modal(props) {
                 className="ml-1 inline-block rounded my-bg-button-dark px-6 pt-2.5 pb-2 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-emerald-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-emerald-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-emerald-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                 data-te-ripple-init
                 data-te-ripple-color="light"
+                data-te-modal-dismiss
                 onClick={bookedRoom}
               >
                 {loading ? (

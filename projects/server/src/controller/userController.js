@@ -359,7 +359,7 @@ module.exports = {
     try {
       let findEmailAndPhoneNumber = await users.findOne({
         where: {
-          [Op.or]: [{ email: emailOrPhone }, { phone_number: parseInt(emailOrPhone) }],
+          [Op.or]: [{ email: emailOrPhone }, { phone_number: parseInt(emailOrPhone) || emailOrPhone }],
         },
       });
 

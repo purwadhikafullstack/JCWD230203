@@ -102,7 +102,7 @@ const Type = (props) => {
   ];
   return (
     <div className="flex justify-center items-center">
-      <div className="grid grid-cols-2 gap-2 mb-[50px] sm:flex md:mb-0 justify-center gap-1 sm:gap-4 h-8 my-4">
+      <div className="grid grid-cols-2 gap-2 mb-[50px] sm:flex md:mb-10 justify-center gap-1 sm:gap-4 h-8 my-4">
         {sorting.map((obj, index) => (
           <Link to={`/category/${index + 1}`} key={index}>
             <Filter
@@ -138,7 +138,7 @@ const Type = (props) => {
 
         <div>
         <div
-          className="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-fit md:h-1/3 md:h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding  text-neutral-700 shadow-sm outline-none transition duration-300 ease-in-out dark:bg-neutral-800 dark:text-neutral-200 [&[data-te-offcanvas-show]]:transform-none"
+          className="invisible fixed bottom-0 top-0 left-0 right-0 z-[1045] flex h-fit md:h-1/3 md:h-32 max-w-full -translate-y-full flex-col border-none bg-white bg-clip-padding text-black shadow-sm outline-none transition duration-300 ease-in-out [&[data-te-offcanvas-show]]:transform-none"
           tabindex="-1"
           id="offcanvasTop"
           aria-labelledby="offcanvasTopLabel"
@@ -253,7 +253,7 @@ const Type = (props) => {
                         name="checked"
                       />
                       <label
-                        className="form-check-label inline-block text-white"
+                        className="form-check-label inline-block text-black"
                         for="ascending"
                       >
                         Asc
@@ -268,7 +268,7 @@ const Type = (props) => {
                         name="checked"
                       />
                       <label
-                        className="form-check-label inline-block text-white"
+                        className="form-check-label inline-block text-black"
                         for="descending"
                       >
                         Desc
