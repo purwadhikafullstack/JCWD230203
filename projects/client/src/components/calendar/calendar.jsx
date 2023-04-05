@@ -250,7 +250,7 @@ useEffect(() => {
     <>
     {/* Room Details */}
     {roomDetails &&
-    <div className="side-box-card bg-red-300 w-[300px] h-[400px] ">
+    <div className="bg-red-300 w-[300px] h-[402px] absolute top-[240px] bg-white w-max h-96 left-[-10px] md:left-[-35px] border border-gray-300 rounded-lg shadow-md p-[24px] z-[1045]">
     {console.log(props?.details)}
     <h1 className="text-3xl font-bold mb-3">Calendar</h1>
     <h5 className="text-lg font-medium mb-3">
@@ -301,7 +301,7 @@ useEffect(() => {
                       <div className={value.date < now.date && month <= now.month && year <= now.year? "text-sm text-center text-gray-200" : "text-sm text-center"}>
                       {value?.date}
                       </div>
-                      <div className={value.date < now.date && month <= now.month && year <= now.year? "text-xs text-gray-200" : value?.discount? "text-xs text-green-500" : value?.markup? "text-xs text-red-500" : "text-xs"}>
+                      <div className={value.date < now.date && month <= now.month && year <= now.year? "text-xs text-gray-200" : value?.discount? "text-xs text-green-500" : value?.markup? "text-xs text-red-500" : "text-xs opacity-50"}>
                         {value?.discount? (props?.details?.[0]?.price - (props?.details?.[0]?.price * (value?.discount/100))).toString().slice(0, 3) : value?.markup? (props?.details?.[0]?.price + (props?.details?.[0].price * (value?.markup/100))).toString().slice(0, 3) : props?.details?.[0]?.price.toString().slice(0, 3)  }
                       </div>
                     </div>

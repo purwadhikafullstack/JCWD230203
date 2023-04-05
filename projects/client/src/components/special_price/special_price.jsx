@@ -254,8 +254,8 @@ function SpecialPrice() {
                         >
                           Choose only one
                         </label>
-                        <div className="flex justify-center mt-3">
-                          <div className="mr-[350px]">
+                        <div className="flex md:justify-center mt-3 pl-5 md:pl-0">
+                          <div className="mr-[100px] md:mr-[350px]">
                             <label
                               for="discount"
                               className="block text-md font-medium text-gray-400"
@@ -266,7 +266,7 @@ function SpecialPrice() {
                           <div className="">
                             <label
                               for="markup"
-                              className="block text-md font-medium text-gray-400"
+                              className="block text-md font-medium text-gray-400 pr-10"
                             >
                               Markup percentage
                             </label>

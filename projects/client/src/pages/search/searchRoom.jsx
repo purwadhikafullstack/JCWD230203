@@ -22,6 +22,12 @@ function SearchRoom() {
   priceMax &&
   sortOrder;
 
+  const priceMinNumber = Number(priceMin);
+  const priceMaxNumber = Number(priceMax);
+  
+  const formattedPriceMin = priceMinNumber.toLocaleString();
+  const formattedPriceMax = priceMaxNumber.toLocaleString();
+
   const [room, setRoom] = useState([]);
   const [property, setProperty] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +38,6 @@ function SearchRoom() {
         const res = await axios.get(
           `${process.env.REACT_APP_API_BASE_URL}properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
         );
-        console.log(res.data)
         setRoom(res.data.data);
 
       } else {
@@ -40,7 +45,6 @@ function SearchRoom() {
           `${process.env.REACT_APP_API_BASE_URL}properties/search-date?check_in=${startDate}&check_out=${endDate}&city=${location}&page=${currentPage}`
         );
         setProperty(response.data.data);
-        // console.log(response.data)
       }
     };
     getData();
@@ -52,8 +56,8 @@ function SearchRoom() {
 
         {room.length === 0 ? null :
          <div className="flex justify-center items-center my-10">
-         <div className="text-2xl ">
-           Room List Available ..
+         <div className="text-2xl capitalize">
+           You Are Searching In Area {propertyName}, with price Range From Rp. {formattedPriceMin} - Rp. {formattedPriceMax}
          </div>
        </div>
         }
@@ -94,10 +98,10 @@ function SearchRoom() {
                       <Link to={`/room-details/${room.id}`} className="mt-2">
                         <button
                           type="button"
-                          className="inline-block rounded-full border-2 border-success px-6 pt-2 pb-[6px] text-xs font-medium uppercase leading-normal text-success transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
+                          className="inline-block rounded-full border-2 my-bg-button-dark px-6 pt-2 pb-[6px] text-xs font-semibold uppercase leading-normal text-white transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
                           data-te-ripple-init
                         >
-                          Book now !
+                         See the Room!
                         </button>
                       </Link>
                     </div>
@@ -110,8 +114,8 @@ function SearchRoom() {
          
         {property.length === 0 ? null :
           <div className="flex justify-center items-center my-10">
-          <div className="text-2xl ">
-            Property List Available ..
+          <div className="text-2xl capitalize fonst-semibold">
+            You Are Searching property starting from {startDate} until {endDate}
           </div>
         </div>}
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-4 justify-center my-4 mx-10">
@@ -152,10 +156,10 @@ function SearchRoom() {
                       <Link to={`/details/${value?.property_id}`} className="mt-2">
                         <button
                           type="button"
-                          className="inline-block rounded-full border-2 border-success px-6 pt-2 pb-[6px] text-xs font-medium uppercase leading-normal text-success transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
+                          className="inline-block rounded-full border-2 my-bg-button-dark px-6 pt-2 pb-[6px] text-xs font-semibold uppercase leading-normal text-white transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
                           data-te-ripple-init
                         >
-                          Book now !
+                          See the Room!
                         </button>
                       </Link>
                     </div>
@@ -170,30 +174,3 @@ function SearchRoom() {
 }
 
 export default SearchRoom;
-
-// const onGetData = async () => {
-//   try {
-//     const res = await axios.get(
-//       `${process.env.REACT_APP_API_BASE_URL}properties/search-rooms?property_name=${propertyName}&price_min=${priceMin}&price_max=${priceMax}&sort_order=${sortOrder}`
-//     );
-//     console.log(res.data);
-
-//     setRoom(res.data.data);
-//     //   const searchData = res.data;
-//     //   const searchParams = new URLSearchParams({
-//     //     property_name: form.property_name,
-//     //     price_min: form.price_min,
-//     //     price_max: form.price_max,
-//     //     sort_order: form.ascending ? form.ascending : form.descending,
-//     //     ...searchData
-//     //   });
-//     //   const redirectUrl = `/search-results?${searchParams.toString()}`;
-//     //   window.location.href = redirectUrl;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// useEffect(() => {
-//   onGetData();
-// }, []);
