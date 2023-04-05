@@ -18,6 +18,8 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use('/Public/',express.static(__dirname + '/Public'))
+
 //#region API ROUTES
 const {userRouter, tenantRouter, propertyRouter, transactionRouter} = require('./router')
 app.use('/users', userRouter)
