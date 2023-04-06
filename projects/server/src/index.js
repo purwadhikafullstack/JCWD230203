@@ -6,6 +6,8 @@ const { join } = require("path");
 const PORT = process.env.PORT || 8000;
 const app = express();
 
+app.use('/Public/',express.static(__dirname + '/Public'))
+
 app.use(cors());
 // app.use(
 //   cors({
