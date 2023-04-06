@@ -9,6 +9,6 @@ module.exports = {
     },
 
     validateToken: (token) => {
-        return webToken.verify(token,  process.env.JWT_KEY)
+        return webToken.verify(token,  'rahasia')
     }
 }
