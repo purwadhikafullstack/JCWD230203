@@ -16,27 +16,24 @@ const SinglePage = (props) => {
   const defaultImg = details?.[0]?.room_images?.[0]?.image_path;
   const [defaultImage, setDefaultImage] = useState(defaultImg);
   const [isRates, setIsRates] = useState([]);
-  const [value, setValue] = useState(1)
+  const [value, setValue] = useState(1);
   const [discount, setDiscount] = useState(0);
   const [days, setDays] = useState(0);
   const params = useParams();
   const { id } = params;
 
-
-
   let onSelectedDate = (discount, daysCheck, rates) => {
-    console.log(daysCheck)
+    console.log(daysCheck);
     setIsRates(rates);
     setDiscount(discount);
     setDays(daysCheck);
   };
 
-
-  console.log(details)
+  console.log(details);
 
   let onChange = (value) => {
-    setValue(value)
-  }
+    setValue(value);
+  };
   const getImageSrcHandler = (e) => {
     setDefaultImage(e.target.src);
     setActiveImg(true);
@@ -62,10 +59,8 @@ const SinglePage = (props) => {
     setButtonOpen(false);
   };
 
-
   return (
     <>
-      <div>
         <div className="flex justify-center text-3xl mb-3 ">
           <div className="wrapper flex justify-center items-center">
             {/* Carousel */}
@@ -83,9 +78,9 @@ const SinglePage = (props) => {
                       />
                     ) : (
                       <img
-                        src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${
-                          defaultImg || { defaultImg }
-                        }`}
+                        src={`${
+                          process.env.REACT_APP_API_BASE_URL
+                        }Public/PROPERTY/${defaultImg || { defaultImg }}`}
                         className="single-page-main-pic cursor-pointer"
                       />
                     )}
@@ -95,10 +90,7 @@ const SinglePage = (props) => {
                         {
                           return value.room_images.map((val) => {
                             return (
-                              <div
-                                className=""
-                                key={val.id}
-                              >
+                              <div className="" key={val.id}>
                                 <img
                                   src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${val.image_path}`}
                                   className="w-40 object-cover rounded-xl cursor-pointer single-page-pic"
@@ -118,135 +110,125 @@ const SinglePage = (props) => {
           </div>
         </div>
 
-        <p className="features-text text-2xl font-semibold uppercase">
-          Entire rental unit hosted by {details?.[0]?.property?.tenant?.first_name} {details?.[0]?.property?.tenant?.last_name}{" "}
-        </p>
-
-        <p className="actual-features text-xl">
-          Max guests per room is 2.{" "}
-          {/* {Math.floor(Math.random() * 6) + 1} . bedrooms{" "}
-          {Math.floor(Math.random() * 5) + 3} beds .{" "}
-          {Math.floor(Math.random() * 2) + 3} bathrooms */}
-        </p>
-
-        <p className="line1 text-gray-300">
-          __________________________________________________________________________________________________________
-        </p>
-        <p className="line2 text-gray-300">
-          __________________________________________________________________________________________________________
-        </p>
-
-        <div className="icon-hold">
-          <RiMedal2Fill className="text-3xl" />
-          <FaKey className="text-3xl" />
-          <FaCalendarCheck className="text-3xl" />
+        {/* Property Owner */}
+        <div className="border-b  grid grid-cols-1 px-4 py-6 mx-auto lg:py-3 sm:mt-[800px] md:mt-[700px] lg:mt-[650px] xl:mt-[550px]">
+          <span className="text-2xl font-bold">
+            Entire rental unit hosted by{" "}
+            {details?.[0]?.property?.tenant?.first_name}{" "}
+            {details?.[0]?.property?.tenant?.last_name}{" "}
+          </span>
+          <span className="text-xl">Max guests per room is 2. </span>
         </div>
 
-        <div className="heading-hold">
-          <p className="text-xl font-semibold">
-            <span className="capitalize">{details?.[0]?.property?.name}</span>{" "}
-            is a Superhost.{" "}
-          </p>
-          <p className="text-xl font-semibold">Great check-in experience. </p>
-          <p className="text-xl font-semibold">
-            Free cancellation for 48 hours.{" "}
-          </p>
-        </div>
+        {/* Perks and Calendar */}
+        <div className="xs:flex-col md:flex md:flex-row md:justify-between md:mx-auto md:px-4 md:mb-24 md:mt-5 border-b md:pb-10">
+          {/* left */}
+          <div className="left">
+            <div className="col1 flex mb-14">
+              <RiMedal2Fill className="text-3xl mt-2" />
+              <span className="flex-col capitalize pl-5">
+                <span className="text-xl font-semibold ">
+                  {details?.[0]?.property?.name} is a Superhost.{" "}
+                </span>{" "}
+                <p>
+                  {" "}
+                  highly rated hosts who are committed to providing great stays
+                  for their guests.
+                </p>
+              </span>
+            </div>
+            <div className="col2 flex mb-14">
+              <FaKey className="text-3xl mt-2" />
+              <span className="flex-col capitalize pl-5">
+                <p className="text-xl font-semibold">
+                  Great check-in experience.{" "}
+                </p>
+                <p>
+                  90% of recent guests gave the check-in process a 5-star
+                  rating.
+                </p>
+              </span>
+            </div>
+            <div className="col3 flex mb-5">
+              <FaCalendarCheck className="text-3xl" />
+              <span className="flex-col capitalize pl-5">
+                <p className="text-xl font-semibold">
+                  Free cancellation for 48 hours.{" "}
+                </p>
+                <p>No questions asked.</p>
+              </span>
+            </div>
+          </div>
+          {/* right */}
+          <div className="right shadow-lg my-bg-light rounded-xl px-5 py-5">
+            <div className="price font-semibold text-2xl w-full text-center mb-3">
+              {" "}
+              Rp. {details?.[0]?.price?.toLocaleString()} / Night{" "}
+            </div>
 
-        <div className="description-hold">
-          <p>
-            {" "}
-            highly rated hosts who are committed to providing great stays for
-            their guests.
-          </p>
-          <p>90% of recent guests gave the check-in process a 5-star rating.</p>
-          <p>No questions asked.</p>
-        </div>
-
-        <div className="side-box-card absolute flex justify-center ">
-
-          <p className="single-page-price font-semibold text-2xl w-full">
-            {" "}
-            Rp. {details?.[0]?.price?.toLocaleString()} / Night{" "}
-          </p>
-        </div>
-
-        <div className="reserve-date-button-holder">
-          <button
-            className="reserve-date-button rounded-xl"
-            onClick={buttonOpenHandler}
-          >
-            {" "}
-            Book Now!
-          </button>
-        </div>
-
-        <div className="s">
-          <CalendarFunc
-            placesId={id}
-            details={details}
-            onSelectedDate={onSelectedDate}
-            placesPic={defaultImg}
-            buttonopenState={buttonOpen}
-            buttonCloseState={buttonClose}
-            closeFunc={buttonCloseHandler}
-            totalGuest={value}
-          />
-        </div>
-
-        <div className="expense-title-hold">
-          <p className="pt-2 font-semibold">Total Guest</p>
-        </div>
-        <div className="calculated-expense-hold">
-          {isRates?.length === 0 ? null : (
-            <p>
-              {isRates?.[0]?.start_date} until {isRates?.[0]?.end_date} 
-            </p>
-          )}
-          <div className="custom-number-input h-10 w-32">
-            <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
-              <button
-                className=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none"
-                onClick={() => {
-                  if(value > 1){
-                      setValue(value - 1)
-                  }
-              }}
-              >
-                <span className="m-auto text-2xl font-thin">−</span>
-              </button>
-              <input
-                className="outline-none focus:outline-none text-center w-full font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none"
-                name="custom-input-number"
-                value={value}
+            <div className="calendar-wrapper">
+              <CalendarFunc
+                placesId={id}
+                details={details}
+                onSelectedDate={onSelectedDate}
+                placesPic={defaultImg}
+                buttonopenState={buttonOpen}
+                buttonCloseState={buttonClose}
+                closeFunc={buttonCloseHandler}
+                totalGuest={value}
               />
+
+              <div className="guest-wrapper flex justify-between items-center">
+                <p className="font-semibold text-lg">Total Guest</p>
+                <div className="custom-number-input h-10 w-32">
+                  <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
+                    <button
+                      className=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none"
+                      onClick={() => {
+                        if (value > 1) {
+                          setValue(value - 1);
+                        }
+                      }}
+                    >
+                      <span className="m-auto text-2xl font-thin">−</span>
+                    </button>
+                    <input
+                      className="outline-none focus:outline-none text-center w-full font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none"
+                      name="custom-input-number"
+                      value={value}
+                    />
+                    <button
+                      className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer"
+                      onClick={() => {
+                        if (value < 4) {
+                          setValue(value + 1);
+                        }
+                      }}
+                    >
+                      <span className="m-auto text-2xl font-thin">+</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center items-center pt-14">
               <button
-                className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer"
-                onClick={() => {
-                  if (value < 4) {
-                    setValue(value + 1);
-                  }
-                }}
+                className="rounded-full my-bg-main px-5 py-3 hover:scale-110 text-white font-semibold"
+                onClick={buttonOpenHandler}
               >
-                <span className="m-auto text-2xl font-thin">+</span>
+                Pick A Date!
               </button>
+              </div>
+
+              <div className="mt-5 border-t">
+              <p className="font-semibold text-xl pt-4">
+                Total Calculated At Checkout
+              </p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="line-total text-gray-300">
-          _____________________________________________
-        </div>
-
-        <div className="price-total-text absolute font-semibold text-xl uppercase">
-          Total
-        </div>
-
-        <p className="price-total absolute font-semibold text-xl">
-          Calculated At Checkout
-        </p>
-
         <SinglePageMiddle details={details} />
-      </div>
     </>
   );
 };

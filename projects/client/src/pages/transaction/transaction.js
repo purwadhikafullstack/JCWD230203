@@ -232,30 +232,7 @@ const Transaction = () => {
     <>
     {user &&
     <>
-    <div className="px-32 pt-5">
-        <div className="mb-5 text-gray-400">
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Homepage
-          </a>{" "}
-          /{" "}
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Property Details
-          </a>{" "}
-          /{" "}
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Room Details
-          </a>{" "}
-          / <span className="text-gray-600">Transaction</span>
-        </div>
+    <div className=" px-10 md:px-32 pt-5">
         <div className="mb-2">
           <h1 className="text-xl md:text-4xl font-bold text-gray-600">
             Please Review Your Booking
@@ -266,13 +243,13 @@ const Transaction = () => {
         </div>
       </div>
       <div className="w-full mb-24 bg-white border-gray-200 text-gray-800">
-        <div className="w-full px-44">
+        <div className="w-full md:px-44">
           <div className="md:flex items-start pt-10">
             <div className="px-3 md:w-7/12 lg:pr-10">
               {details?.length > 1 ? (
                 // 2 order ID
                 <>
-                  <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
+                  <div className="w-full mx-2 md:mx-auto text-gray-800 font-light md:mb-6 border-b border-gray-200 md:pb-6">
                     <div className="pb-3">
                       <h7 className="font-extrabold uppercase text-xl">
                         Hotel & Room Details
@@ -773,30 +750,7 @@ const Transaction = () => {
     <>
     {tenant &&
     <>
-    <div className="px-32 pt-5">
-        <div className="mb-5 text-gray-400">
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Homepage
-          </a>{" "}
-          /{" "}
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Property Details
-          </a>{" "}
-          /{" "}
-          <a
-            href="#"
-            className="focus:outline-none hover:underline text-gray-500"
-          >
-            Room Details
-          </a>{" "}
-          / <span className="text-gray-600">Transaction</span>
-        </div>
+    <div className="px-10 md:px-32 pt-5">
         <div className="mb-2">
           <h1 className="text-xl md:text-4xl font-bold text-gray-600">
             Please Review Users Booking
@@ -807,7 +761,7 @@ const Transaction = () => {
         </div>
       </div>
       <div className="w-full mb-24 bg-white border-gray-200 text-gray-800">
-        <div className="w-full px-44">
+        <div className="w-full md:px-44">
           <div className="md:flex items-start pt-10">
             <div className="px-3 md:w-7/12 lg:pr-10">
                   <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
