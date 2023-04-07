@@ -56,15 +56,11 @@ function Profile(props){
                           </div>
                         </div>
                         <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">Gender</div>
-                    <div className="px-4 py-2">{details?.gender}</div>
-                  </div>
-                        <div className="grid grid-cols-2">
                           <div className="px-4 py-2 font-semibold">
                             KTP Proof
                           </div>
                           <div className="inline-flex items-center space-x-2">
-                            <div>
+                            <div className="pl-2">
                               {details?.ktp_path ? (
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"

@@ -236,7 +236,7 @@ module.exports = {
         html: newTemplate,
       });
 
-      t.commit();
+      await t.commit();
 
       return res.status(200).send({
         isError: false,
@@ -245,7 +245,7 @@ module.exports = {
       });
 
     } catch (error) {
-      t.rollback();
+      await t.rollback();
       return res.status(400).send({
         isError: false,
         message: error.message,

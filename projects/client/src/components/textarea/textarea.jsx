@@ -30,7 +30,6 @@ function TextArea(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(_form.rating <= 0) throw {message: "Please Fill the comment"}
     try {
       setLoading(true)
       const res = await axios.post(
@@ -50,11 +49,11 @@ function TextArea(props) {
       );
       setTimeout(() => {
         toast.success(res?.data?.message)
-      }, 4500);
+      }, 3500);
 
       setTimeout(() => {
         window.location.reload();
-      }, 6000)
+      }, 4000)
 
       setForm({
         room_id: props?.details?.[0]?.id,
@@ -63,7 +62,6 @@ function TextArea(props) {
       });
 
     } catch (error) {
-      console.log(error);
       setLoading(false)
       if (
         error.message === "Request failed with status code 400" ||
@@ -76,14 +74,14 @@ function TextArea(props) {
     }finally{
         setTimeout(() => {
           setLoading(false);
-        }, 5000);
+        }, 3000);
       }
   };
 
   return (
     <>
       {getTokenId && 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl ml-5 mb-24">
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="rating" className="block text-gray-700 font-bold">

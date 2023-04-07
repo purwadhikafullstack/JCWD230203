@@ -51,7 +51,6 @@ const Rental = () => {
     }
   };
 
-  console.log(accommodation);
 
   const symbolReact = [
     <RxDimensions />,
@@ -105,7 +104,7 @@ const Rental = () => {
   return (
     <div className="">
       {/* title */}
-      <div className="flex justify-center text-3xl mt-5 h-10">
+      <div className="flex justify-center text-2xl md:text-3xl mt-5 h-10 px-3 md:px-0 whitespace-nowrap">
         {properties?.name || "Loading.."}
       </div>
       <div className="flex justify-center text-3xl mb-3 ">
@@ -161,7 +160,7 @@ const Rental = () => {
             at {properties?.name || "Loading.."}
           </p>
         </div>
-        <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-1">
           <div className="flex items-center p-4 bg-white rounded-lg shadow-md">
             <div className="p-3 mr-4 bg-gray-100 rounded-full">
               <MdLocationOn className="my-main text-xl" />
@@ -178,8 +177,8 @@ const Rental = () => {
               <MdOtherHouses className="my-main text-xl" />
             </div>
             <div>
-              <h3 className="text-lg font-bold">About</h3>
-              <p className="text-gray-500">
+              <h3 className="text-lg font-bold ">About</h3>
+              <p className="text-gray-500 text-justify py-2">
                 {properties?.description || "Loading.."}
               </p>
             </div>
@@ -191,7 +190,7 @@ const Rental = () => {
             <div>
               <h3 className="text-lg font-bold">Available Room</h3>
               <p className="text-gray-500">
-                {properties?.rooms?.length || "Loading.."} Room Types avail in
+                {properties?.rooms?.length || "No Room Created yet"} Room Types avail in
                 this Property
               </p>
             </div>
@@ -238,7 +237,7 @@ const Rental = () => {
                     {room?.name}
                   </h5>
                   <p className="mb-1 text-base text-black">Start From</p>
-                  <p className="mb-2 md:mb-4 text-base text-black">
+                  <p className="mb-2 md:mb-4 text-base text-black whitespace-nowrap text-xs md:text-md">
                     Rp {room?.price.toLocaleString()} - Night
                   </p>
                   <p className="text-xs text-black">
@@ -247,13 +246,13 @@ const Rental = () => {
                   <div className="flex items-center space-x-1 mt-1 md:mt-2">
                     <BsStarFill className="my-rating" />
                     <p className="text-[14px] md:text-[15px] pr-2 md:pr-5">
-                      5.0
+                      {room?.rating ?? 5}
                     </p>
                   </div>
                   <Link to={`/room-details/${room?.id}`} className="mt-2">
                     <button
                       type="button"
-                      className="inline-block rounded-full border-2 border-success px-3 pt-1 pb-[4px] md:pb-[6px] text-xs md:text-base font-medium uppercase leading-normal text-success transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
+                      className="md:inline-block rounded-full border-2 my-bg-button-dark xs:text-xs md:text-sm px-2 md:px-6 pt-2 pb-[6px] mb-2 font-semibold uppercase leading-normal text-white transition duration-150 ease-in-out hover:border-success-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-success-600 focus:border-success-600 focus:text-success-600 focus:outline-none focus:ring-0 active:border-success-700 active:text-success-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10 whitespace-nowrap"
                       data-te-ripple-init
                     >
                       See The Room!

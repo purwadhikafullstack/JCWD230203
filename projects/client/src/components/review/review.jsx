@@ -43,8 +43,7 @@ function Review(props) {
   };
 
   return (
-    <>
-        
+    <>   
         <div className="py-12 px-4 md:px-6 2xl:px-0 2xl:container 2xl:mx-auto flex justify-start items-center">
           <div className="flex flex-col justify-start items-start w-full space-y-8">
             
@@ -60,10 +59,8 @@ function Review(props) {
                 </div>
               </div>
               <div id="menu" className="container">
-                <p className="mt-3 text-base leading-normal text-gray-600 w-full break-words md:w-9/12 xl:w-2/3">
-                  Tester Reviewljalsmdnaljs dnja
-                  sjldblasdascdgascdgn;cadcagms;cas;jgc;nadjsgldagsnc;dgcas;dg
-                  cajgscdjasgc
+                <p className="mt-3 text-base leading-normal text-gray-600 w-full  text-justify">
+                Ruangan hotel yang saya tempati sangatlah nyaman dan bersih. Ukurannya cukup luas dan dilengkapi dengan berbagai fasilitas yang memadai, seperti tempat tidur yang empuk, meja kerja yang cukup besar, kulkas mini, serta televisi layar datar dengan banyak saluran. 
                 </p>
                 <div className="mt-6 flex justify-start items-center flex-row space-x-2.5">
                   <div>
@@ -119,45 +116,10 @@ function Review(props) {
                               {props?.details?.[0]?.property?.name},{" "}
                               {props?.details?.[0]?.name}
                             </p>
-                            <button className="ml-4 md:hidden">
-                              <svg
-                                id="closeIcon"
-                                className="hidden"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M15 12.5L10 7.5L5 12.5"
-                                  stroke="currentColor"
-                                  stroke-width="1.25"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                              <svg
-                                id="openIcon"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M5 7.5L10 12.5L15 7.5"
-                                  stroke="currentColor"
-                                  stroke-width="1.25"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </button>
                           </div>
                         </div>
                         <div id="menu" className="container">
-                          <p className="mt-3 text-base leading-normal text-gray-600 w-full break-words md:w-9/12 xl:w-2/3">
+                          <p className="mt-3 text-base leading-normal text-gray-600 w-full ">
                             {value?.review}
                           </p>
                           <div className="mt-6 flex justify-start items-center flex-row space-x-2.5">
@@ -176,11 +138,7 @@ function Review(props) {
                                 {value?.user?.last_name}
                               </p>
                               <p className="text-sm leading-none text-gray-600 ">
-                                {
-                                  value?.transactions_history?.transaction?.check_out.split(
-                                    "T"
-                                  )[0]
-                                }
+                                  {value?.createdAt?.split("T")[0]}
                               </p>
                               <div className="cursor-pointer mt-2 md:mt-0">
                             <ul class="flex justify-center">

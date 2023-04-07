@@ -292,11 +292,11 @@ function EditProperty() {
                     </div>
 
                     {/* legend */}
-                    <fieldset className="mt-8">
-                      <legend className=" text-base  text-1.5xl font-medium text-gray-900">
+                    <fieldset className="mt-8 overflow-y-auto">
+                      <legend className=" text-base text-1.5xl font-medium text-gray-900">
                         Property Accommodation
                       </legend>
-                      <div className="grid grid-cols-4 mt-2 space-y-2">
+                      <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-2 space-y-2 whitespace-nowrap">
                         {accommodation
                           ? accommodation.map((value, idx) => {
                               const isChecked =
@@ -338,11 +338,11 @@ function EditProperty() {
 
                   
 
-                  <div className="mx-4 my-4 py-3 bg-white flex justify-between sm:px-6">
+                  <div className="md:mx-4 md:my-4 md:py-3 bg-white flex whitespace-nowrap justify-between md:px-6 overflow-x-auto">
                   <div className="">
                     <button
                         type="button"
-                        className="inline-block mr-6 rounded my-bg-light px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal my-main shadow-lg transition duration-150 ease-in-out hover:bg-slate-200 "
+                        className="inline-block mr-6 rounded my-bg-light px-2 whitespace-nowrap md:px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal my-main shadow-lg transition duration-150 ease-in-out hover:bg-slate-200 "
                         data-te-target="#deleteProperty"
                         data-te-toggle="modal"
                       >
@@ -353,7 +353,7 @@ function EditProperty() {
                   <div className="">
                   <button
                       type="button"
-                      className="inline-block mr-6 rounded bg-[#c9403e] px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-danger-700 "
+                      className="inline-block mr-6 rounded bg-[#c9403e] px-2 whitespace-nowrap md:px-10 pt-2.5 pb-2 text-sm font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-danger-700 "
                       data-te-target="#editPropertyPicture"
                       data-te-toggle="modal"
                     >

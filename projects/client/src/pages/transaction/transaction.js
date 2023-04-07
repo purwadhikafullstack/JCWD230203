@@ -22,6 +22,7 @@ const Transaction = () => {
   const tenant = location.pathname === `/tenant-transaction/${data?.id}/${data?.order_id}`
   const user = location.pathname === `/transaction/${data?.id}/${data?.order_id}` || location.pathname ===`/transaction/${data?.id}/${data?.order_id1}/${data?.order_id2}`
 
+
   const startDate = details?.[0]?.check_in?.split("T")[0].split("-")[2]
   const endDate = details?.[0]?.check_out?.split("T")[0].split("-")[2]
   const checkIn = new Date(details?.[0]?.check_in?.split("T")[0])
@@ -34,8 +35,7 @@ const Transaction = () => {
   const oneDay = 1000 * 60 * 60 * 24; 
 
   const daysCheck = Math.ceil((checkOut?.getTime() -  checkIn?.getTime()) / 86400000);
-  console.log(endDate)
-  console.log(startDate)
+
 
   useEffect(() => {
     transaction();
@@ -137,7 +137,7 @@ const Transaction = () => {
         setTimeout(() => {
           setPayment(true);
           toast.success(res.data.message);
-        }, 4000);
+        }, 3500);
       }
     } catch (error) {
       setLoading(false);
@@ -171,12 +171,14 @@ const Transaction = () => {
         room_id: data?.id,
         order_id1: data?.order_id || data?.order_id1,
         order_id2: data?.order_id2 || null,
-        respond: respond
+        respond: respond,
+        daysCheck
       })
+      console.log(res)
       setTimeout(() => {
         toast.success(res.data.message)
         setPayment(true);
-      }, 4000);
+      }, 3500);
 
 
     } catch (error) {
@@ -313,12 +315,17 @@ const Transaction = () => {
                         <p className="text-gray-500 font-medium">Night </p>
                       </div>
                       <div>
+                        <span className="font-semibold text-slate-200 text-sm whitespace-nowrap">
+                          *Normal Price
+                        </span>{" "}
+                        <div className="flex justify-center items-center">
                         <span className="font-semibold text-gray-400 text-sm">
                           Rp
                         </span>{" "}
                         <span className="font-semibold text-md">
-                          {details?.[1].room?.price?.toLocaleString()}
+                          {details?.[1]?.room?.price?.toLocaleString()}
                         </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -353,7 +360,7 @@ const Transaction = () => {
                         <p className="text-gray-500 font-medium">Night </p>
                       </div>
                       <div>
-                        <span className="font-semibold text-slate-200 text-sm">
+                        <span className="font-semibold text-slate-200 text-sm whitespace-nowrap">
                           *Normal Price
                         </span>{" "}
                         <div className="flex justify-center items-center">
