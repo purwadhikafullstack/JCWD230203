@@ -60,6 +60,7 @@ const SinglePageMiddle = (props) => {
           return {...data, symbol}
       })
 
+      console.log(props?.details)
 
     return (
       <>
@@ -71,7 +72,7 @@ const SinglePageMiddle = (props) => {
             <div className="up text-xl font-semibold py-5">
               Benefits
             </div>
-            <p className=''>Every booking includes free protection from Host cancellations,
+            <p className='text-justify'>Every booking includes free protection from Host cancellations,
                 listing inaccuracies,{"\n"} 
                 and other issues like trouble checking in.</p>
             <div className='text-xl font-semibold py-5'>
@@ -103,9 +104,9 @@ const SinglePageMiddle = (props) => {
           </div>
         )}
 
-      {props?.details.length > 0 ?
+      {props?.details?.length > 0 ?
       <>
-        <div className='flex items-center '>
+        <div className='flex items-center pt-5 md:mt-5 '>
             <span className='pr-5 text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800' >Reviews</span>
             <span className='pr-2 font-semibold leading-7 lg:leading-9 text-xl lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800 '>{props?.details?.[0]?.rating ? props?.details?.[0]?.rating : 5 }</span> 
             <FaStar className='my-rating' /> 
@@ -113,7 +114,7 @@ const SinglePageMiddle = (props) => {
         <div className=''>
             <Review className="" details={props?.details} />
         </div>
-        <div>
+        <div className=''>
         <TextArea details={props?.details}/>
         </div>
       </>

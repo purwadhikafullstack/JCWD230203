@@ -1160,7 +1160,6 @@ module.exports = {
 
   roomReview: async (req, res) => {
     const { room_id, rating, comment } = req.body;
-    console.log(req.body);
     const users_id = req.dataToken.id;
     const t = await sequelize.transaction();
     try {
@@ -1225,7 +1224,6 @@ module.exports = {
         });
       }
 
-      console.log(room.dataValues.id)
 
       // create Review
       const review = await db.review.create(

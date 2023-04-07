@@ -405,6 +405,8 @@ const Profiling = (props) => {
 
          {location.pathname === '/user-profile' ? 
          <>
+
+
           {/* <!-- Right Side --> */}
           <div className="w-full md:w-9/12 mx-2 h-64">
             {/* <!-- Profile tab --> */}
@@ -470,23 +472,11 @@ const Profiling = (props) => {
                     </div>
                     <div className="px-4 py-2">{profile?.address}</div>
                   </div>
-                  {/* <div className="grid grid-cols-2">
-                    <div className="px-4 py-2 font-semibold">
-                      Permanant Address
-                    </div>
-                    <div className="px-4 py-2">
-                      New Karawaci, Tangerang, Banten
-                    </div>
-                  </div> */}
                 </div>
               </div>
 
               <Modal
                 profile={profile}
-              />
-              <Modal
-              />
-              <Modal
               />
               {/* </button> */}
             </div>
@@ -616,8 +606,8 @@ const Profiling = (props) => {
     }
 
     {cacheUserGoogle ? 
-    <div className="container mx-auto my-5 p-5">
-    <div className="md:flex no-wrap md:-mx-2 ">
+    <div className="container md:mx-auto md:my-5 md:p-5">
+    <div className="md:flex md:no-wrap md:-mx-2 ">
       {/* <!-- Left Side --> */}
       <div className="w-full md:w-3/12 md:mx-2">
         {/* <!-- Profile Card --> */}
@@ -955,14 +945,6 @@ const Profiling = (props) => {
                 </div>
                 <div className="px-4 py-2">{profile?.address}</div>
               </div>
-              {/* <div className="grid grid-cols-2">
-                <div className="px-4 py-2 font-semibold">
-                  Permanant Address
-                </div>
-                <div className="px-4 py-2">
-                  New Karawaci, Tangerang, Banten
-                </div>
-              </div> */}
             </div>
           </div>
 
@@ -970,16 +952,6 @@ const Profiling = (props) => {
             // handleCloseProfile={() => handleCloseProfile("editProfile")}
             profile={profile}
           />
-          {/* <Modal
-            showChangePicture={show.changePicture}
-            // handleClosePicture={() => handleClosePicture("changePicture")}
-          />
-          <Modal
-            showChangePassword={show.changePassword}
-            // handleClosePassword={() =>
-            //   handleClosePassword("changePassword")
-            // }
-          /> */}
           {/* </button> */}
         </div>
         {/* <!-- End of about section --> */}

@@ -121,11 +121,11 @@ const SinglePage = (props) => {
         </div>
 
         {/* Perks and Calendar */}
-        <div className="xs:flex-col md:flex md:flex-row md:justify-between md:mx-auto md:px-4 md:mb-24 md:mt-5 border-b md:pb-10">
+        <div className="xs:flex-col md:flex md:flex-row md:justify-between md:mx-auto md:px-4 md:mb-24 md:mt-5 border-b md:pb-10 text-justify">
           {/* left */}
           <div className="left">
             <div className="col1 flex mb-14">
-              <RiMedal2Fill className="text-3xl mt-2" />
+              <RiMedal2Fill className="text-4xl md:text-3xl mt-2 my-rating" />
               <span className="flex-col capitalize pl-5">
                 <span className="text-xl font-semibold ">
                   {details?.[0]?.property?.name} is a Superhost.{" "}
@@ -150,7 +150,7 @@ const SinglePage = (props) => {
               </span>
             </div>
             <div className="col3 flex mb-5">
-              <FaCalendarCheck className="text-3xl" />
+              <FaCalendarCheck className="text-3xl my-main" />
               <span className="flex-col capitalize pl-5">
                 <p className="text-xl font-semibold">
                   Free cancellation for 48 hours.{" "}
@@ -221,7 +221,7 @@ const SinglePage = (props) => {
               </div>
 
               <div className="mt-5 border-t">
-              <p className="font-semibold text-xl pt-4">
+              <p className="pl-5 md:pl-0 font-semibold text-xl pt-4">
                 Total Calculated At Checkout
               </p>
               </div>

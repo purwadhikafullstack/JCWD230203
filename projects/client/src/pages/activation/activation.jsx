@@ -37,12 +37,13 @@ function Activation() {
         let confirmation = await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/activation/${id}`, dataSend)
         console.log(confirmation)
         
-        toast.success("User Validate Success")
         
         setTimeout(() => {
+          toast.success("User Validate Success")
+        }, 400);
+        setTimeout(() => {
           setActive(true)
-        }, 6000)
-        
+        }, 5000)
         
       } catch (error) {
         setLoading(false)
@@ -51,7 +52,7 @@ function Activation() {
       }finally{
         setTimeout(() => {
           setLoading(false)
-        }, 5000);
+        }, 3000);
       }
     }
 
@@ -67,7 +68,7 @@ function Activation() {
         await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/resend-otp/${id}`)
         setTimeout(() => {
           toast.success("Check your Email")
-        }, 6000)
+        }, 4000)
         setClickCount(clickCount + 1)
       } catch (error) {
         setActive(false)
@@ -76,12 +77,11 @@ function Activation() {
       }finally{
         setTimeout(() => {
           setLoading(false)
-        }, 5000);
+        }, 3000);
         
       }
     }
 
-  
   if(isActive){
     navigate('/')
   }

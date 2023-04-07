@@ -44,13 +44,20 @@ const Footer = () => {
     </div>
     
 
-    <div className="bg-white border-t-2 shadow-md shadow-gray-300  bottom-0 h-20 w-full flex md:hidden items-center justify-center gap-6 ">
+    {location.pathname === '/user-profile'? <div className="bg-white border-t-2 shadow-md shadow-gray-300 fixed bottom-0 h-20 w-full flex md:hidden items-center justify-center gap-6 ">
     {mobile.map((mobile) => (
       <div className="text-[30px] text-gray-600 hover:text-black duration-100 ease-out ">
         {mobile}
       </div>
     ))}
-  </div>
+  </div> :
+   <div className="bg-white border-t-2 shadow-md shadow-gray-300 bottom-0 h-20 w-full flex md:hidden items-center justify-center gap-6 ">
+    {mobile.map((mobile) => (
+      <div className="text-[30px] text-gray-600 hover:text-black duration-100 ease-out ">
+        {mobile}
+      </div>
+    ))}
+  </div>}
     </>
    }
   </>
