@@ -13,7 +13,7 @@ const jwtVerify = (req,res,next) => {
         message: 'Token Not Found'
     })
 
-    jwt.verify(token, process.env.JWT_KEY, (err, dataToken) => {
+    jwt.verify(token, "rahasia", (err, dataToken) => {
         try {
             if(err) throw err
 
