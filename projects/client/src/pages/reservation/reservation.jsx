@@ -14,6 +14,14 @@ const Reservation = () => {
   const tenant = location.pathname === "/dashboard-reservation";
   const user = location.pathname === "/user-reservation";
 
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    const todayTime = new Date (formattedDate)
+
+
   const [form, setForm] = useState({
     startDate: "",
     endDate: "",
@@ -124,7 +132,7 @@ const Reservation = () => {
                 {/* isi dashboard data*/}
 
                 <body className="antialiased font-sans bg-transparent">
-                  <div className="container mx-auto px-2">
+                  <div className="container md:mx-auto md:px-2">
                     <div className="py-8">
                       <div>
                         <h2 className="text-2xl font-semibold leading-tight">
@@ -136,7 +144,7 @@ const Reservation = () => {
                           <div className="relative">
                             <div className="flex">
                               <select
-                                className=" h-full rounded-r border-t border-l sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className=" h-full rounded-r border-t border-l border-r border-b block appearance-none bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 onChange={(e) => handleChange(e)}
                                 value={form?.status_id}
                                 name="status_id"
@@ -174,7 +182,7 @@ const Reservation = () => {
                               <input
                                 type="date"
                                 placeholder="Start Date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-3.5 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 value={form.startDate}
                                 name="startDate"
                                 onChange={handleChange}
@@ -182,7 +190,7 @@ const Reservation = () => {
                               {/* endDate */}
                               <input
                                 type="date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-3.5 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 value={form.endDate}
                                 name="endDate"
                                 onChange={handleChange}
@@ -200,7 +208,7 @@ const Reservation = () => {
                         </div>
                       </div>
 
-                      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                           <table className="min-w-full leading-normal">
                             <thead>
@@ -482,7 +490,7 @@ const Reservation = () => {
                 {/* isi dashboard data*/}
 
                 <body className="antialiased font-sans bg-transparent">
-                  <div className="container mx-auto px-2">
+                  <div className="container md:mx-auto md:px-2">
                     <div className="py-8">
                       <div>
                         <h2 className="text-2xl font-semibold leading-tight">
@@ -495,7 +503,7 @@ const Reservation = () => {
                           <div className="relative">
                             <div className="flex">
                               <select
-                                className=" h-full rounded-r border-l border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className=" h-full rounded-r border-l border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none bg-white border-gray-400 text-gray-700 py-[9px] px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 onChange={(e) => handleChange(e)}
                                 value={form.status_id}
                                 name="status_id"
@@ -533,7 +541,7 @@ const Reservation = () => {
                               <input
                                 type="date"
                                 placeholder="Start Date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-3.5 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 value={form.startDate}
                                 name="startDate"
                                 onChange={handleChange}
@@ -541,7 +549,7 @@ const Reservation = () => {
                               {/* endDate */}
                               <input
                                 type="date"
-                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
+                                className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-1 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-3.5 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500"
                                 value={form.endDate}
                                 name="endDate"
                                 onChange={handleChange}
@@ -559,7 +567,7 @@ const Reservation = () => {
                         </div>
                       </div>
 
-                      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 ">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                           <table className="min-w-full leading-normal">
                             <thead>
@@ -591,6 +599,7 @@ const Reservation = () => {
                             <tbody>
                               {orderList &&
                                 orderList.map((value, index) => {
+                                  const checkoutTime = new Date (value?.check_out?.split("T")[0])
                                   return (
                                     <>
                                     <Modal />
@@ -709,7 +718,7 @@ const Reservation = () => {
                                         </td>
                                         <td className="px-1 py-5 border-b border-gray-200 bg-white text-sm">
                                           {value?.status_id === 2 && (
-                                            <>{value?.check_out?.split("T")[0] >= value?.check_out?.split("T")[0] ? 
+                                            <>{todayTime >= checkoutTime ? 
                                             <Link to={`/room-details/${value?.room_id}`}>
                                             <span
                                               className="inline-block px-3 py-1 font-bold "

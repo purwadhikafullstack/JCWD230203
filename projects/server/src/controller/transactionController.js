@@ -329,14 +329,14 @@ module.exports = {
         { transaction: t }
       );
 
-      t.commit();
+      await t.commit();
       return res.status(200).send({
         isError: false,
         message: "Upload success, waiting for tenant approval",
         data: data,
       });
     } catch (error) {
-      t.rollback();
+      await t.rollback();
       return res.status(400).send({
         isError: true,
         message: error.message,
@@ -684,7 +684,7 @@ module.exports = {
   },
 
   acceptRejectOrder: async (req, res) => {
-    const { users_id, room_id, order_id1, order_id2, respond } = req.body;
+    const { users_id, room_id, order_id1, order_id2, respond, daysCheck } = req.body;
     const final_order2 = order_id2 || null;
     const id = users_id;
     console.log(req.body);
@@ -713,10 +713,11 @@ module.exports = {
       const order = transaction.dataValues.order_id;
       const totalPrice = transaction.dataValues.total_price.toLocaleString();
       const guest = transaction.dataValues.total_guest;
-      const check_in = String(transaction.dataValues.check_in);
-      const newCheckIn = check_in.split("T")[0];
-      const check_out = String(transaction.dataValues.check_out);
-      const newCheckOut = check_out.split("T")[0];
+      const check_in = new Date (transaction.dataValues.check_in);
+      const newCheckIn = check_in.toDateString()
+      const check_out = new Date (transaction.dataValues.check_out);
+      const newCheckOut = check_out.toDateString()
+
 
       if (respond === "Accept") {
         await transactions.update(
@@ -756,6 +757,7 @@ module.exports = {
           newCheckIn,
           newCheckOut,
           propertyName,
+          daysCheck
         });
 
         await transporter.sendMail({

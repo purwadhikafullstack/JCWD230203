@@ -25,7 +25,6 @@ function Modal(props) {
 
   const navigate = useNavigate();
 
-
   const bookedRoom = async () => {
     const endDate = `${props?.endDate?.year}-${props?.endDate?.month}-${props?.endDate?.date}`;
     const startDate = `${props?.endDate?.year}-${props?.startDate?.month}-${props?.startDate?.date}`;
@@ -359,7 +358,7 @@ function Modal(props) {
           new_password: "",
           formFile: "",
         });
-      }, 2000);
+      }, 4000);
     }
   }, [loading, reset]);
 
@@ -886,7 +885,7 @@ function Modal(props) {
                   data-te-input-wrapper-init
                 >
                   <div
-                    className="my-bg-main rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                    className="text-center rounded-lg text-black p-4 w-full peer block min-h-[auto] w-fit rounded border-0 bg-neutral-100 py-[0.32rem] px-3 leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                     id="exampleFormControlInput5"
                   >
                     <address>

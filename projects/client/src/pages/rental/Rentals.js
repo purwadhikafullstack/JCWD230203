@@ -95,7 +95,11 @@ const Rentals = () => {
                                 </span>{" "}
                                 <span className="font-black">
                                   {" "}
-                                  Rp. {value?.rooms?.[1]?.price?.toLocaleString() <= value?.rooms?.[0]?.price?.toLocaleString() ? value?.rooms?.[1]?.price?.toLocaleString() : value?.rooms?.[0]?.price?.toLocaleString()}
+                                  Rp.{" "}
+                                  {value?.rooms?.[1]?.price?.toLocaleString() <=
+                                  value?.rooms?.[0]?.price?.toLocaleString()
+                                    ? value?.rooms?.[1]?.price?.toLocaleString()
+                                    : value?.rooms?.[0]?.price?.toLocaleString()}
                                 </span>
                               </p>
                               <p className="font-semibold text-[17px]">
@@ -103,11 +107,17 @@ const Rentals = () => {
                               </p>
                             </div>
 
-                            {/* Right */}
-                            <div className="flex items-center space-x-1">
-                              <BsStarFill className="my-rating" />
-                              <p className="text-[15px]">5.0</p>
-                            </div>
+                              {/* Right */}
+                          <div className="flex items-center space-x-1">
+                            <BsStarFill className="my-rating" />
+                            {value ? (
+                              <>
+                                <p className="text-[15px] pt-0.5">
+                                  {(value?.rooms?.reduce((total, room) => total + room.rating, 0) / value.rooms.length) <= 3.5 ? 5 : value?.rooms?.reduce((total, room) => total + room.rating, 0) / value.rooms.length}
+                                </p>
+                              </>
+                            ) : null}
+                          </div>
                           </div>
                         </Link>
                       </div>
@@ -146,7 +156,11 @@ const Rentals = () => {
                               <span className="text-gray-500">Start from </span>{" "}
                               <span className="font-black">
                                 {" "}
-                                Rp. {value?.rooms?.[1]?.price?.toLocaleString() <= value?.rooms?.[0]?.price?.toLocaleString() ? value?.rooms?.[1]?.price?.toLocaleString() : value?.rooms?.[0]?.price?.toLocaleString()}
+                                Rp.{" "}
+                                {value?.rooms?.[1]?.price?.toLocaleString() <=
+                                value?.rooms?.[0]?.price?.toLocaleString()
+                                  ? value?.rooms?.[1]?.price?.toLocaleString()
+                                  : value?.rooms?.[0]?.price?.toLocaleString()}
                               </span>
                             </p>
                             <p className="max-w-[17rem] font-semibold text-[17px]">
@@ -157,7 +171,13 @@ const Rentals = () => {
                           {/* Right */}
                           <div className="flex items-center space-x-1">
                             <BsStarFill className="my-rating" />
-                            <p className="text-[15px]">5.0</p>
+                            {value ? (
+                              <>
+                                <p className="text-[15px] pt-0.5">
+                                  {(value?.rooms?.reduce((total, room) => total + room.rating, 0) / value.rooms.length) <= 3.5 ? 5 : value?.rooms?.reduce((total, room) => total + room.rating, 0) / value.rooms.length}
+                                </p>
+                              </>
+                            ) : null}
                           </div>
                         </div>
                       </Link>
@@ -193,26 +213,19 @@ const Rentals = () => {
                     </button>
                   </li>
                   <li className="page-item active">
-                    <a
-                      className="page-link relative block py-1.5 px-3 rounded border-0 my-bg-main outline-none transition-all duration-300 rounded text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      href="#"
-                      onClick={() => onChange(currentPage)}
-                    >
+                    <div className="page-link relative block py-1.5 px-3 rounded border-0 my-bg-main outline-none transition-all duration-300 rounded text-white hover:text-white hover:bg-rose-800 shadow-md focus:shadow-md">
                       Page {currentPage}{" "}
                       <span className="visually-hidden"></span>
-                    </a>
+                    </div>
                   </li>
 
                   <li className="page-item">
-                    <a
-                      className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                      href=""
-                    >
+                    <div className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none">
                       <span className="mr-3" disabled={disabled}>
                         Of
                       </span>{" "}
                       {typePagination && typePagination.total_pages}
-                    </a>
+                    </div>
                   </li>
                   <li className="page-item">
                     <button
@@ -244,7 +257,6 @@ const Rentals = () => {
                       onClick={() => {
                         if (currentPage > 1) {
                           setCurrentPage(currentPage - 1);
-                          console.log(currentPage);
                         }
                       }}
                       className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none pointer"
@@ -253,26 +265,19 @@ const Rentals = () => {
                     </button>
                   </li>
                   <li className="page-item active">
-                    <a
-                      className="page-link relative block py-1.5 px-3 rounded border-0 my-bg-main outline-none transition-all duration-300 rounded text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      href="#"
-                      onClick={() => onChange(currentPage)}
-                    >
+                    <a className="page-link relative block py-1.5 px-3 rounded border-0 my-bg-main outline-none transition-all duration-300 rounded text-white hover:text-white hover:bg-rose-800 shadow-md focus:shadow-md">
                       Page {currentPage}{" "}
                       <span className="visually-hidden"></span>
                     </a>
                   </li>
 
                   <li className="page-item">
-                    <a
-                      className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                      href=""
-                    >
+                    <div className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none">
                       <span className="mr-3" disabled={disabled}>
                         Of
                       </span>{" "}
                       {pagination && pagination.total_pages}
-                    </a>
+                    </div>
                   </li>
                   <li className="page-item">
                     <button
