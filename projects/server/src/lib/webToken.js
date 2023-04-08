@@ -3,12 +3,12 @@ require('dotenv').config();
 
 module.exports = {
     createToken: (payload) => {
-        return webToken.sign(payload, process.env.JWT_KEY, {
+        return webToken.sign(payload, 'rahasia', {
             expiresIn: '24h'
         })
     },
 
     validateToken: (token) => {
-        return webToken.verify(token,  process.env.JWT_KEY)
+        return webToken.verify(token,  'rahasia')
     }
 }
