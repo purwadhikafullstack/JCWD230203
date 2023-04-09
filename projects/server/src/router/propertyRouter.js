@@ -33,6 +33,9 @@ Router.get('/property-accommodation', propertyController.getPropertyAccommodatio
 Router.get('/room-accommodation', propertyController.getRoomAccommodation)
 Router.post('/room-price', propertyController.createSpecialPrice)
 
+Router.post('/check-booking', jwtVerify, propertyController.reviewBookingCheck)
+Router.get('/suggestion', propertyController.suggestionByLocation)
+
 
 
 module.exports = Router;

@@ -61,12 +61,12 @@ const SinglePage = (props) => {
 
   return (
     <>
-        <div className="flex justify-center text-3xl mb-3 ">
+        <div className="flex justify-center mb-3 ">
           <div className="wrapper flex justify-center items-center">
             {/* Carousel */}
             <section className="overflow-hidden text-neutral-700">
-              <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
-                <div className="-m-1 flex flex-wrap md:-m-2">
+              {/* <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12"> */}
+                <div className="-m-1 flex flex-wrap md:-m-2 pt-10 md:pt-0">
                   <div className="flex w-fit flex-wrap">
                     {activeImg ? (
                       <img
@@ -74,18 +74,18 @@ const SinglePage = (props) => {
                           defaultImage ||
                           `${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${defaultImage}`
                         }
-                        className="single-page-main-pic cursor-pointer"
+                        className="single-page-main-pic cursor-pointer "
                       />
                     ) : (
                       <img
                         src={`${
                           process.env.REACT_APP_API_BASE_URL
                         }Public/PROPERTY/${defaultImg || { defaultImg }}`}
-                        className="single-page-main-pic cursor-pointer"
+                        className="single-page-main-pic cursor-pointer "
                       />
                     )}
 
-                    <div className="w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 mx-10 grid grid-cols-2 lg:grid-cols-2 single-page-hold ">
+                    <div className="hidden w-fit xl:w-full sm:mx-6 md:mx-10 lg:mx-12 px-3 justify-center p-1 md:p-2 xl:grid xl:grid-cols-1 lg:single-page-main-pic-room xl:grid-cols-2 single-page-hold">
                       {details?.map((value) => {
                         {
                           return value.room_images.map((val) => {
@@ -93,7 +93,7 @@ const SinglePage = (props) => {
                               <div className="" key={val.id}>
                                 <img
                                   src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${val.image_path}`}
-                                  className="w-40 object-cover rounded-xl cursor-pointer single-page-pic"
+                                  className="w-40 object-cover rounded-xl cursor-pointer single-page-pic "
                                   onMouseOver={getImageSrcHandler}
                                   onMouseLeave={setDefaultImgHandler}
                                 />
@@ -105,13 +105,13 @@ const SinglePage = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              {/* </div> */}
             </section>
           </div>
         </div>
 
         {/* Property Owner */}
-        <div className="border-b  grid grid-cols-1 px-4 py-6 mx-auto lg:py-3 sm:mt-[800px] md:mt-[700px] lg:mt-[650px] xl:mt-[550px]">
+        <div className="border-b  grid grid-cols-1 px-4 py-6 mx-auto lg:py-3 sm:mt-[850px] md:mt-[800px] lg:mt-[800px] xl:mt-[600px]">
           <span className="text-2xl font-bold">
             Entire rental unit hosted by{" "}
             {details?.[0]?.property?.tenant?.first_name}{" "}
