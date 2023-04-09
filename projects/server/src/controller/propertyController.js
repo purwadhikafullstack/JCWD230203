@@ -1460,6 +1460,54 @@ module.exports = {
     }
   },
 
-  
+  reviewBookingCheck: async(req, res) => {
+    const {room_id} = req.body
+    const id = req.dataToken.id
+    const status_id = 2
+    
+    const booking = await db.transactions.findAll({where: {users_id: id, room_id, status_id}})
+
+    if(booking.length === 0){
+      return res.status(400).send({
+        isError: false,
+        message: "No Transactions been made"
+      })
+    }
+
+    return res.status(200).send({
+      isError: false,
+      message: "Checked",
+      data: booking
+    })
+  },
+
+  suggestionByLocation: async(req, res) => {
+    const {city} = req.query;
+
+    try {
+      const location = await db.location.findAll({
+        where: {city_id : city},
+        include: [
+          {model: db.property,
+          include: [
+            {model: db.property_image},
+            {model: db.room, include: [{model: db.room_image}]}
+          ]}
+        ],
+      })
+
+      return res.status(200).send({
+        isError: false,
+        message: "Gey Suggestion By Location Success",
+        data: location,
+      })
+    } catch (error) {
+      return res.status(400).json({
+        isError: true,
+        message: error.message,
+        data: null,
+      });
+    }
+  }
 
 };

@@ -68,8 +68,6 @@ function App() {
           }
         );
 
-        console.log(response)
-
         if (response) {
           setUsername(response.data.data.first_name);
         } else {

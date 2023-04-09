@@ -1,9 +1,9 @@
-import React , { useEffect, useState} from 'react'
+import React , { useEffect, useRef, useState} from 'react'
 import "../../supports/styles/SinglePageMiddle.css"
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { FaStar, FaBath, FaShower,FaSmoking, FaSmokingBan } from "react-icons/fa"
 import {GiHeatHaze, GiRobe} from "react-icons/gi"
-import { BsPersonCircle , BsBoxSeamFill, BsWifi} from "react-icons/bs"
+import { BsPersonCircle , BsBoxSeamFill, BsWifi, BsStarFill} from "react-icons/bs"
 import {MdRestaurantMenu, MdTv, MdBathtub, MdDry, MdDesk, MdCable} from "react-icons/md"
 import {CgSmartHomeRefrigerator} from "react-icons/cg"
 import {TbAirConditioning} from "react-icons/tb"
@@ -17,10 +17,15 @@ const SinglePageMiddle = (props) => {
     const params = useParams();
     const { id } = params;
     const [accommodation, setAccommodation] = useState([])
+    const [suggestion, setSuggestion] = useState([])
+    const [exist, setExist] = useState(false)
+    const city = props?.details?.[0]?.property?.locations?.[0]?.city_id
 
     useEffect(() => {
         roomConnector();
-    }, [])
+        checkBooking();
+        propertySuggestion();
+    }, [city])
 
     const roomConnector = async () => {
         try {
@@ -33,6 +38,41 @@ const SinglePageMiddle = (props) => {
         }
       };
 
+      const checkBooking = async() => {
+        try {
+          const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}properties/check-booking`,
+          {
+            room_id: id
+          },
+          {
+            headers: {
+              auth: localStorage.getItem("token"),
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          })
+
+          if(res.data.data.length > 0){
+            setExist(true)
+          }
+        } catch (error) {
+          setExist(false)
+          console.log(error)
+        }
+      }
+
+      const propertySuggestion = async() => {
+        try {
+          if(city){
+            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}properties/suggestion?city=${city}`)
+            setSuggestion(res.data.data)
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      console.log(suggestion.length)
 
       const symbolReact = [
           <BsPersonCircle />,
@@ -59,8 +99,6 @@ const SinglePageMiddle = (props) => {
           const symbol = symbolReact[symbolIndex]
           return {...data, symbol}
       })
-
-      console.log(props?.details)
 
     return (
       <>
@@ -115,17 +153,162 @@ const SinglePageMiddle = (props) => {
             <Review className="" details={props?.details} />
         </div>
         <div className=''>
-        <TextArea details={props?.details}/>
+        {exist ? <TextArea details={props?.details}/> : null}
         </div>
       </>
       :
        null
        }
 
-
+       <Carousel suggestion={suggestion} />
 </>
 )
 
 }
 
 export default SinglePageMiddle
+
+
+const Carousel = ({suggestion}) => {
+  const containerRef = useRef(null)
+  const itemRef = useRef(null)
+  const [defaultTransform, setDefaultTransform] = useState(0)
+  const [itemWidth, setItemWidth] = useState(0)
+
+  const goNext = () => {
+    const maxTransform = -(itemWidth * (suggestion?.length - 1))
+    console.log(maxTransform)
+    console.log(itemWidth)
+    console.log(suggestion.length)
+    if(defaultTransform > maxTransform){
+      setDefaultTransform(defaultTransform - itemWidth)
+    }
+  }
+
+  const goPrev = () => {
+    if(defaultTransform < 0){
+      setDefaultTransform(defaultTransform + itemWidth)
+    }
+  }
+
+  useEffect(() =>{
+    setItemWidth(itemRef?.current?.offsetWidth)
+  }, [suggestion])
+
+
+  return(
+    <>
+    <div className="text-2xl lg:text-3xl font-semibold leading-7 lg:leading-9 text-gray-80 border-t pt-8">
+        Another Place Around Here
+    </div>
+    <div className="flex items-center justify-center w-full h-full py-24 sm:py-8 px-4 mb-24">
+        <div className="w-full relative flex items-center justify-center">
+          <button
+            onClick={() => goPrev()}
+            aria-label="slide backward"
+            className="absolute z-30 left-0 ml-10 hover:bg-slate-200 focus:outline-none focus:bg-slate-400 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 cursor-pointer"
+            id="prev"
+          >
+            <svg
+              className="my-rating"
+              width="14"
+              height="28"
+              viewBox="0 0 8 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7 1L1 7L7 13"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <div className="w-full h-full mx-auto overflow-x-hidden overflow-y-hidden" ref={containerRef}>
+            <div
+              id="slider"
+              className="h-full flex lg:gap-8 md:gap-6 gap-14 items-center justify-start transition ease-out duration-700"
+              style={{ transform: `translateX(${defaultTransform}px)` }}
+            >
+              <div className="flex flex-shrink-0 relative w-auto h-full">
+                {suggestion
+                  ? suggestion.map((value, index) => {
+                      return (
+                        <Link to={`/details/${value?.id}`}>
+                        <div className="flex justify-center mx-3 my-bg-light " ref={itemRef}>
+                          <div className="max-w-sm">
+                            <a
+                              data-mdb-ripple="true"
+                              data-mdb-ripple-color="light"
+                            >
+                              <img
+                                src={`${process.env.REACT_APP_API_BASE_URL}Public/PROPERTY/${value?.property?.property_images?.[0]?.image_path}`}
+                                alt={value?.property?.name}
+                                className="object-cover object-center shadow-lg w-full rounded-lg bg-white h-[250px]"
+                                key={index}
+                              />
+                            </a>
+                            <div className="container flex text-center justify-between px-2">
+                            <span className="text-lg text-left flex items-center font-semibold pt-2 ">{value.property.name}</span>
+                            <div className="flex items-center space-x-1 pt-1">
+                            <BsStarFill className="my-rating" />
+                            {value ? (
+                              <>
+                                <p className="text-[15px] pt-0.5">
+                                  {(value?.property?.rooms?.reduce((total, room) => total + room.rating, 0) / value.property.rooms.length) <= 3.5 ? 5 : value?.property?.rooms?.reduce((total, room) => total + room.rating, 0) / value.property.rooms.length}
+                                </p>
+                              </>
+                            ) : null}
+                          </div>
+                            </div>
+                            <p className="max-w-[17rem] text-[16px]-mt-1 mb-5 px-2">
+                              <span className="text-gray-500">Start from </span>{" "}
+                              <span className="font-black">
+                                {" "}
+                                Rp.{" "}
+                                {value?.property?.rooms?.[1]?.price?.toLocaleString() <=
+                                value?.property?.rooms?.[0]?.price?.toLocaleString()
+                                  ? value?.property?.rooms?.[1]?.price?.toLocaleString()
+                                  : value?.property?.rooms?.[0]?.price?.toLocaleString()}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        </Link>
+                      );
+                    })
+                  : "Loading"}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => goNext()}
+            aria-label="slide forward"
+            className="absolute z-30 right-0 mr-10 hover:bg-slate-200 focus:outline-none focus:bg-slate-400 focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
+            id="next"
+          >
+            <svg
+              className="my-rating"
+              width="14"
+              height="28"
+              viewBox="0 0 8 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7 7L1 13"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
