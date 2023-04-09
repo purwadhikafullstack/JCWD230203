@@ -12,7 +12,6 @@ function Review(props) {
     review();
   }, [currentPage]);
 
-  console.log(currentPage);
 
   let stars = [];
   for (let i = 0; i < 5; i++) {
@@ -24,7 +23,7 @@ function Review(props) {
       const res = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}properties/reviews?room_id=${id}&page=${currentPage}`
       );
-      console.log(res);
+
       setTotalPages(res.data.total_pages);
       setReview(res.data.data);
     } catch (error) {
@@ -103,7 +102,7 @@ function Review(props) {
             </div>
             {_reviews
               ? _reviews.map((value, idx) => {
-                  console.log(value);
+
                   return (
                     <>
                       <div
