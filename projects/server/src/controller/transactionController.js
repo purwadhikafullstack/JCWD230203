@@ -175,6 +175,7 @@ module.exports = {
         });
       }
     } catch (error) {
+      console.log(error)
       await t.rollback();
       return res.status(400).send({
         isError: true,
