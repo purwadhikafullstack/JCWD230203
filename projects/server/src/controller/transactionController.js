@@ -23,11 +23,12 @@ module.exports = {
       });
 
       if (user.dataValues.status === "unconfirmed") {
-        return res.status(400).send({
-          isError: true,
-          message: "Your Account is Not Active",
-          data: null,
-        });
+        throw {message: "Your Account is Not Active"}
+        // return res.status(400).send({
+        //   isError: true,
+        //   message: "Your Account is Not Active",
+        //   data: null,
+        // });
       }
 
       const room = await db.room.findByPk(
@@ -39,11 +40,12 @@ module.exports = {
       );
 
       if (!room) {
-        return res.status(404).send({
-          isError: true,
-          message: "Room Not Found",
-          data: null,
-        });
+        throw {message: "Room Not Found"}
+        // return res.status(404).send({
+        //   isError: true,
+        //   message: "Room Not Found",
+        //   data: null,
+        // });
       }
 
       const blockedDates = await db.room_blocked_dates.findAll({
@@ -52,14 +54,15 @@ module.exports = {
           start_blocked_date: { [Op.lte]: check_out },
           end_blocked_date: { [Op.gte]: check_in },
         },
-      });
+      }, {transaction: t});
 
       if (blockedDates.length > 0) {
-        return res.status(400).send({
-          isError: true,
-          message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`,
-          data: null,
-        });
+        throw { message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}` }
+        // return res.status(400).send({
+        //   isError: true,
+        //   message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`,
+        //   data: null,
+        // });
       }
 
       const bookings = await transactions.findAll(
@@ -78,11 +81,12 @@ module.exports = {
       const remainingRoom = availableRooms - bookedRooms;
 
       if (remainingRoom <= 0) {
-        return res.status(400).send({
-          isError: true,
-          message: "No rooms available for the selected dates",
-          data: null,
-        });
+        throw {message: "No rooms available for the selected dates"}
+        // return res.status(400).send({
+        //   isError: true,
+        //   message: "No rooms available for the selected dates",
+        //   data: null,
+        // });
       }
 
       const maxGuest = 2;
@@ -107,19 +111,21 @@ module.exports = {
         );
 
         if (bookedRooms >= availableRooms) {
-          return res.status(404).send({
-            isError: true,
-            message: "Another booking already exists for the selected dates",
-            data: null,
-          });
+          throw {message: "Another booking already exists for the selected dates"}
+          // return res.status(404).send({
+          //   isError: true,
+          //   message: "Another booking already exists for the selected dates",
+          //   data: null,
+          // });
         }
 
         if (numberOfTransactions > availableRooms) {
-          return res.status(404).send({
-            isError: true,
-            message: "Max guest is exceeded",
-            data: null,
-          });
+          throw {message: "Max guest is exceeded"}
+          // return res.status(404).send({
+          //   isError: true,
+          //   message: "Max guest is exceeded",
+          //   data: null,
+          // });
         }
 
         const order_id =
@@ -175,12 +181,7 @@ module.exports = {
           data: transactionData,
         });
       }
-      console.log('>>>')
-      console.log('Finish')
     } catch (error) {
-      console.log('<<<')
-      console.log(error)
-      console.log(error.message)
       await t.rollback();
       return res.status(400).send({
         isError: true,
