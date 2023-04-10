@@ -131,7 +131,7 @@ export default function Dashboard(props) {
     }
   }
 
-  console.log(report)
+
   const tenantProperty = async () => {
     try {
       const res = await axios.post(
@@ -159,6 +159,7 @@ export default function Dashboard(props) {
   const result = report.reduce((acc, curr) => {
     return acc + curr.bookings_count
   }, 0)
+
 
   const stars = report.reduce((acc,curr) => {
     return acc + curr.room?.rating
