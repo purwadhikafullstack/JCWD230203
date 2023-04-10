@@ -81,14 +81,11 @@ module.exports = {
         {transaction: t}
       )
 
-      const template = await fs.readFile(
-        "./template/confirmation.html",
-        "utf-8"
-      );
+      const template = await fs.readFile(path.resolve(__dirname, '../template/confirmation.html'), 'utf-8')
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/tenant-activation/${createTenant.dataValues.id}`,
+        url: `https://jcwd230203.purwadhikabootcamp.com/tenant-activation/${createTenant.dataValues.id}`,
         otp,
       });
 
@@ -218,14 +215,11 @@ module.exports = {
       const first_name = tenants.dataValues.first_name;
       const email = tenants.dataValues.email;
 
-      const template = await fs.readFile(
-        "./template/confirmation.html",
-        "utf-8"
-      );
+      const template = await fs.readFile(path.resolve(__dirname, '../template/confirmation.html'), 'utf-8')
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/tenant-activation/${tenants.dataValues.id}`,
+        url: `https://jcwd230203.purwadhikabootcamp.com/tenant-activation/${tenants.dataValues.id}`,
         otp,
       });
 
@@ -506,13 +500,12 @@ module.exports = {
 
       const first_name = findEmail.dataValues.first_name
 
-      const template = await fs.readFile( "./template/forgetPassword.html",
-      "utf-8")
+      const template = await fs.readFile(path.resolve(__dirname, '../template/forgetPassword.html'), 'utf-8')
 
       const templateCompile = await handlebars.compile(template)
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/reset-password/${findEmail.dataValues.id}`
+        url: `https://jcwd230203.purwadhikabootcamp.com/reset-password/${findEmail.dataValues.id}`
       })
 
       await transporter.sendMail({
