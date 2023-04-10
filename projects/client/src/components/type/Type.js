@@ -102,7 +102,7 @@ const Type = (props) => {
   ];
   return (
     <div className="flex justify-center items-center">
-      <div className="grid grid-cols-2 gap-2 mb-[50px] sm:flex md:mb-10 justify-center gap-1 sm:gap-4 h-8 my-4">
+      <div className="grid grid-cols-2 gap-2 mb-[70px] sm:flex md:mb-10 justify-center gap-1 sm:gap-4 h-8 my-4">
         {sorting.map((obj, index) => (
           <Link to={`/category/${index + 1}`} key={index}>
             <Filter
@@ -112,7 +112,7 @@ const Type = (props) => {
             />
           </Link>
         ))}
-        <span className="flex items-center justify-center text-white bg-[#c9403e] hover:bg-white hover:text-[#c9403e] duration-200 ease-out gap-2 px-5 sm:mx-0 md:mx-1 lg:mx-1 rounded-full text-[14px] sm:text-[16px] mb-2 pointer cursor-pointer"
+        <span className="py-1 flex items-center justify-center text-white bg-[#c9403e] hover:bg-white hover:text-[#c9403e] duration-200 ease-out gap-2 px-5 sm:mx-0 md:mx-1 lg:mx-1 rounded-full text-[14px] sm:text-[16px] mb-2 pointer cursor-pointer"
         data-te-offcanvas-toggle
         data-te-target="#offcanvasTop"
         >
