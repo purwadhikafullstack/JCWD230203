@@ -743,7 +743,7 @@ module.exports = {
           { transaction: t }
         );
 
-        const template = await fs.readFile("./template/rules.html", "utf-8");
+        const template = await fs.readFile(path.resolve(__dirname, '../template/rules.html'), 'utf-8')
 
         const templateCompile = await handlebars.compile(template);
         const newTemplate = templateCompile({
