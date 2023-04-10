@@ -175,7 +175,12 @@ module.exports = {
           data: transactionData,
         });
       }
+      console.log('>>>')
+      console.log('Finish')
     } catch (error) {
+      console.log('<<<')
+      console.log(error)
+      console.log(error.message)
       await t.rollback();
       return res.status(400).send({
         isError: true,
