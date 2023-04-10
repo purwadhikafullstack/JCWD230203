@@ -1,6 +1,7 @@
 const { sequelize } = require("../sequelize/models");
 const db = require("../sequelize/models/index.js");
 const tenant = db.tenant;
+const path = require("path");
 
 const { Op } = require("sequelize");
 
