@@ -3,6 +3,7 @@ const db = require("../sequelize/models");
 const transactions = db.transactions;
 const { Op } = require("sequelize");
 const moment = require("moment");
+const path = require("path");
 
 // Import transporter formhandling email
 const transporter = require("../helpers/transporter");
