@@ -71,7 +71,7 @@ module.exports = {
           phone_number,
           otp_code: otp,
           otp_created_at: new Date(),
-          ktp_path: req.files.images[0].path, // get file data from req.file object
+          ktp_path: `Public/images/${req.files.images[0].filename}`, // get file data from req.file object
         },
         { transaction: t }
       );
