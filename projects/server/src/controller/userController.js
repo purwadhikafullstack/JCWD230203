@@ -534,7 +534,7 @@ module.exports = {
         console.log(req.files)
         await db.users_details.update(
           {
-          picture_path: req.files.images[0].path
+          picture_path: `Public/images/${req.files.images[0].filename}`
           },
           {
             where: {users_id: id}
