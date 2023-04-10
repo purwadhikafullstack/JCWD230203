@@ -315,7 +315,7 @@ module.exports = {
       );
       await transactions.update(
         {
-          image_path: req.files.images[0].path,
+          image_path: `Public/images/${req.files.images[0].filename}`,
           status_id: 7,
         },
         {
