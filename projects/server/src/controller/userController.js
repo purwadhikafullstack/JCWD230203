@@ -70,6 +70,7 @@ const authGoogle = async(user, userProfile, t) => {
     
   }
  } catch (error) {
+   console.log(error)
    await t.rollback()
    return {
      code: 500,

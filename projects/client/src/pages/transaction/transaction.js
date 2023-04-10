@@ -199,40 +199,6 @@ const Transaction = () => {
     }
   }
 
-  console.log(details?.[0]?.expired)
-
-  // const paymentDue = () => {
-  // if(details){
-  //   const expired = new Date(details?.[0]?.expired)
-  //   const countDown = expired.getTime();
-  //   const intervalId = setInterval(() => {
-  //     const now = new Date().getTime();
-  //     const distance = countDown - now
-  //     if(distance <= 0){
-  //       clearInterval(intervalId)
-  //       setTimer("Your time is up!");
-  //     }else{
-  //     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  //     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  //     if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-  //       clearInterval(intervalId);
-  //       setTimer("Your time is up!");
-  //     }else if(details?.[0]?.status_id === 3){
-  //       setTimer("Your Order has Been Canceled")
-  //     }else if(details?.[0]?.status_id === 8){
-  //       setTimer("Your Order has Been Rejected")
-  //     }else if(details?.[0]?.status_id === 2){
-  //       setTimer("Your Order has Been Paid")
-  //     } else {
-  //       setTimer(`${hours} hours, ${minutes} minutes, ${seconds} seconds`);
-  //     }
-  //     }
-  //   }, 1000);
-  // }
-  // }
-
-
   return (
     <>
     {role === "user" ? 

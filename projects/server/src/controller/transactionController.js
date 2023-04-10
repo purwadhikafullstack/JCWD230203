@@ -180,9 +180,9 @@ module.exports = {
         isError: true,
         message: error.message,
         data: error,
-      });
-    }
-  },
+      });
+    }
+  },
 
   event: async (req, res) => {
     const { room_id } = req.query;
