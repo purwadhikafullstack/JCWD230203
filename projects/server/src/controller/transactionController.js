@@ -22,7 +22,7 @@ module.exports = {
       });
 
       if (user.dataValues.status === "unconfirmed") {
-        throw res.status(400).send({
+        return res.status(400).send({
           isError: true,
           message: "Your Account is Not Active",
           data: null,
@@ -38,7 +38,7 @@ module.exports = {
       );
 
       if (!room) {
-        throw res.status(404).send({
+        return res.status(404).send({
           isError: true,
           message: "Room Not Found",
           data: null,
@@ -54,7 +54,7 @@ module.exports = {
       });
 
       if (blockedDates.length > 0) {
-        throw res.status(400).send({
+        return res.status(400).send({
           isError: true,
           message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`,
           data: null,
@@ -77,7 +77,7 @@ module.exports = {
       const remainingRoom = availableRooms - bookedRooms;
 
       if (remainingRoom <= 0) {
-        throw res.status(400).send({
+        return res.status(400).send({
           isError: true,
           message: "No rooms available for the selected dates",
           data: null,
@@ -106,7 +106,7 @@ module.exports = {
         );
 
         if (bookedRooms >= availableRooms) {
-          throw res.status(404).send({
+          return res.status(404).send({
             isError: true,
             message: "Another booking already exists for the selected dates",
             data: null,
@@ -114,7 +114,7 @@ module.exports = {
         }
 
         if (numberOfTransactions > availableRooms) {
-          throw res.status(404).send({
+          return res.status(404).send({
             isError: true,
             message: "Max guest is exceeded",
             data: null,
@@ -155,9 +155,9 @@ module.exports = {
         const isTransactionExpired = (_transaction) => {
           const expiredTime = new Date(_transaction.expired).getTime();
           const currentTime = new Date().getTime();
-          throw expiredTime < currentTime;
+          return expiredTime < currentTime;
         };
-        const isExpired = isTransactionExpired(_transaction);
+        const isExpired = await isTransactionExpired(_transaction);
 
         transactionData.push({
           transaction: _transaction,
@@ -168,22 +168,21 @@ module.exports = {
 
       await t.commit();
       if (transactionData.length > 0) {
-        throw res.status(200).json({
+        return res.status(200).json({
           isError: false,
           message: "Booked Room success, waiting for payment",
           data: transactionData,
         });
       }
     } catch (error) {
-      console.log(error)
       await t.rollback();
-      throw res.status(400).send({
+      return res.status(400).send({
         isError: true,
         message: error.message,
         data: error,
-      });
-    }
-  },
+      });
+    }
+  },
 
   event: async (req, res) => {
     const { room_id } = req.query;
