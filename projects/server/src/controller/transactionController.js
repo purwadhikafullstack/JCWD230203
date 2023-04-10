@@ -22,11 +22,7 @@ module.exports = {
       });
 
       if (user.dataValues.status === "unconfirmed") {
-        throw res.status(400).send({
-          isError: true,
-          message: "Your Account is Not Active",
-          data: null,
-        });
+        throw new Error("Your Account is Not Active")
       }
 
       const room = await db.room.findByPk(
@@ -38,11 +34,7 @@ module.exports = {
       );
 
       if (!room) {
-        throw res.status(404).send({
-          isError: true,
-          message: "Room Not Found",
-          data: null,
-        });
+       throw new Error("Room Not Found")
       }
 
       const blockedDates = await db.room_blocked_dates.findAll({
@@ -54,11 +46,7 @@ module.exports = {
       });
 
       if (blockedDates.length > 0) {
-        throw res.status(400).send({
-          isError: true,
-          message: `Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`,
-          data: null,
-        });
+        throw new Error(`Tenant blocked for this room, reason: ${blockedDates[0].dataValues.reason}`)
       }
 
       const bookings = await transactions.findAll(
@@ -77,11 +65,7 @@ module.exports = {
       const remainingRoom = availableRooms - bookedRooms;
 
       if (remainingRoom <= 0) {
-        throw res.status(400).send({
-          isError: true,
-          message: "No rooms available for the selected dates",
-          data: null,
-        });
+        throw new Error("No rooms available for the selected dates")
       }
 
       const maxGuest = 2;
@@ -106,19 +90,11 @@ module.exports = {
         );
 
         if (bookedRooms >= availableRooms) {
-          throw res.status(404).send({
-            isError: true,
-            message: "Another booking already exists for the selected dates",
-            data: null,
-          });
+          throw new Error("Another booking already exists for the selected dates")
         }
 
         if (numberOfTransactions > availableRooms) {
-          throw res.status(404).send({
-            isError: true,
-            message: "Max guest is exceeded",
-            data: null,
-          });
+          throw new Error("Max guest is exceeded")
         }
 
         const order_id =
@@ -168,7 +144,7 @@ module.exports = {
 
       await t.commit();
       if (transactionData.length > 0) {
-        throw res.status(200).json({
+        return res.status(200).json({
           isError: false,
           message: "Booked Room success, waiting for payment",
           data: transactionData,
@@ -176,7 +152,7 @@ module.exports = {
       }
     } catch (error) {
       await t.rollback();
-      throw res.status(400).send({
+      return res.status(400).send({
         isError: true,
         message: error.message,
         data: error,
