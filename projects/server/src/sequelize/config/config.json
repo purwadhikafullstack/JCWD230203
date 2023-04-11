@@ -25,7 +25,7 @@
     "dialect": "mysql",
     "dialectOptions": {
 	"options": {
-        	requestTimeout: 5000
+        	"requestTimeout": 5000
         }
     },
     "pool": {
