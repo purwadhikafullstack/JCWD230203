@@ -8,6 +8,8 @@ import Loader from "components/loader/loader";
 import Modal from "./../../components/modal/modal";
 import { Link } from "react-router-dom";
 import Moment from 'react-moment';
+import moment from 'moment';
+
 
 const Transaction = () => {
   const [details, setDetails] = useState([]);
@@ -140,6 +142,11 @@ const Transaction = () => {
           toast.success(res.data.message);
         }, 3500);
       }
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 4000)
+      
     } catch (error) {
       setLoading(false);
       if (
@@ -175,11 +182,15 @@ const Transaction = () => {
         respond: respond,
         daysCheck
       })
-      console.log(res)
+
       setTimeout(() => {
         toast.success(res.data.message)
         setPayment(true);
       }, 3500);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 4000)
 
 
     } catch (error) {
@@ -198,6 +209,39 @@ const Transaction = () => {
       }, 3000);
     }
   }
+
+  const isExpired = moment(details?.[0]?.expired).isBefore();
+
+  // const paymentDue = () => {
+  // if(details){
+  //   const expired = new Date(details?.[0]?.expired)
+  //   const countDown = expired.getTime();
+  //   const intervalId = setInterval(() => {
+  //     const now = new Date().getTime();
+  //     const distance = countDown - now
+  //     if(distance <= 0){
+  //       clearInterval(intervalId)
+  //       setTimer("Your time is up!");
+  //     }else{
+  //     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  //     if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+  //       clearInterval(intervalId);
+  //       setTimer("Your time is up!");
+  //     }else if(details?.[0]?.status_id === 3){
+  //       setTimer("Your Order has Been Canceled")
+  //     }else if(details?.[0]?.status_id === 8){
+  //       setTimer("Your Order has Been Rejected")
+  //     }else if(details?.[0]?.status_id === 2){
+  //       setTimer("Your Order has Been Paid")
+  //     } else {
+  //       setTimer(`${hours} hours, ${minutes} minutes, ${seconds} seconds`);
+  //     }
+  //     }
+  //   }, 1000);
+  // }
+  // }
 
   return (
     <>
@@ -594,15 +638,20 @@ const Transaction = () => {
                 <div className="w-32">
                     <span className="text-gray-600 font-medium">Due Time</span>
                 </div>
-                <div className="flex-grow font-bold ">
-                    <span>
-                      <Moment date={details?.[0]?.expired}
-                                            durationFromNow
-                                            interval={1000}
-                                        />
-                    </span>
-                  </div>
-                </div>
+                <div className="flex-grow font-bold">
+                {isExpired ? (
+                  <span>Your Time is Up</span>
+                ) : (
+                  <span>
+                    <Moment
+                      date={details?.[0]?.expired}
+                      durationFromNow
+                      interval={1000}
+                    />
+                  </span>
+                )}
+              </div>
+              </div>
               </div>
               <div className="w-full mx-auto rounded-lg bg-gray-100 border border-gray-200 text-gray-800 font-light mb-6">
                   {details?.[0]?.image_path &&
@@ -693,6 +742,7 @@ const Transaction = () => {
                   </div>
                 </div> : null }
               </div>
+              {isExpired ? null : 
               <div>
               {details?.[0]?.status_id === 4 &&  
                 <button
@@ -714,7 +764,7 @@ const Transaction = () => {
                 <i className="mdi mdi-lock-outline mr-1"></i>{" "}
                  PAID
               </button>}
-              </div>
+              </div>}
             </div>
           </div>
         </div>
@@ -1030,14 +1080,19 @@ const Transaction = () => {
                 <div className="w-32">
                     <span className="text-gray-600 font-medium">Due Time</span>
                 </div>
-                <div className="flex-grow font-bold ">
-                    <span>
-                    <Moment date={details?.[0]?.expired}
-                                            durationFromNow
-                                            interval={1000}
-                                        />
-                    </span>
-                  </div>
+                <div className="flex-grow font-bold">
+                {isExpired ? (
+                  <span>Your Time is Up</span>
+                ) : (
+                  <span>
+                    <Moment
+                      date={details?.[0]?.expired}
+                      durationFromNow
+                      interval={1000}
+                    />
+                  </span>
+                )}
+              </div>
                 </div>
               </div>
               <div className="w-full mx-auto rounded-lg bg-gray-100 border border-gray-200 text-gray-800 font-light mb-6">
