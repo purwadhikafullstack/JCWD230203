@@ -694,7 +694,6 @@ module.exports = {
     const { users_id, room_id, order_id1, order_id2, respond, daysCheck } = req.body;
     const final_order2 = order_id2 || null;
     const id = users_id;
-    console.log(req.body);
     const t = await sequelize.transaction();
     try {
       const transaction = await transactions.findOne({
@@ -706,12 +705,12 @@ module.exports = {
           ],
         },
         include: [{ model: db.users, where: { id } }],
-      });
+      }, {transaction: t});
 
       const room = await db.room.findOne({
         where: { id: transaction.dataValues.id },
         include: { model: db.property },
-      });
+      }, {transaction: t});
       const name = room.dataValues.name;
       const desc = room.dataValues.description;
       const price = room.dataValues.price.toLocaleString();
@@ -750,7 +749,7 @@ module.exports = {
           { transaction: t }
         );
 
-        const template = await fs.readFile(path.resolve(__dirname, '../template/rules.html'), 'utf-8')
+        const template = await fs.readFile("./template/rules.html", "utf-8");
 
         const templateCompile = await handlebars.compile(template);
         const newTemplate = templateCompile({
@@ -821,9 +820,9 @@ module.exports = {
         isError: true,
         message: error.message,
         data: null,
-      });
-    }
-  },
+      });
+    }
+  },
 
   salesReport: async (req, res) => {
     const { status_id = 2, page = 1, sort = "desc" } = req.body;
