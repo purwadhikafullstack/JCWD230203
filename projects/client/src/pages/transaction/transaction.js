@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Moment from 'react-moment';
 import moment from 'moment';
 
+
 const Transaction = () => {
   const [details, setDetails] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -209,7 +210,6 @@ const Transaction = () => {
     }
   }
 
-
   const isExpired = moment(details?.[0]?.expired).isBefore();
 
   // const paymentDue = () => {
@@ -242,8 +242,6 @@ const Transaction = () => {
   //   }, 1000);
   // }
   // }
-
-
 
   return (
     <>
@@ -653,7 +651,7 @@ const Transaction = () => {
                   </span>
                 )}
               </div>
-                          </div>
+              </div>
               </div>
               <div className="w-full mx-auto rounded-lg bg-gray-100 border border-gray-200 text-gray-800 font-light mb-6">
                   {details?.[0]?.image_path &&

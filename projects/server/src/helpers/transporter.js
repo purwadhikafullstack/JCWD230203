@@ -1,11 +1,10 @@
 const nodemailer = require('nodemailer')
-require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
-    service: process.env.SERVICE,
+    service: 'gmail',
     auth: {
-        user: process.env.TP_USER, //email sender
-        pass: process.env.TP_PASS // key generate by google email
+        user: 'gigijcwd230203@gmail.com', //email sender
+        pass: 'wfrbaqcogxzpgwby' // key generate by google email
     },
     tis: {
         rejectUnauthorized: false

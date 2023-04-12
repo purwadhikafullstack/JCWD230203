@@ -2,6 +2,7 @@ const { sequelize } = require("../sequelize/models");
 const db = require("../sequelize/models/index.js");
 const users = db.users;
 const { Op } = require("sequelize");
+const path = require("path");
 
 // Generate UID
 const { v4: uuidv4 } = require("uuid");
@@ -180,14 +181,11 @@ module.exports = {
       )
 
       // make validation using email
-      const template = await fs.readFile(
-        "./template/confirmation.html",
-        "utf-8"
-      );
+      const template = await fs.readFile(path.resolve(__dirname, '../template/confirmation.html'), 'utf-8')
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/activation/${createUsers.dataValues.id}`,
+        url: `https://jcwd230203.purwadhikabootcamp.com/activation/${createUsers.dataValues.id}`,
         otp,
       });
 
@@ -316,14 +314,11 @@ module.exports = {
       const first_name = user.dataValues.first_name;
       const email = user.dataValues.email;
 
-      const template = await fs.readFile(
-        "./template/confirmation.html",
-        "utf-8"
-      );
+      const template = await fs.readFile(path.resolve(__dirname, '../template/confirmation.html'), 'utf-8')
       const templateCompile = await handlebars.compile(template);
       const newTemplate = templateCompile({
         first_name,
-        url: `http://localhost:3000/activation/${user.dataValues.id}`,
+        url: `https://jcwd230203.purwadhikabootcamp.com/activation/${user.dataValues.id}`,
         otp,
       });
 
@@ -537,7 +532,7 @@ module.exports = {
         console.log(req.files)
         await db.users_details.update(
           {
-          picture_path: req.files.images[0].path
+          picture_path: `Public/images/${req.files.images[0].filename}`
           },
           {
             where: {users_id: id}
@@ -628,15 +623,12 @@ module.exports = {
 
         const first_name = findEmail.dataValues.first_name
         
-        const template = await fs.readFile(
-          "./template/forgetPassword.html",
-        "utf-8"
-        )
+	const template = await fs.readFile(path.resolve(__dirname, '../template/forgetPassword.html'), 'utf-8')
 
         const templateCompile = await handlebars.compile(template);
         const newTemplate = templateCompile({
           first_name,
-          url: `http://localhost:3000/reset-password/${findEmail.dataValues.id}`
+          url: `https://jcwd230203.purwadhikabootcamp.com/reset-password/${findEmail.dataValues.id}`
         })
 
         await transporter.sendMail({
