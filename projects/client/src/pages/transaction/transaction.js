@@ -209,6 +209,7 @@ const Transaction = () => {
     }
   }
 
+
   const isExpired = moment(details?.[0]?.expired).isBefore();
 
   // const paymentDue = () => {
@@ -241,6 +242,7 @@ const Transaction = () => {
   //   }, 1000);
   // }
   // }
+
 
 
   return (
