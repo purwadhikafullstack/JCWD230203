@@ -711,7 +711,8 @@ module.exports = {
         where: { id: transaction.id },
         include: { model: db.property },
       }, {transaction: t});
-
+      console.log('>>> findOne Room')
+      console.log(room)
       const name = room.dataValues.name;
       const desc = room.dataValues.description;
       const price = room.dataValues.price.toLocaleString();
@@ -742,6 +743,8 @@ module.exports = {
         );
 
         const user = await db.users.findOne({ where: { id } }, {transaction: t});
+        console.log('>>> user')
+        console.log(user)
         const email = user.dataValues.email;
 
         await db.transactions_history.update(
@@ -750,7 +753,7 @@ module.exports = {
           { transaction: t }
         );
 
-        const template = await fs.readFile("./template/rules.html", "utf-8");
+        const template = await fs.readFile(path.resolve(__dirname, '../template/rules.html'), 'utf-8')
 
         const templateCompile = await handlebars.compile(template);
         const newTemplate = templateCompile({
