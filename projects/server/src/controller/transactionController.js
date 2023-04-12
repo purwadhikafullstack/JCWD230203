@@ -708,7 +708,7 @@ module.exports = {
       }, {transaction: t});
 
       const room = await db.room.findOne({
-        where: { id: transaction.id },
+        where: { id: transaction.room_id },
         include: { model: db.property },
       }, {transaction: t});
       console.log('>>> findOne Room')
