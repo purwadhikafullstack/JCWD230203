@@ -64,7 +64,6 @@ function Activation() {
           return;
         }
 
-        setActive(true)
         await axios.post(`${process.env.REACT_APP_API_BASE_URL}users/resend-otp/${id}`)
         setTimeout(() => {
           toast.success("Check your Email")
