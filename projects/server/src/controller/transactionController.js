@@ -708,9 +708,10 @@ module.exports = {
       }, {transaction: t});
 
       const room = await db.room.findOne({
-        where: { id: transaction.dataValues.id },
+        where: { id: transaction.id },
         include: { model: db.property },
       }, {transaction: t});
+
       const name = room.dataValues.name;
       const desc = room.dataValues.description;
       const price = room.dataValues.price.toLocaleString();
@@ -740,7 +741,7 @@ module.exports = {
           { transaction: t }
         );
 
-        const user = await db.users.findOne({ where: { id } });
+        const user = await db.users.findOne({ where: { id } }, {transaction: t});
         const email = user.dataValues.email;
 
         await db.transactions_history.update(
