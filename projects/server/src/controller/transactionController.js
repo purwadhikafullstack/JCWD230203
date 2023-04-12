@@ -20,6 +20,7 @@ module.exports = {
     try {
       const user = await db.users.findOne({
         where: { id },
+        { transaction: t }
       });
 
       if (user.dataValues.status === "unconfirmed") {
