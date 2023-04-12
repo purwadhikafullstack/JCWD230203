@@ -19,18 +19,17 @@ const deleteFiles = require('./../helpers/deleteFiles')
 
 // import HttpResponse
 const HttpResponse = require("../helpers/httpResponse");
-const { Console } = require("console");
 
 const fs = require("fs").promises;
 
 const authGoogle = async(user, userProfile, t) => {
  try {
   const {first_name, last_name, email, phone_number, google_id, picture_path} = user
-  console.log(picture_path)
+
   // cari user berdasarkan google_id
   const userData = await users.findOne({
     where: {google_id}
-  }) // masukan google_id
+  }, {transaction: t}) // masukan google_id
   if(userData){
     return {
       code: 200, 
@@ -52,7 +51,6 @@ const authGoogle = async(user, userProfile, t) => {
     },
     { transaction: t }
   );
-  console.log(createUsers)
 
 
   await db.users_details.create(
@@ -86,7 +84,7 @@ module.exports = {
     const t = await sequelize.transaction();
     try {
       let { first_name, last_name, email, password, phone_number, isFromGoogle } = req.body;
-      console.log(req.body);
+
 
       if(isFromGoogle){
         const googleProfile = {
@@ -301,7 +299,7 @@ module.exports = {
   resendOtp: async (req, res) => {
     const t = await sequelize.transaction();
     try {
-      const user = await users.findOne({ where: { id: req.params.id } });
+      const user = await users.findOne({ where: { id: req.params.id } }, {transaction: t});
       if (!user) {
         return res.status(404).send({
           isError: true,
@@ -571,7 +569,7 @@ module.exports = {
     try {
         const data = await users.findOne({
           where: {id: req.dataToken.id}
-        })
+        }, {transaction: t})
 
         let matchPassword = await hashMatch(
           old_password, 
@@ -667,7 +665,7 @@ module.exports = {
   resetPassword: async(req, res) => {
     try {
       const {id, password, confirm_password} = req.body;
-      console.log(req.body)
+
 
       const findUser = await users.findOne({
         where: {id: id}
